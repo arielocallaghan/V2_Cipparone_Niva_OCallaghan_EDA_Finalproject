@@ -1,2 +1,2 @@
-# V2_-Cipparone_Niva_OCallaghan_EDA_Finalproject
+# V2_Cipparone_Niva_OCallaghan_EDA_Finalproject
 Duke Univeristy EDA 872
