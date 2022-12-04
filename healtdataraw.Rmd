@@ -1,0 +1,53 @@
+---
+title: "heathdata"
+author: "Ariel O'Callaghan"
+date: "2022-12-04"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+getwd()
+
+library(tidyverse)
+install.packages("vtable")
+library(vtable)
+library()
+
+health2010<- read.csv("./RawData/2010health.csv",stringsAsFactors = TRUE)
+health2011<- read.csv("./RawData/2011health.csv",stringsAsFactors = TRUE)
+health2012<- read.csv("./RawData/2012health.csv",stringsAsFactors = TRUE)
+health2013<- read.csv("./RawData/2013health.csv",stringsAsFactors = TRUE)
+health2014<- read.csv("./RawData/2014health.csv",stringsAsFactors = TRUE)
+health2015<- read.csv("./RawData/2015health.csv",stringsAsFactors = TRUE)
+health2016<- read.csv("./RawData/2016health.csv",stringsAsFactors = TRUE)
+health2017<- read.csv("./RawData/2017health.csv",stringsAsFactors = TRUE)
+health2018<- read.csv("./RawData/2018health.csv",stringsAsFactors = TRUE)
+health2019<- read.csv("./RawData/2019health.csv",stringsAsFactors = TRUE)
+health2020<- read.csv("./RawData/2020health.csv",stringsAsFactors = TRUE)
+
+health.all<-("health2010","health2011","health2012", "health2013", "health2014", "health2015", "health2016", "health2017", "health2018", "health2019", "health2020")
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
