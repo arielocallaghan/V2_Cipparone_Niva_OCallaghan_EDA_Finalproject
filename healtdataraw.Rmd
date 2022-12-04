@@ -18,6 +18,7 @@ library(vtable)
 library()
 
 #raw data import individual csv files https://www.countyhealthrankings.org/
+#
 
 health2010<- read.csv("./RawData/2010health.csv",stringsAsFactors = TRUE)
 health2011<- read.csv("./RawData/2011health.csv",stringsAsFactors = TRUE)
