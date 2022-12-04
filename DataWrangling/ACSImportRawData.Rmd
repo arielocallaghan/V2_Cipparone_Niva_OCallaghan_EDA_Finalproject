@@ -1,0 +1,35 @@
+
+
+```{r}
+library(tidyverse)
+library(tidycensus)
+```
+
+```{r}
+for (i in 2005:2019) {
+   
+   assign(paste0("pa.", i),
+          
+          get_acs(geography = "county", 
+               year = i,
+               variables = c(totpop="B01001_001",
+                             totpoprace="B02001_001",
+                             totpopwhite="B02001_002",
+                             medage="B01002_001",
+                             totpopeduc="B06009_001",
+                             bachdegree="B06009_005",
+                             medincome="B21004_001"
+                             ),
+                             state = "PA",
+               survey = "acs1")
+          )
+
+   
+}
+
+
+
+   
+ write.csv(paste('pa', i, sep = '.'), paste("./RawData/pa", i, 'csv', sep='.'))
+```
+

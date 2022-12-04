@@ -1,0 +1,71 @@
+---
+title: "QuickPresentationAnalysis"
+author: "Hugh Cipparone"
+date: '2022-11-30'
+output: html_document
+---
+
+```{r}
+library(psych)
+library(stargazer)
+library(vtable)
+```
+
+
+```{r}
+pa.2019.clean <- pa.2019 %>% 
+  pivot_wider(names_from=variable, values_from=estimate)%>% 
+  select(!c(GEOID,moe)) %>% 
+  group_by(NAME) %>% 
+  summarise(totpop=sum(totpop, na.rm=TRUE),
+            medage=sum(medage, na.rm=TRUE),
+            totpoprace=sum(totpoprace, na.rm=TRUE),
+            totpopwhite=sum(totpopwhite, na.rm=TRUE),
+            totpopeduc=sum(totpopeduc, na.rm=TRUE),
+            bachdegree=sum(bachdegree, na.rm=TRUE),
+            medincome=sum(medincome, na.rm=TRUE)) %>% 
+  mutate(perc.white = totpopwhite/totpop*100) %>% 
+  mutate(perc.bachdegree = bachdegree/totpop*100) %>% 
+  separate(NAME, into = c("County", "post","post1")) %>% 
+  select(!c(post, post1))
+
+
+pop<-ggplot(pa.2019.clean, aes(County, totpop, fill=County))+
+  geom_bar(stat="identity")+
+  ylab("Total Population")+
+  xlab("County")+
+  theme(axis.text.x = element_text(angle = 90))
+
+race<-ggplot(pa.2019.clean, aes(County, perc.white, fill=County))+
+  geom_bar(stat="identity")+
+  ylab("% White")+
+  xlab("County")+
+  theme(axis.text.x = element_text(angle = 90))
+
+income<-ggplot(pa.2019.clean, aes(County, medincome, fill=County))+
+  geom_bar(stat="identity")+
+  ylab("Median Income")+
+  xlab("County")+
+  theme(axis.text.x = element_text(angle = 90))
+income
+
+```
+
+```{r}
+
+pa.2019.sum<-pa.2019.clean %>% 
+  select(totpop,medage,perc.white,perc.bachdegree,medincome) %>% 
+  mutate(medage.w=medage*totpop, perc.white.w = perc.white*totpop, perc.bachdegree.w=perc.bachdegree*totpop,medincome.w=medincome*totpop) %>% 
+  select(totpop,medage.w,perc.white.w,perc.bachdegree.w,medincome.w) %>% 
+  rename("Total Population" = totpop, "Median Age" = medage.w, "Percent White" = perc.white.w, "Percent Bachelors" = perc.bachdegree.w, "Median Income" = medincome.w)
+
+st(pa.2019.sum)
+```
+
+
+```{r}
+
+
+
+```
+

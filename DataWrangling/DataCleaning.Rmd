@@ -1,0 +1,36 @@
+---
+title: "DataClean"
+author: "Hugh Cipparone"
+date: '2022-11-29'
+output: html_document
+---
+
+
+```{r}
+
+#Clean and Format 2019 PA ACS Data
+```{r}
+
+pa.2019<-read.csv("./RawData/pa.2019.csv")
+
+pa.2019.clean <- pa.2019 %>% 
+  pivot_wider(names_from=variable, values_from=estimate)%>% 
+  select(!c(GEOID,moe)) %>% 
+  group_by(NAME) %>% 
+  summarise(totpop=sum(totpop, na.rm=TRUE),
+            medage=sum(medage, na.rm=TRUE),
+            totpoprace=sum(totpoprace, na.rm=TRUE),
+            totpopwhite=sum(totpopwhite, na.rm=TRUE),
+            totpopeduc=sum(totpopeduc, na.rm=TRUE),
+            bachdegree=sum(bachdegree, na.rm=TRUE),
+            medincome=sum(medincome, na.rm=TRUE)) %>% 
+  mutate(year=2019)
+
+```
+
+```{r}
+#write csv to RawData folder
+```
+
+```
+
