@@ -29,7 +29,7 @@ health2018<- read.csv("./RawData/2018health.csv",stringsAsFactors = TRUE)
 health2019<- read.csv("./RawData/2019health.csv",stringsAsFactors = TRUE)
 health2020<- read.csv("./RawData/2020health.csv",stringsAsFactors = TRUE)
 
-health.all<-("health2010","health2011","health2012", "health2013", "health2014", "health2015", "health2016", "health2017", "health2018", "health2019", "health2020")
+#health.all<-("health2010","health2011","health2012", "health2013", "health2014", "health2015", "health2016", "health2017", "health2018", "health2019", "health2020")
 ```
 
 ## R Markdown
