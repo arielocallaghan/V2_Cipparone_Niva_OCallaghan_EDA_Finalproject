@@ -1,0 +1,245 @@
+---
+title: "Coal Mining and Water Quality Data"
+author: "Katryna Niva"
+date: "11/26"
+output: pdf_document
+geometry: margin=2.54cm
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r Getting the working directory}
+
+getwd()
+```
+
+```{r Installing and loading packages}
+
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(readxl)
+```
+
+```{r Downloading Data}
+#inital uploading of all the coal data for each distinct year -- this could not be expedited with data stripping because there were separate links to downloaded spreadsheets instead of links to another website
+coal1983 <- read.csv("RawData/coalpublic1983.csv", stringsAsFactors = TRUE)
+coal1984 <- read.csv("RawData/coalpublic1984.csv", stringsAsFactors = TRUE)
+coal1985 <- read.csv("RawData/coalpublic1985.csv", stringsAsFactors = TRUE)
+coal1986 <- read.csv("RawData/coalpublic1986.csv", stringsAsFactors = TRUE)
+coal1987 <- read.csv("RawData/coalpublic1987.csv", stringsAsFactors = TRUE)
+coal1988 <- read.csv("RawData/coalpublic1988.csv", stringsAsFactors = TRUE)
+coal1989 <- read.csv("RawData/coalpublic1989.csv", stringsAsFactors = TRUE)
+coal1990 <- read.csv("RawData/coalpublic1990.csv", stringsAsFactors = TRUE)
+coal1991 <- read.csv("RawData/coalpublic1991.csv", stringsAsFactors = TRUE)
+coal1992 <- read.csv("RawData/coalpublic1992.csv", stringsAsFactors = TRUE)
+coal1993 <- read.csv("RawData/coalpublic1993.csv", stringsAsFactors = TRUE)
+coal1994 <- read.csv("RawData/coalpublic1994.csv", stringsAsFactors = TRUE)
+coal1995 <- read.csv("RawData/coalpublic1995.csv", stringsAsFactors = TRUE)
+coal1996 <- read.csv("RawData/coalpublic1996.csv", stringsAsFactors = TRUE)
+coal1997 <- read.csv("RawData/coalpublic1997.csv", stringsAsFactors = TRUE)
+coal1998 <- read.csv("RawData/coalpublic1998.csv", stringsAsFactors = TRUE)
+coal1999 <- read.csv("RawData/coalpublic1999.csv", stringsAsFactors = TRUE)
+coal2000 <- read.csv("RawData/coalpublic2000.csv", stringsAsFactors = TRUE)
+coal2001 <- read.csv("RawData/coalpublic2001.csv", stringsAsFactors = TRUE)
+coal2002 <- read.csv("RawData/coalpublic2002.csv", stringsAsFactors = TRUE)
+coal2003 <- read.csv("RawData/coalpublic2003.csv", stringsAsFactors = TRUE)
+coal2004 <- read.csv("RawData/coalpublic2004.csv", stringsAsFactors = TRUE)
+coal2005 <- read.csv("RawData/coalpublic2005.csv", stringsAsFactors = TRUE)
+coal2006 <- read.csv("RawData/coalpublic2006.csv", stringsAsFactors = TRUE)
+coal2007 <- read.csv("RawData/coalpublic2007.csv", stringsAsFactors = TRUE)
+coal2008 <- read.csv("RawData/coalpublic2008.csv", stringsAsFactors = TRUE)
+coal2009 <- read.csv("RawData/coalpublic2009.csv", stringsAsFactors = TRUE)
+coal2010 <- read.csv("RawData/coalpublic2010.csv", stringsAsFactors = TRUE)
+coal2011 <- read.csv("RawData/coalpublic2011.csv", stringsAsFactors = TRUE)
+coal2012 <- read.csv("RawData/coalpublic2012.csv", stringsAsFactors = TRUE)
+coal2013 <- read.csv("RawData/coalpublic2013.csv", stringsAsFactors = TRUE)
+coal2014 <- read.csv("RawData/coalpublic2014.csv", stringsAsFactors = TRUE)
+coal2015 <- read.csv("RawData/coalpublic2015.csv", stringsAsFactors = TRUE)
+coal2016 <- read.csv("RawData/coalpublic2016.csv", stringsAsFactors = TRUE)
+coal2017 <- read.csv("RawData/coalpublic2017.csv", stringsAsFactors = TRUE)
+coal2018 <- read.csv("RawData/coalpublic2018.csv", stringsAsFactors = TRUE)
+coal2019 <- read.csv("RawData/coalpublic2019.csv", stringsAsFactors = TRUE)
+coal2020 <- read.csv("RawData/coalpublic2020.csv", stringsAsFactors = TRUE)
+coal2021 <- read.csv("RawData/coalpublic2021.csv", stringsAsFactors = TRUE)
+
+#inconsistencies in the form of different columns needed to be resolved
+coal1996$MSHA.ID <- as.factor(coal1996$MSHA.ID)
+coal1997$MSHA.ID <- as.factor(coal1997$MSHA.ID)
+coal1998$MSHA.ID <- as.factor(coal1998$MSHA.ID)
+coal1999$MSHA.ID <- as.factor(coal1999$MSHA.ID)
+coal2000$MSHA.ID <- as.factor(coal2000$MSHA.ID)
+coal2001$MSHA.ID <- as.factor(coal2001$MSHA.ID)
+coal2002$MSHA.ID <- as.factor(coal2002$MSHA.ID)
+coal2003$MSHA.ID <- as.factor(coal2003$MSHA.ID)
+coal2004$MSHA.ID <- as.factor(coal2004$MSHA.ID)
+coal2005$MSHA.ID <- as.factor(coal2005$MSHA.ID)
+coal2006$MSHA.ID <- as.factor(coal2006$MSHA.ID)
+coal2007$MSHA.ID <- as.factor(coal2007$MSHA.ID)
+coal2008$MSHA.ID <- as.factor(coal2008$MSHA.ID)
+coal2009$MSHA.ID <- as.factor(coal2009$MSHA.ID)
+coal2010$MSHA.ID <- as.factor(coal2010$MSHA.ID)
+coal2011$MSHA.ID <- as.factor(coal2011$MSHA.ID)
+coal2012$MSHA.ID <- as.factor(coal2012$MSHA.ID)
+coal2013$MSHA.ID <- as.factor(coal2013$MSHA.ID)
+coal2014$MSHA.ID <- as.factor(coal2014$MSHA.ID)
+coal2015$MSHA.ID <- as.factor(coal2015$MSHA.ID)
+coal2016$MSHA.ID <- as.factor(coal2016$MSHA.ID)
+coal2017$MSHA.ID <- as.factor(coal2017$MSHA.ID)
+coal2018$MSHA.ID <- as.factor(coal2018$MSHA.ID)
+coal2019$MSHA.ID <- as.factor(coal2019$MSHA.ID)
+coal2020$MSHA.ID <- as.factor(coal2020$MSHA.ID)
+coal2021$MSHA.ID <- as.factor(coal2021$MSHA.ID)
+
+coal2002$Average.Employees <- as.factor(coal2002$Average.Employees)
+coal2003$Average.Employees <- as.factor(coal2003$Average.Employees)
+coal2004$Average.Employees <- as.factor(coal2004$Average.Employees)
+coal2005$Average.Employees <- as.factor(coal2005$Average.Employees)
+coal2006$Average.Employees <- as.factor(coal2006$Average.Employees)
+coal2007$Average.Employees <- as.factor(coal2007$Average.Employees)
+coal2008$Average.Employees <- as.factor(coal2008$Average.Employees)
+coal2009$Average.Employees <- as.factor(coal2009$Average.Employees)
+coal2010$Average.Employees <- as.factor(coal2010$Average.Employees)
+coal2011$Average.Employees <- as.factor(coal2011$Average.Employees)
+coal2012$Average.Employees <- as.factor(coal2012$Average.Employees)
+coal2013$Average.Employees <- as.factor(coal2013$Average.Employees)
+coal2014$Average.Employees <- as.factor(coal2014$Average.Employees)
+coal2015$Average.Employees <- as.factor(coal2015$Average.Employees)
+coal2016$Average.Employees <- as.factor(coal2016$Average.Employees)
+coal2017$Average.Employees <- as.factor(coal2017$Average.Employees)
+coal2018$Average.Employees <- as.factor(coal2018$Average.Employees)
+coal2019$Average.Employees <- as.factor(coal2019$Average.Employees)
+coal2020$Average.Employees <- as.factor(coal2020$Average.Employees)
+coal2021$Average.Employees <- as.factor(coal2021$Average.Employees)
+
+#All the columns are then merged together into a single dataset
+AllCoal <- full_join(coal1983, coal1984)
+AllCoal <- full_join(AllCoal, coal1985)
+AllCoal <- full_join(AllCoal, coal1986)
+AllCoal <- full_join(AllCoal, coal1987)
+AllCoal <- full_join(AllCoal, coal1988)
+AllCoal <- full_join(AllCoal, coal1989)
+AllCoal <- full_join(AllCoal, coal1990)
+AllCoal <- full_join(AllCoal, coal1991)
+AllCoal <- full_join(AllCoal, coal1992)
+AllCoal <- full_join(AllCoal, coal1993)
+AllCoal <- full_join(AllCoal, coal1994)
+AllCoal <- full_join(AllCoal, coal1995)
+AllCoal <- full_join(AllCoal, coal1996)
+AllCoal <- full_join(AllCoal, coal1997)
+AllCoal <- full_join(AllCoal, coal1998)
+AllCoal <- full_join(AllCoal, coal1999)
+AllCoal <- full_join(AllCoal, coal2000)
+AllCoal <- full_join(AllCoal, coal2001)
+AllCoal <- full_join(AllCoal, coal2002)
+AllCoal <- full_join(AllCoal, coal2003)
+AllCoal <- full_join(AllCoal, coal2004)
+AllCoal <- full_join(AllCoal, coal2005)
+AllCoal <- full_join(AllCoal, coal2006)
+AllCoal <- full_join(AllCoal, coal2007)
+AllCoal <- full_join(AllCoal, coal2008)
+AllCoal <- full_join(AllCoal, coal2009)
+AllCoal <- full_join(AllCoal, coal2010)
+AllCoal <- full_join(AllCoal, coal2011)
+AllCoal <- full_join(AllCoal, coal2012)
+AllCoal <- full_join(AllCoal, coal2013)
+AllCoal <- full_join(AllCoal, coal2014)
+AllCoal <- full_join(AllCoal, coal2015)
+AllCoal <- full_join(AllCoal, coal2016)
+AllCoal <- full_join(AllCoal, coal2017)
+AllCoal <- full_join(AllCoal, coal2018)
+AllCoal <- full_join(AllCoal, coal2019)
+AllCoal <- full_join(AllCoal, coal2020)
+AllCoal <- full_join(AllCoal, coal2021)
+
+#a separate dataset just from 2010 on can be used to compare with other datasets that are only available from 2010 on
+Coal2010on <- full_join(coal2010, coal2011)
+Coal2010on <- full_join(Coal2010on, coal2012)
+Coal2010on <- full_join(Coal2010on, coal2013)
+Coal2010on <- full_join(Coal2010on, coal2014)
+Coal2010on <- full_join(Coal2010on, coal2015)
+Coal2010on <- full_join(Coal2010on, coal2016)
+Coal2010on <- full_join(Coal2010on, coal2017)
+Coal2010on <- full_join(Coal2010on, coal2018)
+Coal2010on <- full_join(Coal2010on, coal2019)
+Coal2010on <- full_join(Coal2010on, coal2020)
+Coal2010on <- full_join(Coal2010on, coal2021)
+
+#Filtering the data sets for only the Pennsylvania data -- the focus of our investigation
+AllCoal <- filter(AllCoal, Mine.State %in% c("Pennsylvania (Bituminous)", "Pennsylvania (Anthracite)"))
+
+ggplot(AllCoal, aes(x = Year, y = Production..short.tons., color = Mine.Type))+
+  geom_point()
+
+Coal2010on <- filter(Coal2010on, Mine.State %in% c("Pennsylvania (Bituminous)", "Pennsylvania (Anthracite)"))
+
+#Slim down the datasets to the necessary data and appropriately title the columns
+AllCoalSlim <- data_frame(AllCoal$Year, AllCoal$Mine.County, AllCoal$Mine.Status, AllCoal$Union.Code, AllCoal$Production..short.tons., AllCoal$Mine.Type)%>%
+  rename("Year" = "AllCoal$Year", "County" = "AllCoal$Mine.County", "Status" = "AllCoal$Mine.Status", "Union" = "AllCoal$Union.Code", "Production(tons)" = "AllCoal$Production..short.tons.", "Underground" = "AllCoal$Mine.Type")
+
+AllCoalSlim$`Production(tons)` <- as.integer(AllCoalSlim$`Production(tons)`)
+
+Coal2010onSlim <- data_frame(Coal2010on$Year, Coal2010on$Mine.County, Coal2010on$Mine.Status, Coal2010on$Union.Code, Coal2010on$Production..short.tons.) %>%
+  rename("Year" = "Coal2010on$Year", "County" = "Coal2010on$Mine.County", "Status" = "Coal2010on$Mine.Status", "Union" = "Coal2010on$Union.Code", "Production(tons)" = "Coal2010on$Production..short.tons.")
+
+aggCoalSlim <- AllCoalSlim %>% group_by(County, Year) %>%
+  summarise(sum.coal.production = sum(`Production(tons)`), .groups = 'drop')
+
+CoalUnderground <- AllCoalSlim %>% group_by(Year, Underground) %>%
+  summarise(sumcoal = sum("Production(tons)"), .groups = 'drop')
+
+CoalOverTime <- ggplot(aggCoalSlim, aes(`Year`, `sum.coal.production`, group = `County`, color = `County`))+
+  geom_smooth()+
+  ylab("Total Coal Production (Tons)")
+
+print(CoalOverTime)
+
+```
+
+
+```{r Installing and loading packages}
+
+#import water quality data sets
+WaterQuality <- read.csv("RawData/water_quality_data.csv", stringsAsFactors = TRUE)
+WaterQualitySites <- read.csv("RawData/water_quality_location_data.csv", stringsAsFactors = TRUE)
+WaterQuality$ActivityStartDate <- mdy(WaterQuality$ActivityStartDate)
+
+#merge the site data with the sampling results
+WaterQuality <- left_join(WaterQuality, WaterQualitySites, by = "MonitoringLocationIdentifier")
+
+#filter for pennsylvania
+WaterQuality <- filter(WaterQuality, StateCode %in% c(42))
+
+WaterQualitySlim <- data_frame(WaterQuality$ActivityStartDate, WaterQuality$MonitoringLocationName.y, WaterQuality$LatitudeMeasure, WaterQuality$LongitudeMeasure, WaterQuality$CountyCode, WaterQuality$CharacteristicName, WaterQuality$ResultSampleFractionText, WaterQuality$ResultMeasureValue, WaterQuality$ResultMeasure.MeasureUnitCode)%>%
+  rename("Date" = "WaterQuality$ActivityStartDate", "Location" = "WaterQuality$MonitoringLocationName.y", "Latitude" = "WaterQuality$LatitudeMeasure", "Longitude" = "WaterQuality$LongitudeMeasure", "County.Code" = "WaterQuality$CountyCode", "Contaminant" = "WaterQuality$CharacteristicName", "State" = "WaterQuality$ResultSampleFractionText", "Measure" = "WaterQuality$ResultMeasureValue", "Units" = "WaterQuality$ResultMeasure.MeasureUnitCode")
+
+WaterQualitySlim$Date <- mdy(WaterQualitySlim$Date)
+
+aggWaterQuality <- WaterQualitySlim %>% group_by(Date, Contaminant)%>%
+  summarise(mean(Measure), .groups = 'drop')
+  
+
+ContaminantOverTime <- ggplot(aggWaterQuality, aes(Date, `mean(Measure)`, group = Contaminant, color = Contaminant))+
+  geom_smooth()+
+  ylab("Total Contaminant Concentration (qualitative)")+
+  theme(axis.text.y=element_blank(),
+        axis.ticks.y=element_blank() 
+        )
+
+print(ContaminantOverTime)
+
+WaterQualitySlim2 <- WaterQualitySlim %>%
+  filter(County.Code == 107) %>%
+  filter(WaterQualitySlim$State == "Dissolved")
+
+noFeAndMn <- aggWaterQuality %>% filter(Contaminant == c("Sulfate", `Sulfate as SO4`)) 
+onlySulfate <- filter(aggWaterQuality, Contaminant == "Sulfate as SO4")
+
+ContaminantOverTime2 <- ggplot(onlySulfate, aes(Date, `mean(Measure)`, group = Contaminant))+
+  geom_point() +
+  ylab("Sulfate as SO4 Concentration (mg/l)")
+
+
+print(ContaminantOverTime2)
+
+```
