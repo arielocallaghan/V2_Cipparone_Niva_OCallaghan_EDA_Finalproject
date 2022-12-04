@@ -17,6 +17,8 @@ install.packages("vtable")
 library(vtable)
 library()
 
+#raw data import individual csv files
+
 health2010<- read.csv("./RawData/2010health.csv",stringsAsFactors = TRUE)
 health2011<- read.csv("./RawData/2011health.csv",stringsAsFactors = TRUE)
 health2012<- read.csv("./RawData/2012health.csv",stringsAsFactors = TRUE)
