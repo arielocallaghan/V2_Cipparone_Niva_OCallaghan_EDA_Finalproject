@@ -60,13 +60,35 @@ When you click the **Knit** button a document will be generated that includes bo
 ```{r cleaning the dataset}
 
 #cleaning data and reading year as a date
+
+#check class of data frame
 str(health.all)
+
+# Converting year column class from integer to character
+class(health2010$year)
+health2010$year <- as.character(health2010$year) 
+class(health2010$year)
+
+health2011$year <- as.character(health2011$year) 
+health2012$year <- as.character(health2012$year) 
+health2013$year <- as.character(health2013$year) 
+health2014$year <- as.character(health2014$year)
+health2015$year <- as.character(health2015$year) 
+health2016$year <- as.character(health2016$year) 
+health2017$year <- as.character(health2017$year) 
+health2018$year <- as.character(health2018$year) 
+health2019$year <- as.character(health2019$year) 
+
+health2020$year <- as.character(health2020$year) 
+class(health2020$year)
 
 # Change year column from integer to character 
 class(health.all$year)
-health.all$year <- as.character(as.numeric(health.all$year)) 
+health.all$year <- as.character(health.all$year) 
 class(health.all$year)
 view(health.all$year)
+
+#health.all$year <- as.character(as.numeric(health.all$year)) 
 
 #chage from character to date
 health.all$year <- as.Date(health.all$year , format = "%Y")
@@ -74,6 +96,7 @@ class(health.all$year)
 
 print(sapply(health.all, class))
 
+# Testing Mutate function but not working
 #health.all.clean<-
   health.all %>%
   mutate(health.all, year = year(Date))%>%
@@ -81,7 +104,7 @@ print(sapply(health.all, class))
 
 #health.all.2 <- mutate(health.all, y = year(Date)) 
 
-#Format date for only 2019 dataset 
+#Format and check column class for the 2019 dataset 
 
 class(health2019$year)
 health2019$year <- as.character(as.numeric(health2019$year)) 
@@ -93,6 +116,8 @@ class(health2019$year)
 
 class(health2019$Health.Outcomes.Z.Score)
 class(health2019$County)
+
+
 ```
 
 ## Including Plots
@@ -103,18 +128,53 @@ You can also embed plots, for example:
 
 health.outcomes.plot<-
   ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
-  geom_boxplot(aes(color = County))
+  geom_boxplot(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")
 print(health.outcomes.plot)
-      
 
 
-#+ 
-  xlab(expression(""))
+health.outcomes.plot.2<-
+  ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
+  geom_count()
+print(health.outcomes.plot.2)  
+
+health.outcomes.plot.3<-
+  ggplot(health.all, aes(y= Health.Outcomes.Z.Score ))+
+  geom_histogram(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")
+print(health.outcomes.plot.3)
+
+#x = year,
+#(aes(color = County)
 
 
-+
-  xlab(expression("Dry Mass")) + ylab(expression("Collection Date")) + labs(color = "Needles Function Group")
-print(Neon.litter.needles)
+health.2019.plot<-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_point()+
+  xlab(expression("County")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")
+print(health.2019.plot)
+
+#aes(color = County)
+
+health.2019.plot.2<-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_violin()+
+  xlab(expression("County")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")+ 
+print(health.2019.plot.2)
+
+health.2019.plot.3<-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_count()+
+  xlab(expression("County")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")+ 
+print(health.2019.plot.3)
+
+#facet_wrap(vars(Health.Outcomes.Z.Score), nrow = 5)
+ #facet_wrap(vars(nlcdClass), nrow = 3)
 
 ```
 
