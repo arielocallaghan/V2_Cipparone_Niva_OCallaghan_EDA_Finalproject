@@ -50,7 +50,6 @@ write.csv(df.complete.test., row.names = FALSE, file = "./ProcessedData/df.compl
 #completedf<-left_join(acs,coal,health, by="County")
 
 
-
 #INFO FROM DATA WRANGLING CLASS LESSON
 #In many cases, we will want to combine datasets into one dataset. If all column names match, the data frames can be combined with the `rbind` function. If some column names match and some column names don't match, we can combine the data frames using a "join" function according to common conditions that exist in the matching columns. We will demonstrate this with the NTL-LTER physical and nutrient datasets, where we have specific instances when physical and nutrient data were collected on the same date, at the same lake, and at the same depth. 
 
