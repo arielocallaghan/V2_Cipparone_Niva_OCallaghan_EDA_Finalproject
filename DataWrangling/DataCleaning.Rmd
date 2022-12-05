@@ -1,5 +1,5 @@
 ---
-title: "DataClean"
+title: "DataCleanACSPa2019"
 author: "Hugh Cipparone"
 date: '2022-11-29'
 output: html_document
@@ -24,7 +24,10 @@ pa.2019.clean <- pa.2019 %>%
             totpopeduc=sum(totpopeduc, na.rm=TRUE),
             bachdegree=sum(bachdegree, na.rm=TRUE),
             medincome=sum(medincome, na.rm=TRUE)) %>% 
-  mutate(year=2019)
+  mutate(perc.white = totpopwhite/totpop*100) %>% 
+  mutate(perc.bachdegree = bachdegree/totpop*100) %>% 
+  separate(NAME, into = c("County", "post","post1")) %>% 
+  select(!c(post, post1))
 
 write.csv(pa.2019.clean, "./ProcessedData/pa.19.clean.csv")
 
