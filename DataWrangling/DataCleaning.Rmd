@@ -33,9 +33,3 @@ write.csv(pa.2019.clean, "./ProcessedData/pa.19.clean.csv")
 
 ```
 
-```{r}
-#write csv to RawData folder
-```
-
-```
-
