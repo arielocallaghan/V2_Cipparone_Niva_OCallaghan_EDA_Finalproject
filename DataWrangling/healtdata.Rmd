@@ -1,0 +1,193 @@
+---
+title: "heathdata"
+author: "Ariel O'Callaghan"
+date: "2022-12-04"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=50), tidy=TRUE)
+
+getwd()
+
+library(tidyverse)
+library(vtable)
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+
+#install.packages("vtable")
+
+#raw data import individual csv files https://www.countyhealthrankings.org/
+
+
+health2010<- read.csv("./RawData/2010health.csv",stringsAsFactors = TRUE)
+health2011<- read.csv("./RawData/2011health.csv",stringsAsFactors = TRUE)
+health2012<- read.csv("./RawData/2012health.csv",stringsAsFactors = TRUE)
+health2013<- read.csv("./RawData/2013health.csv",stringsAsFactors = TRUE)
+health2014<- read.csv("./RawData/2014health.csv",stringsAsFactors = TRUE)
+health2015<- read.csv("./RawData/2015health.csv",stringsAsFactors = TRUE)
+health2016<- read.csv("./RawData/2016health.csv",stringsAsFactors = TRUE)
+health2017<- read.csv("./RawData/2017health.csv",stringsAsFactors = TRUE)
+health2018<- read.csv("./RawData/2018health.csv",stringsAsFactors = TRUE)
+health2019<- read.csv("./RawData/2019health.csv",stringsAsFactors = TRUE)
+health2020<- read.csv("./RawData/2020health.csv",stringsAsFactors = TRUE)
+
+
+
+#combine individual csv 2010-2020 into one file
+health.all<- rbind(health2010,health2011,health2012, health2013, health2014, health2015, health2016, health2017, health2018, health2019, health2020)
+
+# create new csv file with all years 2010-2020 combined
+write.csv(health.all, row.names = FALSE, file = "./RawData/healthdata.combine.csv") 
+
+
+#set theme for plots
+mytheme <- theme_classic(base_size = 14) + theme(axis.text = element_text(color = "black"), legend.position = "top")
+theme_set(mytheme)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cleaning the dataset}
+
+#cleaning data and reading year as a date
+
+#check class of data frame
+str(health.all)
+
+# Converting year column class from integer to character
+class(health2010$year)
+health2010$year <- as.character(health2010$year) 
+class(health2010$year)
+
+health2011$year <- as.character(health2011$year) 
+health2012$year <- as.character(health2012$year) 
+health2013$year <- as.character(health2013$year) 
+health2014$year <- as.character(health2014$year)
+health2015$year <- as.character(health2015$year) 
+health2016$year <- as.character(health2016$year) 
+health2017$year <- as.character(health2017$year) 
+health2018$year <- as.character(health2018$year) 
+health2019$year <- as.character(health2019$year) 
+
+health2020$year <- as.character(health2020$year) 
+class(health2020$year)
+
+# Change year column from integer to character 
+class(health.all$year)
+health.all$year <- as.character(health.all$year) 
+class(health.all$year)
+view(health.all$year)
+
+#health.all$year <- as.character(as.numeric(health.all$year)) 
+
+#chage from character to date
+health.all$year <- as.Date(health.all$year , format = "%Y")
+class(health.all$year)
+
+print(sapply(health.all, class))
+
+# Testing Mutate function but not working
+#health.all.clean<-
+  health.all %>%
+  mutate(health.all, year = year(Date))%>%
+  filter(Date= c(2010-2020))
+
+#health.all.2 <- mutate(health.all, y = year(Date)) 
+
+#Format and check column class for the 2019 dataset 
+
+class(health2019$year)
+health2019$year <- as.character(as.numeric(health2019$year)) 
+class(health2019$year)
+view(health2019$year)
+
+health2019$year <- as.Date(health2019$year , format = "%Y")
+class(health2019$year)
+
+class(health2019$Health.Outcomes.Z.Score)
+class(health2019$County)
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r plot health rankings and county, echo=FALSE}
+
+# Visualizations of data of all combined health outcome data
+
+health.outcomes.plot<-
+  ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
+  geom_boxplot(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")
+print(health.outcomes.plot)
+
+health.outcomes.plot.2<-
+  ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
+  geom_count()
+print(health.outcomes.plot.2)  
+
+health.outcomes.plot.3<-
+  ggplot(health.all, aes(y= Health.Outcomes.Z.Score ))+
+  geom_histogram(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")
+print(health.outcomes.plot.3)
+
+#x = year,
+#(aes(color = County)
+
+# Visualizations of 2019 data below 
+
+health.2019.plot<-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_point()+
+  xlab(expression("County")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")
+print(health.2019.plot)
+
+#aes(color = County)
+
+health.2019.plot.2<-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_violin()+
+  xlab(expression("County")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")+ 
+print(health.2019.plot.2)
+
+health.2019.plot.3<-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_count()+
+  xlab(expression("County")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")+ 
+print(health.2019.plot.3)
+
+health.2019.plot.4 <-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_point()+
+  ylab("Z Score")+
+  xlab("County")+
+  theme(axis.text.x = element_text(angle = 90))
+print(health.2019.plot.4)
+
+
+#other code no longer used in plots
+#facet_wrap(vars(Health.Outcomes.Z.Score), nrow = 5)
+ #facet_wrap(vars(nlcdClass), nrow = 3)
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
