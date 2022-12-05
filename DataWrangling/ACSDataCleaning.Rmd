@@ -32,3 +32,38 @@ write.csv(pa.2019.clean, "./ProcessedData/pa.19.clean.csv")
 
 ```
 
+```{r}
+#clean and write full time series dataframe
+
+for (i in 2005:2019) {
+  
+paste0('pa.',i)<-read.csv(paste0("./RawData/pa.", i, ".csv"))
+                          
+assign(paste0("pa.",i,".clean"),
+       
+  get(paste0("pa.",i)) %>% 
+  pivot_wider(names_from=variable, values_from=estimate)%>% 
+  select(!c(GEOID,moe)) %>% 
+  group_by(NAME) %>% 
+  summarise(totpop=sum(totpop, na.rm=TRUE),
+            medage=sum(medage, na.rm=TRUE),
+            totpoprace=sum(totpoprace, na.rm=TRUE),
+            totpopwhite=sum(totpopwhite, na.rm=TRUE),
+            totpopeduc=sum(totpopeduc, na.rm=TRUE),
+            bachdegree=sum(bachdegree, na.rm=TRUE),
+            medincome=sum(medincome, na.rm=TRUE)) %>% 
+  mutate(perc.white = totpopwhite/totpop*100) %>% 
+  mutate(perc.bachdegree = bachdegree/totpop*100) %>% 
+  separate(NAME, into = c("County", "post","post1")) %>% 
+  select(!c(post, post1)))
+
+write.csv(get(paste0('pa.', i)), paste0("./ProcessedData/pa.", i, '.csv'))
+
+  
+}
+
+
+
+```
+
+
