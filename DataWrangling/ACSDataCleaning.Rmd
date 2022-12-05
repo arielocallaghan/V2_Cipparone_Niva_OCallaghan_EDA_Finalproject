@@ -54,6 +54,7 @@ assign(paste0("pa.",i,".clean"),
             medincome=sum(medincome, na.rm=TRUE)) %>% 
   mutate(perc.white = totpopwhite/totpop*100) %>% 
   mutate(perc.bachdegree = bachdegree/totpop*100) %>% 
+  mutate(year=i) %>% 
   separate(NAME, into = c("County", "post","post1")) %>% 
   select(!c(post, post1)))
 
@@ -65,4 +66,37 @@ write.csv(get(paste0('pa.', i,".clean")), paste0("./ProcessedData/pa.clean.", i,
 
 ```
 
+
+#Combine all ACS years into single document
+
+```{r}
+
+for (i in 2005:2019) {
+  
+  
+assign(paste0("pa.",i,".clean"),
+       read.csv(paste0("./ProcessedData/pa.clean.",i,".csv")))
+
+  
+}
+
+
+acs.combined<-rbind(pa.2005.clean,
+                    pa.2006.clean,
+                    pa.2007.clean, 
+                    pa.2008.clean, 
+                    pa.2009.clean, 
+                    pa.2010.clean, 
+                    pa.2011.clean,
+                    pa.2012.clean, 
+                    pa.2013.clean, 
+                    pa.2014.clean, 
+                    pa.2015.clean, 
+                    pa.2016.clean, 
+                    pa.2017.clean, 
+                    pa.2018.clean, 
+                    pa.2019.clean)
+
+write.csv(acs.combined, "./ProcessedData/acs.combined.years.csv")
+```
 
