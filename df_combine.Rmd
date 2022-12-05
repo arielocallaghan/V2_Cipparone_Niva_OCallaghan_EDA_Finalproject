@@ -23,6 +23,11 @@ colnames(acs) #"County"
 colnames(coal) #"County"
 colnames(health) #"County"  
 
+#fix column name of year capital vs lowercase and try to merge with two variables. 
+
+df.complete.test.2<- left_join(coal,acs,health,by = c("County","year"))
+
+
 df.complete.test.<- left_join(coal,acs,health,by = "County")
 write.csv(df.complete.test., row.names = FALSE, file = "./ProcessedData/df.complete.test.csv") 
 
