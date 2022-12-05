@@ -23,7 +23,7 @@ library(ggplot2)
 #install.packages("vtable")
 
 #raw data import individual csv files https://www.countyhealthrankings.org/
-#
+
 
 health2010<- read.csv("./RawData/2010health.csv",stringsAsFactors = TRUE)
 health2011<- read.csv("./RawData/2011health.csv",stringsAsFactors = TRUE)
@@ -126,13 +126,14 @@ You can also embed plots, for example:
 
 ```{r plot health rankings and county, echo=FALSE}
 
+# Visualizations of data of all combined health outcome data
+
 health.outcomes.plot<-
   ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
   geom_boxplot(aes(color = County))+
   xlab(expression("Year")) + ylab(expression("Z Score")) +
   theme(legend.position = "bottom")
 print(health.outcomes.plot)
-
 
 health.outcomes.plot.2<-
   ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
@@ -149,6 +150,7 @@ print(health.outcomes.plot.3)
 #x = year,
 #(aes(color = County)
 
+# Visualizations of 2019 data below 
 
 health.2019.plot<-
   ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
@@ -173,6 +175,16 @@ health.2019.plot.3<-
   theme(legend.position = "bottom")+ 
 print(health.2019.plot.3)
 
+health.2019.plot.4 <-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_point()+
+  ylab("Z Score")+
+  xlab("County")+
+  theme(axis.text.x = element_text(angle = 90))
+print(health.2019.plot.4)
+
+
+#other code no longer used in plots
 #facet_wrap(vars(Health.Outcomes.Z.Score), nrow = 5)
  #facet_wrap(vars(nlcdClass), nrow = 3)
 
