@@ -24,12 +24,15 @@ for (i in 2005:2019) {
                survey = "acs1")
           )
 
-   
+  write.csv(get(paste0('pa.', i)), paste0("./RawData/pa.", i, '.csv')) 
+  
 }
 
 
 
-   
- write.csv(paste('pa', i, sep = '.'), paste("./RawData/pa", i, 'csv', sep='.'))
+write.csv(get(paste('pa', 2005, sep = '.')), paste("./RawData/pa.", 2005, '.csv')) 
+
+write.csv(pa.2005,"./RawData/pa.2005.csv")
+
 ```
 
