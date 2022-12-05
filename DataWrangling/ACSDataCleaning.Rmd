@@ -80,7 +80,6 @@ assign(paste0("pa.",i,".clean"),
   
 }
 
-
 acs.combined<-rbind(pa.2005.clean,
                     pa.2006.clean,
                     pa.2007.clean, 
