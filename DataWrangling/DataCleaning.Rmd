@@ -26,6 +26,8 @@ pa.2019.clean <- pa.2019 %>%
             medincome=sum(medincome, na.rm=TRUE)) %>% 
   mutate(year=2019)
 
+write.csv(pa.2019.clean, "./ProcessedData/pa.19.clean.csv")
+
 ```
 
 ```{r}
