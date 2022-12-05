@@ -63,6 +63,7 @@ When you click the **Knit** button a document will be generated that includes bo
 Healthdf<-select(health.all,County:year)
 write.csv(Healthdf, row.names = FALSE, file = "./ProcessedData/healthdf.csv") 
 
+str(Healthdf)
 
 #cleaning data and reading year as a date
 
