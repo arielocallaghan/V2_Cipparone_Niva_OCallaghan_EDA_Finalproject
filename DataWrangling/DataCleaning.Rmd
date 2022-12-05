@@ -9,7 +9,6 @@ output: html_document
 ```{r}
 
 #Clean and Format 2019 PA ACS Data
-```{r}
 
 pa.2019<-read.csv("./RawData/pa.2019.csv")
 
