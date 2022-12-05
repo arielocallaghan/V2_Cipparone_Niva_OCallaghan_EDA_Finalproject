@@ -37,7 +37,7 @@ write.csv(pa.2019.clean, "./ProcessedData/pa.19.clean.csv")
 
 for (i in 2005:2019) {
   
-paste0('pa.',i)<-read.csv(paste0("./RawData/pa.", i, ".csv"))
+assign(paste0('pa.',i), read.csv(paste0("./RawData/pa.", i, ".csv")))
                           
 assign(paste0("pa.",i,".clean"),
        
@@ -57,11 +57,10 @@ assign(paste0("pa.",i,".clean"),
   separate(NAME, into = c("County", "post","post1")) %>% 
   select(!c(post, post1)))
 
-write.csv(get(paste0('pa.', i)), paste0("./ProcessedData/pa.", i, '.csv'))
+write.csv(get(paste0('pa.', i,".clean")), paste0("./ProcessedData/pa.clean.", i, '.csv'))
 
   
 }
-
 
 
 ```
