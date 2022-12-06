@@ -1,0 +1,31 @@
+---
+title: "df_combine_HC"
+author: "Hugh Cipparone"
+date: '2022-12-06'
+output: html_document
+---
+
+
+```{r}
+getwd()
+
+library(tidyverse)
+
+
+health<-read.csv("./ProcessedData/healthdf.csv")
+coal<-read.csv("./ProcessedData/Coal.Clean.csv")
+acs<-read.csv("./ProcessedData/acs.combined.years.csv")
+
+
+acs<-acs %>% 
+  select(!c(1:2))
+
+coal<-coal %>% 
+  rename(year=Year)
+
+combine<-full_join(acs,coal,health, by=c("County","year"))
+
+write.csv(combine, "./ProcessedData/combine.csv")
+
+```
+
