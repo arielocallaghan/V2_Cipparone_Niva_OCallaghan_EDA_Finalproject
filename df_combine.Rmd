@@ -13,25 +13,42 @@ getwd()
 #install packages
 library(dplyr)
 library(tidyverse)
+library(plyr)
 
 acs<- read.csv("./ProcessedData/acs.combined.years.csv",stringsAsFactors = TRUE)
 coal<- read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
 health<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
 
 #check column name that we want to join by
-colnames(acs) #"County" 
-colnames(coal) #"County"
-colnames(health) #"County"  
+colnames(acs) #"County" "year" 
+colnames(coal) #"County"  "Year" 
+colnames(health) #"County"  "year"
 
-#fix column name of year capital vs lowercase and try to merge with two variables. 
 
-df.complete.test.2<- left_join(coal,acs,health,by = c("County","year"))
+#fix colmn name to have a lowercase y in year to match other data sets
+colnames(coal) <- c("County", "year", "coal.prod.by.year", "year.peak.prod", "sum.coal.prod")
 
+#df.2var<- left_join(coal,acs,health,by = "County","year")
 
 df.complete.test.<- left_join(coal,acs,health,by = "County")
 write.csv(df.complete.test., row.names = FALSE, file = "./ProcessedData/df.complete.test.csv") 
 
 #JOIN COMMANDS BELOW DID NOT WORK
+
+#df.cbind.3<-cbind.data.frame(health,acs,coal)
+
+#df.cbind.2<-cbind.data.frame(health,acs,coal,check.names = TRUE)
+
+#df.cbind<-cbind.data.frame(health,acs,coal,deparse.level = 1)
+#df.merg.test<-merge(health,coal,acs,by="County", all.x= TRUE, all.y= TRUE)
+
+#df.joinall<-join_all(list(health,coal,acs), by = 'rn', type = 'full')
+
+#df.complete.test.6<- left_join(coal,acs,health,by = c("County","year"))
+
+#df.test.7<-inner_join(health,coal,acs, by=NULL))
+
+#df.test.5<-full_join(acs,health,coal, by=NULL)
 
 #df.rbind<-rbind(acs,coal,health)
 
@@ -41,25 +58,13 @@ write.csv(df.complete.test., row.names = FALSE, file = "./ProcessedData/df.compl
 
 #df.test.3<- left_join(health,coal,acs, by = c("County"))
 
-
 #df.test.2<-left_join(acs,coal,health, by= "County", copy=FALSE)
           
-
 #df.test<-full_join(acs, coal, health, by="County")
 
 #completedf<-left_join(acs,coal,health, by="County")
 
 
-#INFO FROM DATA WRANGLING CLASS LESSON
-#In many cases, we will want to combine datasets into one dataset. If all column names match, the data frames can be combined with the `rbind` function. If some column names match and some column names don't match, we can combine the data frames using a "join" function according to common conditions that exist in the matching columns. We will demonstrate this with the NTL-LTER physical and nutrient datasets, where we have specific instances when physical and nutrient data were collected on the same date, at the same lake, and at the same depth. 
-
-#In dplyr, there are several types of join functions: 
-
-#* `inner_join`: return rows in x where there are matching values in y, and all columns in x and y (mutating join).
-#* `semi_join`: return all rows from x where there are matching values in  y, keeping just columns from x (filtering join).
-#* `left_join`: return all rows from x, and all columns from x and y (mutating join).
-#* `anti_join`: return all rows from x where there are *not* matching values in y, keeping just columns from x (filtering join).
-#* `full_join`: return all rows and all columns from x and y. Returns NA for missing values (mutating join).
 ```
 
 ## R Markdown
