@@ -23,9 +23,11 @@ acs<-acs %>%
 coal<-coal %>% 
   rename(year=Year)
 
-combine<-full_join(acs,coal,health, by=c("County","year"))
+combine.partial<-full_join(acs,coal, by=c("County","year"))
 
-write.csv(combine, "./ProcessedData/combine.csv")
+combine.full<-full_join(combine.partial,health, by=c("County","year"))
+
+write.csv(combine.full, "./ProcessedData/combine.csv")
 
 ```
 
