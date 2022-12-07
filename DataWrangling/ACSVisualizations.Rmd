@@ -11,6 +11,7 @@ library(stargazer)
 library(vtable)
 library(tidyverse)
 library(gt)
+library(cowplot)
 ```
 
 
@@ -103,9 +104,57 @@ pa.2019.summary.table
   
 ```
 
+#county summary statistics visualized boxplot
+```{r}
+
+pop<-ggplot(pa.2019.clean)+
+  geom_boxplot(aes(y=totpop))+
+  theme_classic()+
+  ylab("Total County Population")
+
+inc<-ggplot(pa.2019.clean)+
+  geom_boxplot(aes(y=medincome))+
+  theme_classic()+
+  ylab("Median Income")
+
+white<-ggplot(pa.2019.clean)+
+  geom_boxplot(aes(y=perc.white))+
+  theme_classic()+
+  ylab("% of Population Who Are White")
+
+bach<-ggplot(pa.2019.clean)+
+  geom_boxplot(aes(y=perc.bachdegree))+
+  theme_classic()+
+  ylab("% of Population with Bachelor's")
+
+plot_grid(pop, inc, white, bach)
+
+
+```
+
+
+
+
+
 #summary statistics on county data
 ```{r}
 
+pa.county.summary<-pa.2019.clean %>% 
+  summarize(
+    totpop.range= range(totpop),
+    medincome.range= range(medincome),
+    perc.white.range = range(perc.white),
+    perc.bachdegree.range= range(perc.bachdegree),
+    totpop.med = median(totpop),
+    medincome.med = median(medincome),
+    perc.white.med = median(perc.white),
+    perc.bachdegree.med = median(perc.bachdegree),
+    totpop.iqr = IQR(totpop),
+    medincome.iqr = IQR(medincome),
+    perc.white.iqr = IQR(perc.white),
+    perc.bachdegree.iqr = IQR(perc.bachdegree)
+  )
+  
 
 
 ```
