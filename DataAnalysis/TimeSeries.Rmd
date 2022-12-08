@@ -18,10 +18,24 @@ library(latticeExtra)
 ```
 
 
+##Analyzing the Data Over Time
+When examined in conjunction with each other, there is data spanning 1989 to 2002
+
+
 ```{r data wrangling}
 
 full.data <- read.csv("ProcessedData/combine.csv")
 full.data$year <- sort(full.data$year)
+
+health.data <- read.csv("ProcessedData/healthdf.csv")
+
+health.data <- health.data %>%
+  rename("Year" = "year")
+
+actual.full.data <- merge(health.data, aggCoalSlim, by = c("County", "Year")) %>%
+  select(Year, County, Health.Outcomes.Z.Score, Health.Factors.Z.Score, sum.coal.production)
+
+#end of good
 
 195-593
 
@@ -54,16 +68,19 @@ data.no.coal <- data.no.coal2 %>%
             .groups = 'drop')  %>%
   as.data.frame()
 
-schuylkill.data <- filter(slim.data, slim.data$County == "Schuylkill")
+schuylkill.data <- filter(actual.full.data, actual.full.data$County == "Schuylkill")
 
 
 ggplot(schuylkill.data, aes(x=year, y=Health.Factors.Z.Score))+
   geom_line()
 
+x <- data.frame(Year = c(2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))
+
+#fixed one!
 #comparing health factor z score with coal production in schuylkill county
 Year <- schuylkill.data$year
 var1<- schuylkill.data$Health.Factors.Z.Score
-var2 <- schuylkill.data$coal.prod.by.year
+var2 <- schuylkill.data$sum.coal.production
 data <- data.frame(x,var1,var2)
 
 obj1 <- xyplot(var1 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Factors Z Score (Blue)", col.axis = "red")
@@ -89,6 +106,11 @@ data.no.coal$County <- as.factor(data.no.coal$County)
 ggplot()+
   geom_smooth(x = data.no.coal$year, y = data.no.coal$Health.Outcomes.Z.Score)
 
+
+
+time.series.correlation <- MannKendall(schuylkill.data)
+
+summarise(time.series.correlation)
 
 ```
 
@@ -147,7 +169,46 @@ df2 <- df[,-2]
 
 
 
+#Linear Regression 
+
+```{r}
+
+schuylkill.data <-full.data %>% 
+  filter(County == "Schuylkill") %>%
+  select(coal.prod.by.year, Health.Outcomes.Z.Score, Health.Factors.Z.Score, perc.bachdegree, perc.white, medage, medincome)
 
 
+```
+
+#run MLR
+```{r}
+
+schuylkill.coal.health.regression2 <- lm(data = schuylkill.data, Health.Factors.Z.Score ~ coal.prod.by.year)
+
+summary(schuylkill.coal.health.regression2)
+
+schuylkill.coal.health.regression3 <- lm(data = schuylkill.data, Health.Outcomes.Z.Score ~ coal.prod.by.year)
+
+summary(schuylkill.coal.health.regression3)
+
+```
+
+#Check MLR assumptions
+```{r}
+
+par(mfrow = c(2,2), mar=c(4,4,4,4))
+plot(acs.coal.health.regression)
+par(mfrow = c(1,1))
+
+acs.health.coal.Corr <- cor(data.coal.health.acs)
+corrplot(PeterPaulCorr, method = "ellipse")
+corrplot.mixed(PeterPaulCorr, upper = "ellipse")
+
+#Choose a model by AIC in a Stepwise Algorithm
+step(acs.coal.health.regression)
+
+
+
+```
 
 
