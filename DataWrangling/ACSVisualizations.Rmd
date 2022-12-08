@@ -63,7 +63,14 @@ income<-ggplot(pa.2019.clean, aes(County, medincome, fill=County))+
   ylab("Median Income")+
   xlab("County")+
   theme(axis.text.x = element_text(angle = 90))
-income
+
+bachdegree<-ggplot(pa.2019.clean, aes(County, perc.bachdegree, fill=County))+
+  geom_bar(stat="identity")+
+  ylab("% with Bachelor's Degree")+
+  xlab("County")+
+  theme(axis.text.x = element_text(angle = 90))
+
+plot_grid(pop, race, income, bachdegree)
 
 ```
 
@@ -107,7 +114,7 @@ pa.2019.summary.table
 #county summary statistics visualized boxplot
 ```{r}
 
-pop<-ggplot(pa.2019.clean)+
+population<-ggplot(pa.2019.clean)+
   geom_boxplot(aes(y=totpop))+
   theme_classic()+
   ylab("Total County Population")
@@ -127,7 +134,7 @@ bach<-ggplot(pa.2019.clean)+
   theme_classic()+
   ylab("% of Population with Bachelor's")
 
-plot_grid(pop, inc, white, bach)
+plot_grid(population, inc, white, bach)
 
 
 ```

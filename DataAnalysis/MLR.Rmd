@@ -1,0 +1,58 @@
+
+
+
+```{r}
+library(tidyverse)
+library(corrplot)
+
+```
+
+```{r}
+
+data.combine<-read.csv("./ProcessedData/combine.csv")
+data.coal<-read.csv("./ProcessedData/HC_Coal_Edit.csv")
+
+```
+
+#Select out 2019 data and remove counties with 0s for white population. Join new coal data (no year - just year of max production and total sum production) to acs and health data. 
+```{r}
+
+data.edit<-data.combine %>% 
+  filter(year==2019) %>% 
+  filter(perc.white!=0) %>% 
+  select(!c(1,coal.prod.by.year, year.peak.prod, sum.coal.prod))
+
+
+data.coal.clean<-data.coal %>% 
+  select(!1)
+
+data.coal.health.acs<-full_join(data.edit, data.coal.clean, by="County")
+
+```
+
+#run MLR
+```{r}
+
+acs.coal.health.regression <- lm(data = data.coal.health.acs, Health.Outcomes.Z.Score ~ totpop + medage + medincome + perc.white +  perc.bachdegree + year.peak.prod + sum.coal.prod) #we don't want year of peak production - we want # of years from peak production to 2019
+summary(acs.coal.health.regression)
+
+```
+
+#Check MLR assumptions
+```{r}
+
+par(mfrow = c(2,2), mar=c(4,4,4,4))
+plot(acs.coal.health.regression)
+par(mfrow = c(1,1))
+
+acs.health.coal.Corr <- cor(data.coal.health.acs)
+corrplot(PeterPaulCorr, method = "ellipse")
+corrplot.mixed(PeterPaulCorr, upper = "ellipse")
+
+#Choose a model by AIC in a Stepwise Algorithm
+step(acs.coal.health.regression)
+
+
+
+```
+

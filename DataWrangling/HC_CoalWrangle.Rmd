@@ -1,0 +1,58 @@
+
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(readr)
+```
+
+
+```{r}
+coal<-read.csv("./ProcessedData/Coal.Clean.csv")
+```
+
+#Try finding the maximum year of coal production
+```{r}
+
+maxim<-as.data.frame(t(NewCoalSlim))
+
+maxim<-maxim %>% row_to_names(row_number=1) %>% 
+  filter(Allegheny!=1998.742)
+
+filter(maxim, [,2]==max([,2]))
+
+for(i in 1:ncol(maxim)) {
+  
+  filter(maxim[ , i]==max(maxim[ ,i]))
+  
+
+}
+
+filter(maxim[ , 2] %in% max(maxim[ ,2]))
+
+df<-filter(maxim, Allegheny==max(Allegheny)) 
+
+%>% 
+  rownames()
+  
+df$County="Allegheny"
+
+
+
+```
+
+
+
+#Need to create a dataset with all of the coal counties and then years since peak production and 
+```{r}
+
+coal.sumprod<-Coal_Clean %>% 
+  group_by(County) %>% 
+  summarize(year.peak.prod=mean(year.peak.prod),
+            sum.coal.prod=mean(sum.coal.prod))
+
+write.csv(coal.sumprod, "./ProcessedData/HC_Coal_Edit.csv")
+
+
+```
+

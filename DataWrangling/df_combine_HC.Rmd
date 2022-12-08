@@ -13,6 +13,7 @@ library(tidyverse)
 
 
 health<-read.csv("./ProcessedData/healthdf.csv")
+
 coal<-read.csv("./ProcessedData/Coal.Clean.csv")
 acs<-read.csv("./ProcessedData/acs.combined.years.csv")
 
