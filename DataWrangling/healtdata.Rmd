@@ -146,7 +146,7 @@ colnames
 "County"                  "Health.Outcomes.Z.Score" "Health.Outcomes.Rank"   
 [4] "Health.Factors.Z.Score"  "Health.Factors.Rank"     "year"  
 ```{r}
-
+#na.rm=TRUE skips over any NA values when completing calculation
 colnames(Healthdf)
 
 kable(Healthdf)
@@ -192,6 +192,13 @@ zscore<-
   theme(legend.position = "None")
 print(zscore)
 
+health.outcomes.plot.bin<-
+  ggplot(health.all, aes( x= year, y= Health.Outcomes.Z.Score ))+
+  geom_bin_2d(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z Score")) +
+  theme(legend.position = "None")
+print(health.outcomes.plot.bin)
+
 ```
 
 
@@ -214,6 +221,7 @@ health.outcomes.plot.2<-
   geom_count()
 print(health.outcomes.plot.2)  
 
+
 health.outcomes.plot.3<-
   ggplot(health.all, aes(y= Health.Outcomes.Z.Score ))+
   geom_histogram(aes(color = County))+
@@ -230,7 +238,8 @@ health.2019.plot<-
   ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
   geom_point()+
   xlab(expression("County")) + ylab(expression("Z Score")) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")+
+  theme(axis.text.x = element_text(angle = 90))
 print(health.2019.plot)
 
 #aes(color = County)
