@@ -149,13 +149,33 @@ colnames
 
 colnames(Healthdf)
 
+kable(Healthdf)
+
 #read in dataset of all data 
 complete<- read.csv("./ProcessedData/combine.csv",stringsAsFactors = TRUE)
 
 complete.filter<-complete%>%
   filter(Health.Outcomes.Rank<30, na.rm = TRUE) %>%
-  filter(sum.coal.prod, na.omit)
+  filter(sum.coal.prod)
 
+complete.filter<-complete%>%
+  filter(sum.coal.prod)
+
+complete.filter<-complete%>%
+  group_by(County,sum.coal.prod,Health.Outcomes.Rank)
+
+complete.filter2<-complete%>%
+  group_by(sum.coal.prod)
+
+complete.select<-complete%>%
+  select(County,sum.coal.prod,Health.Outcomes.Rank)
+
+complete.select.na<-na.omit(complete.select)
+
+rank.coal<-
+  ggplot(complete.select.na, aes(x=Health.Outcomes.Rank, y=sum.coal.prod))+
+  geom_line()
+print(rank.coal)
 
 #bad plot
 rank<-
@@ -242,6 +262,11 @@ print(health.2019.plot.4)
 #facet_wrap(vars(Health.Outcomes.Z.Score), nrow = 5)
  #facet_wrap(vars(nlcdClass), nrow = 3)
 
+```
+
+```{r}
+colnames(complete)
+class(complete)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
