@@ -71,8 +71,8 @@ totpop: Total population
 medage: Median Age  	
 totpoprace
 totpopwhite: population of white people	
-totpopeduc : 
-bachdegree: Number of people with bachelor degrees  	  
+totpopeduc :   
+bachdegree: Number of people with bachelor degrees  	    
 medincome: Median Income 	  
 perc.white : Percentage of White people	  
 perc.bachdegree: Percentage of bachelor degrees 	  
