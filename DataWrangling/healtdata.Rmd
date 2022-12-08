@@ -162,7 +162,7 @@ complete.filter<-complete%>%
   filter(sum.coal.prod)
 
 complete.filter<-complete%>%
-  group_by(County,sum.coal.prod,Health.Outcomes.Rank)
+  group_by(County,sum.coal.prod,Health.Outcomes.Rank,year)
 
 complete.filter2<-complete%>%
   group_by(sum.coal.prod)

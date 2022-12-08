@@ -5,7 +5,7 @@ output:
     fig_caption: yes
     number_sections: yes
 geometry: margin=2.54cm
-title: "Insert title of project here"
+title: "The Cost of Coal production in Pennsylvania on Community Health"
 subtitle: "https://github.com/arielocallaghan/V2_Cipparone_Niva_OCallaghan_EDA_Finalproject"
 author: "Hugh Cipparone, Katryna Niva and Ariel O'Callaghan"
 fontsize: 12pt
@@ -56,6 +56,7 @@ Knitting commands in code chunks:
 
 
 #Introduction
+
 
 
 

@@ -27,6 +27,8 @@ Duke Univeristy EDA 872
 
 Link:https://www.eia.gov/coal/data.php (Production tab)
 
+ADD in WQ information
+
 Census Data: The second primary data set utilized is the American Community Survey (ACS) data set and is part of the U.S. Census. The ACS provides survey information on a yearly basis about our nation and its people. This data was accessed on XXX. 
 
 link:
