@@ -14,6 +14,7 @@ library(trend)
 library(zoo)
 library(Kendall)
 library(tseries)
+library(latticeExtra)
 ```
 
 
@@ -59,6 +60,36 @@ schuylkill.data <- filter(slim.data, slim.data$County == "Schuylkill")
 ggplot(schuylkill.data, aes(x=year, y=Health.Factors.Z.Score))+
   geom_line()
 
+#comparing health factor z score with coal production in schuylkill county
+Year <- schuylkill.data$year
+var1<- schuylkill.data$Health.Factors.Z.Score
+var2 <- schuylkill.data$coal.prod.by.year
+data <- data.frame(x,var1,var2)
+
+obj1 <- xyplot(var1 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Factors Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#comparing health outcomes z score in schuylkill county
+Year <- schuylkill.data$year
+var1<- schuylkill.data$Health.Outcomes.Z.Score
+var2 <- schuylkill.data$coal.prod.by.year
+data <- data.frame(x,var1,var2)
+
+obj1 <- xyplot(var1 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Outcomes Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#trend in health outcomes across all non-coal producing counties
+
+data.no.coal$County <- as.factor(data.no.coal$County)
+
+ggplot()+
+  geom_smooth(x = data.no.coal$year, y = data.no.coal$Health.Outcomes.Z.Score)
+
+
 ```
 
 
@@ -73,7 +104,7 @@ coal.data.decomp <- stl(data.ts)
 
 plot(coal.data.decomp)
 
-data.trend1 <- Kendall::SeasonalMannKendall(data.ts)
+data.trend1 <- Kendall::MannKendall(data.ts)
 
 summary(coal.data.decomp)
 
