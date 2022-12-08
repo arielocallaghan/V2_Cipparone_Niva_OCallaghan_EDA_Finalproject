@@ -58,6 +58,47 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
+```{r}
+
+#install.packages("tidyverse")
+library(tidyverse)
+
+#install.packages("sf")
+library(sf)
+
+#install.packages("leaflet")
+library(leaflet)
+
+#install.packages("mapview")
+library(mapview)
+
+#install.packages("leaflet")
+library(leaflet)
+
+#install.packages("lubridate")
+library(lubridate)
+
+#install.packages(dplyr)
+library(dplyr)
+
+#install.packages("ggplot2")
+library(ggplot2)
+
+library(RColorBrewer)
+
+#Disable on-the-fly projections - code from lab sheet 
+sf::sf_use_s2(FALSE)
+
+
+NE_Counties_Sf <- st_read('./Data/Spatial/cb_2018_us_county_20m.shp')
+
+%>% 
+  filter(STATEFP == 31)
+
+counties_sf<- st_read('./RawData/cb_2018_us_county_20m.shp')%>% 
+  filter(STATEFP == 37) #Filter for just NC Counties
+```
+
 ```{r cleaning the dataset}
 #Creating data frame to merge with out data. Filtering out only needed columns
 #Create csv file in processed data folder
