@@ -66,24 +66,24 @@ complete.csv This file contains all of the indivudal data sets combined into one
 **Columns Names Below:**
 <The csv file is organized so that all Counties in Pennsylvania are rows and each row contains the following columns. Some datasets have varying date ranges so some columns show NA when there is no data available. 
 
-County: All Counties in Pennsylvania   
-totpop: Total population    
-medage: Median Age  	
-totpoprace
-totpopwhite: population of white people	
-totpopeduc :   
-bachdegree: Number of people with bachelor degrees  	    
-medincome: Median Income 	  
-perc.white : Percentage of White people	  
-perc.bachdegree: Percentage of bachelor degrees 	  
-year: Date information for each indicator 	  
-coal.prod.by.year: Coal production by year (Tons)	  
-year.peak.prod: Year of peak coal Production (Tons)  
-sum.coal.prod: Sum of total coal production  	(Tons)  
-Health.Outcomes.Z.Score: This is a z score. Health outcomes looks at length of life and quality of life. Length of life looks at premature death and life expectancy and quality of life measures of low birthweight and those who rated their phsical and mental health as poor. This outcomes puts a 50% weight on both Quality of Life and Length of life.  
-Health.Outcomes.Rank: The rank of health outcomes  
-Health.Factors.Z.Score: Z score. Health factors includes health behaviors, clinic care, social and economic factors and physical environment. 
-Health.Factors.Rank  Rank of heath factors>  
+**County:** All Counties in Pennsylvania   
+**totpop:** Total population    
+**medage:** Median Age  	
+**totpoprace:**
+**totpopwhite:** population of white people	
+**totpopeduc:**   
+**bachdegree:** Number of people with bachelor degrees  	    
+**medincome:** Median Income 	  
+**perc.white:** Percentage of White people	    
+**perc.bachdegree:** Percentage of bachelor degrees   	  
+**year:** Date information for each indicator 	  
+**coal.prod.by.year:** Coal production by year (Tons)	  
+**year.peak.prod:** Year of peak coal Production (Tons)  
+**sum.coal.prod:** Sum of total coal production  	(Tons)  
+**Health.Outcomes.Z.Score:** This is a z score. Health outcomes looks at length of life and quality of life. Length of life looks at premature death and life expectancy and quality of life measures of low birth weight and those who rated their phsical and mental health as poor. This outcomes puts a 50% weight on both Quality of Life and Length of life.  
+**Health.Outcomes.Rank:** The rank of health outcomes  
+**Health.Factors.Z.Score:** Z score. Health factors includes health behaviors, clinic care, social and economic factors and physical environment. 
+**Health.Factors.Rank:**  Rank of heath factors>  
 
 <For each data file in the repository, describe the data contained in each column. Include the column name, a description of the information, the class of data, and any units associated with the data. Create a list or table for each data file.> 
 
