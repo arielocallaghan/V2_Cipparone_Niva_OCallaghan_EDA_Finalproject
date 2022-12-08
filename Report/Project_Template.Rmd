@@ -1,0 +1,136 @@
+---
+output: 
+  pdf_document:
+    keep_tex: yes
+    fig_caption: yes
+    number_sections: yes
+geometry: margin=2.54cm
+title: "Insert title of project here"
+subtitle: "https://github.com/arielocallaghan/V2_Cipparone_Niva_OCallaghan_EDA_Finalproject"
+author: "Hugh Cipparone, Katryna Niva and Ariel O'Callaghan"
+fontsize: 12pt
+mainfont: Times New Roman
+
+---
+
+\newpage
+\tableofcontents 
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
+
+```{r setup, include=FALSE}
+# Set your working directory
+
+getwd()
+
+# Load your packages
+library(tidyverse)
+library(lubridate)
+library(knitr) #needed for report compilation 
+
+# Set your ggplot theme
+
+mytheme <- theme_classic(base_size = 14) + theme(axis.text = element_text(color = "black"), legend.position = "top")
+
+theme_set(mytheme)
+
+# Load your datasets
+
+
+```
+# Reference for rmd file report
+Knitting commands in code chunks:
+  -  `include = FALSE` - code is run, but neither code nor results appear in knitted file
+  -  `echo = FALSE` - code not included in knitted file, but results are
+  -  `eval = FALSE` - code is not run in the knitted file
+  -  `message = FALSE` - messages do not appear in knitted file
+  -  `warning = FALSE` - warnings do not appear...
+  -  `fig.cap = "..."` - adds a caption to graphical results
+** creates bold text
+# Header 1
+## Header 2
+- End a line with two spaces to start a new paragraph.
+
+
+#Introduction
+
+
+
+
+
+# Rationale and Research Questions
+Write 1-2 paragraph(s) detailing the rationale for your study. This should include both the context of the topic as well as a rationale for your choice of dataset (reason for location, variables, etc.). You may choose to include citations if you like (optional).
+
+At the end of your rationale, introduce a numbered list of your questions (or an overarching question and sub-questions). 
+#coal
+```{r echo=FALSE}
+
+```
+
+#acs
+```{r echo=FALSE}
+
+```
+
+#health
+```{r echo=FALSE}
+
+```
+
+\newpage
+
+#linear regression
+```{r}
+
+```
+
+\newpage
+
+# Dataset Information
+Provide information on how the dataset for this analysis were collected, the data contained in the dataset, and any important pieces of information that are relevant to your analyses. This section should contain much of same information as the metadata file for the dataset but formatted in a way that is more narrative.
+
+Describe how you wrangled your dataset in a format similar to a methods section of a journal article.
+
+Add a table that summarizes your data structure (variables, units, ranges and/or central tendencies, data source if multiple are used, etc.). This table can be made in markdown text or inserted as a `kable` function in an R chunk. If the latter, do not include the code used to generate your table.
+```{r}
+
+```
+
+
+\newpage
+
+# Exploratory Analysis 
+
+```{r echo = FALSE}
+#code should run but not appear in results 
+```
+
+
+\newpage
+
+# Analysis
+
+```{r}
+
+```
+
+
+## Question 1: <insert specific question here and add additional subsections for additional questions below, if needed>
+
+## Question 2: 
+
+
+
+
+\newpage
+
+# Summary and Conclusions
+
+
+\newpage
+
+# References
+<add references here if relevant, otherwise delete this section> 

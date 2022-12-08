@@ -10,10 +10,25 @@ library(psych)
 library(stargazer)
 library(vtable)
 library(tidyverse)
+library(gt)
+library(cowplot)
 ```
 
 
+#Goals and Visualizations
+- Summary statistics of PA population broadly
+  - weighted average of each metric by percentage of total population
+- summary statistics with spread of county data to capture general differences
+- cowplot with all of their values for each of the indices
+- - could also be cowplot with all of their ranks for each of the indices
+- - could also do above cowplot over time
+
+
+
 ```{r}
+
+pa.2019<-read.csv("./RawData/pa.2019.csv")
+
 pa.2019.clean <- pa.2019 %>% 
   pivot_wider(names_from=variable, values_from=estimate)%>% 
   select(!c(GEOID,moe)) %>% 
@@ -52,21 +67,99 @@ income
 
 ```
 
+
+#summary statistics of PA population broadly
 ```{r}
 
-pa.2019.sum<-pa.2019.clean %>% 
-  select(totpop,medage,perc.white,perc.bachdegree,medincome) %>% 
-  mutate(medage.w=medage*totpop, perc.white.w = perc.white*totpop, perc.bachdegree.w=perc.bachdegree*totpop,medincome.w=medincome*totpop) %>% 
-  select(totpop,medage.w,perc.white.w,perc.bachdegree.w,medincome.w) %>% 
-  rename("Total Population" = totpop, "Median Age" = medage.w, "Percent White" = perc.white.w, "Percent Bachelors" = perc.bachdegree.w, "Median Income" = medincome.w)
+pa.2019.summary.table<-pa.2019.clean %>% 
+  select(totpop,medage,
+         perc.white,
+         perc.bachdegree,
+         medincome) %>% 
+  mutate(medage.w=medage*(totpop/11847115), #numerical value calculated by summing the total population values for all counties
+         perc.white.w = perc.white*(totpop/11847115), 
+         perc.bachdegree.w=perc.bachdegree*(totpop/11847115),
+         medincome.w=medincome*(totpop/11847115)) %>% 
+  select(totpop,
+         medage.w,
+         perc.white.w,
+         perc.bachdegree.w,
+         medincome.w) %>% 
+  summarize(median.age=sum(medage.w), 
+            average.pop=sum(totpop), 
+            average.perc.w=sum(perc.white.w), 
+            average.perc.bachdegree=sum(perc.bachdegree.w), 
+            median.income=sum(medincome.w)) %>% 
+  rename("Average Population" = average.pop, 
+       "Median Age" = median.age, 
+       "Percent White" = average.perc.w, 
+       "Percent Bachelors" = average.perc.bachdegree, 
+       "Median Income" = median.income) %>% 
+  gt() %>% 
+    tab_header(title = "Pennsylvania Demographic Characteristics") %>% 
+    tab_source_note(source_note = "Population-weighted county data sourced from American Community Survey 1-year estimates")
+  
 
-st(pa.2019.sum)
+pa.2019.summary.table
+  
+```
+
+#county summary statistics visualized boxplot
+```{r}
+
+pop<-ggplot(pa.2019.clean)+
+  geom_boxplot(aes(y=totpop))+
+  theme_classic()+
+  ylab("Total County Population")
+
+inc<-ggplot(pa.2019.clean)+
+  geom_boxplot(aes(y=medincome))+
+  theme_classic()+
+  ylab("Median Income")
+
+white<-ggplot(pa.2019.clean)+
+  geom_boxplot(aes(y=perc.white))+
+  theme_classic()+
+  ylab("% of Population Who Are White")
+
+bach<-ggplot(pa.2019.clean)+
+  geom_boxplot(aes(y=perc.bachdegree))+
+  theme_classic()+
+  ylab("% of Population with Bachelor's")
+
+plot_grid(pop, inc, white, bach)
+
+
 ```
 
 
+
+
+
+#summary statistics on county data
 ```{r}
 
+pa.county.summary<-pa.2019.clean %>% 
+  summarize(
+    totpop.range= range(totpop),
+    medincome.range= range(medincome),
+    perc.white.range = range(perc.white),
+    perc.bachdegree.range= range(perc.bachdegree),
+    totpop.med = median(totpop),
+    medincome.med = median(medincome),
+    perc.white.med = median(perc.white),
+    perc.bachdegree.med = median(perc.bachdegree),
+    totpop.iqr = IQR(totpop),
+    medincome.iqr = IQR(medincome),
+    perc.white.iqr = IQR(perc.white),
+    perc.bachdegree.iqr = IQR(perc.bachdegree)
+  )
+  
 
 
 ```
+
+
+
+
 
