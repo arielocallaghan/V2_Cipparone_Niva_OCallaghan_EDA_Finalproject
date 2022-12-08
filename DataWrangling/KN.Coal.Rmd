@@ -20,6 +20,10 @@ library(ggplot2)
 library(tidyverse)
 library(readxl)
 library(imputeTS)
+library(trend)
+library(zoo)
+library(Kendall)
+library(tseries)
 ```
 
 ```{r Downloading Data}
@@ -211,7 +215,7 @@ aggCoalSlim <- left_join(aggCoalSlim, NewCoalSlim, by = "County")
 
 aggCoalSlim2 <- data_frame(aggCoalSlim$County, aggCoalSlim$Year, aggCoalSlim$sum.coal.production, aggCoalSlim$Year.Max.Production.x.x, aggCoalSlim$sum.coal.prod) %>%
   rename("Year" = "aggCoalSlim$Year", "County" = "aggCoalSlim$County", "coal.prod.by.year" = "aggCoalSlim$sum.coal.production", "year.peak.prod" = "aggCoalSlim$Year.Max.Production.x.x", "sum.coal.prod" = "aggCoalSlim$sum.coal.prod")%>%
-  -c("County" == "-")
+
 
 
 

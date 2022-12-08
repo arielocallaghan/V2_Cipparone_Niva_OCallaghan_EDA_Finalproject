@@ -17,13 +17,106 @@ library(tseries)
 ```
 
 
-```{r}
+```{r data wrangling}
 
-read.csv(./)
+full.data <- read.csv("ProcessedData/combine.csv")
+full.data$year <- sort(full.data$year)
+
+195-593
+
+full.data2 <- full.data[195:593, ]
+
+slim.data <- select(full.data2, c("County", "medincome", "perc.bachdegree", "medage", "year", "coal.prod.by.year", "Health.Outcomes.Z.Score", "Health.Factors.Z.Score"))
+
+slim.data[is.na(slim.data)] <- 0
+
+slim.data$year <- as.Date(as.character(slim.data$year), format = "%Y")
+  
+
+data.coal <- filter(slim.data, coal.prod.by.year != 0)
+
+data.no.coal <- filter(slim.data, coal.prod.by.year == 0)
+
+data.no.coal2 <- data.no.coal %>%
+  group_by(year) %>%
+  mean(medincome, perc.bachdegree, Health.Outcomes.Z.Score, Health.Factors.Z.Score)
+
+ggplot(data.no.coal, aes(x = year, y = Health.Outcomes.Z.Score))+
+  geom_point()+
+  geom_smooth()
+
+data.no.coal2 <- data.no.coal[, -1]
+
+data.no.coal <- data.no.coal2 %>%
+  group_by(year) %>%
+  summarise(across(everything(), mean),
+            .groups = 'drop')  %>%
+  as.data.frame()
+
+schuylkill.data <- filter(slim.data, slim.data$County == "Schuylkill")
 
 
+ggplot(schuylkill.data, aes(x=year, y=Health.Factors.Z.Score))+
+  geom_line()
 
 ```
+
+
+
+
+
+```{r}
+
+data.ts <- ts(data.no.coal$Health.Outcomes.Z.Score, start = c(1989, 12), frequency = 1)
+
+coal.data.decomp <- stl(data.ts)
+
+plot(coal.data.decomp)
+
+data.trend1 <- Kendall::SeasonalMannKendall(data.ts)
+
+summary(coal.data.decomp)
+
+# Generate time series (trend test needs ts, not data.frame)
+f_month <- month(first(wind_data_clean$DATE))
+f_year <- year(first(wind_data_clean$DATE))
+wind_data_ts <- ts(wind_data_clean$AWND.clean,
+                   start=c(f_year,f_month),
+                   frequency=12) 
+
+#decompose
+wind_data_decomp <- stl(wind_data_ts,s.window = "periodic")
+plot(wind_data_decomp)
+
+# Run SMK test
+wind_data_trend1 <- Kendall::SeasonalMannKendall(wind_data_ts)
+
+# Inspect results
+wind_data_trend1
+summary(wind_data_trend1)
+
+
+wind_data_trend2 <- trend::smk.test(wind_data_ts)
+# Inspect results
+wind_data_trend2
+summary(wind_data_trend2)
+
+#Visualization
+wind_data_plot <-
+ggplot(wind_data, aes(x = DATE, y = AWND)) +
+  geom_point() +
+  geom_line() +
+  ylab("Average Wind Speed") +
+  geom_smooth( method = lm )
+print(wind_data_plot)
+
+
+df2 <- df[,-2]
+```
+
+
+
+
 
 
 
