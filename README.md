@@ -9,16 +9,13 @@ Duke Univeristy EDA 872
 
 ## Summary
 
-<This repository was created for an Environmental Data Analytics Class at Duke University Nicholas School of the Environment. This repository contains information on Pennsylvania coal production, Census, water quality, and community health rankings. This project was started in November 2022 and will be completed by December 12, 2022. The goal of this analysis is to understand the impact coal production has on community health indications. A multivariate regression will be utilized as the primary form of analysis.>
+<This repository was created for an Environmental Data Analytics Class at Duke University Nicholas School of the Environment. This repository contains information on Pennsylvania coal production, Census data, water quality, and community health rankings. This project was started in late November 2022 and will be completed by December 14, 2022. The goal of this project is to understand the impact coal production has on community health indications. This analysis focus only on Pennsylvania as this state is third largest coal producing state in the Nation. A multivariate regression will be utilized as the primary form of analysis. For this project a time series analysis will also be utilized.>
 
-
-<describe the purpose of this repository, the information it contains, and any relevant analysis goals. What, why, where, when, how?>
 
 ## Investigators
 
 <Contributors to this repository include Hugh Cipparone, Katryna Niva and Ariel O'Callaghan all students at Duke University>
 
-<name (s), affiliation(s), contact information, roles (if applicable)>
 
 ## Keywords
 
@@ -54,39 +51,39 @@ Data Analysis: This folder contains rmd files used to analyze our complete data 
 
 Report: This folder contains the rmd file of our report that was written and prepared for the class project. Additionally it contains some reference documents on the project requirements and some rmd cheat sheets for quick reference. 
 
+The files were named off of the type of data that that is analyzed.   
+Health files are for the community health indicator  
+acs files are for the census data  
+coal files are for the coal production numbers. This also includes some water quality data.. 
 
-<describe the folders contained in the repository, including what type of files they contain>
+The analysis rmd file names show the type of analysis that is conducted. 
 
-<describe the formats of files for the various purposes contained in the repository>
-
-<describe your file naming conventions>
 
 ## Metadata
 
-complete.csv
+complete.csv This file contains all of the indivudal data sets combined into one complete data frame. 
 
 **Columns Names Below:**
-The csv file is organized so that all Counties in Pennsylvania are rows and each row contains the following columns. Some datasets have varying date ranges so some columns show NA when there is no data available. 
+<The csv file is organized so that all Counties in Pennsylvania are rows and each row contains the following columns. Some datasets have varying date ranges so some columns show NA when there is no data available. 
 
-County: All Counties in Pennsylvania 
-totpop: Total population
-medage: Median Age	
-totpoprace 	
-totpopwhite 	
-totpopeduc 	
-bachdegree:  	
-medincome: Median Income 	
-perc.white : Percentage of White people	
-perc.bachdegree: Percentage of bachelor degrees 	
-year: Date information for each indicator 	
-coal.prod.by.year: Coal prodction by year 	
-year.peak.prod: Year of peak coal Production	
-sum.coal.prod: Sum of total coal production  	
-Health.Outcomes.Z.Score:  	
-Health.Outcomes.Rank 	
-Health.Factors.Z.Score 	
-Health.Factors.Rank
-
+County: All Counties in Pennsylvania   
+totpop: Total population    
+medage: Median Age  	
+totpoprace
+totpopwhite: population of white people	
+totpopeduc : 
+bachdegree: Number of people with bachelor degrees  	  
+medincome: Median Income 	  
+perc.white : Percentage of White people	  
+perc.bachdegree: Percentage of bachelor degrees 	  
+year: Date information for each indicator 	  
+coal.prod.by.year: Coal production by year (Tons)	  
+year.peak.prod: Year of peak coal Production (Tons)  
+sum.coal.prod: Sum of total coal production  	(Tons)  
+Health.Outcomes.Z.Score: This is a z score. Health outcomes looks at length of life and quality of life. Length of life looks at premature death and life expectancy and quality of life measures of low birthweight and those who rated their phsical and mental health as poor. This outcomes puts a 50% weight on both Quality of Life and Length of life.  
+Health.Outcomes.Rank: The rank of health outcomes  
+Health.Factors.Z.Score: Z score. Health factors includes health behaviors, clinic care, social and economic factors and physical environment. 
+Health.Factors.Rank  Rank of heath factors>  
 
 <For each data file in the repository, describe the data contained in each column. Include the column name, a description of the information, the class of data, and any units associated with the data. Create a list or table for each data file.> 
 
@@ -96,7 +93,11 @@ Health.Factors.Rank
 
 ## Quality assurance/quality control
 
+The team has worked together to check each others others data and analysis. The complete data set was verified accurate but all team members. We have QA/QC each others analysis and results. 
+
 <describe any relevant QA/QC procedures taken with your data. Some ideas can be found here:>
+
+
 <https://www.dataone.org/best-practices/develop-quality-assurance-and-quality-control-plan>
 <https://www.dataone.org/best-practices/ensure-basic-quality-control>
 <https://www.dataone.org/best-practices/communicate-data-quality>
