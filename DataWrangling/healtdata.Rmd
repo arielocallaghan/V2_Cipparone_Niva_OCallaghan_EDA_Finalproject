@@ -20,6 +20,7 @@ library(lubridate)
 library(dplyr)
 library(ggplot2)
 
+
 #install.packages("vtable")
 
 #raw data import individual csv files https://www.countyhealthrankings.org/
@@ -129,16 +130,63 @@ class(health2019$County)
 ## Including Plots
 
 You can also embed plots, for example:
+```{r}
+#create summary table of data
+
+as.table(Healthdf)
+
+table(Healthdf$County, Healthdf$Health.Outcomes.Rank)
+
+summarise(Healthdf)
+gt(Healthdf)
+```
+
+#ggplots for report 
+colnames
+"County"                  "Health.Outcomes.Z.Score" "Health.Outcomes.Rank"   
+[4] "Health.Factors.Z.Score"  "Health.Factors.Rank"     "year"  
+```{r}
+
+colnames(Healthdf)
+
+#read in dataset of all data 
+complete<- read.csv("./ProcessedData/combine.csv",stringsAsFactors = TRUE)
+
+complete.filter<-complete%>%
+  filter(Health.Outcomes.Rank<30, na.rm = TRUE) %>%
+  filter(sum.coal.prod, na.omit)
+
+
+#bad plot
+rank<-
+  ggplot(Healthdf, aes(x = year, y= Health.Outcomes.Rank))+
+  geom_line(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Rank")) +
+  theme(legend.position = "None")
+print(rank)
+
+zscore<-
+  ggplot(Healthdf, aes(x = year, y= Health.Outcomes.Z.Score))+
+  geom_line(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z score")) +
+  theme(legend.position = "None")
+print(zscore)
+
+```
+
+
 
 ```{r plot health rankings and county, echo=FALSE}
 
 # Visualizations of data of all combined health outcome data
 
+
+###old plots
 health.outcomes.plot<-
   ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
   geom_boxplot(aes(color = County))+
   xlab(expression("Year")) + ylab(expression("Z Score")) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "None")
 print(health.outcomes.plot)
 
 health.outcomes.plot.2<-
