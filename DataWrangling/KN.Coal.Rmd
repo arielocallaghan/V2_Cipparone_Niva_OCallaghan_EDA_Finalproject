@@ -216,8 +216,10 @@ aggCoalSlim <- left_join(aggCoalSlim, NewCoalSlim, by = "County")
 aggCoalSlim2 <- data_frame(aggCoalSlim$County, aggCoalSlim$Year, aggCoalSlim$sum.coal.production, aggCoalSlim$Year.Max.Production.x.x, aggCoalSlim$sum.coal.prod) %>%
   rename("Year" = "aggCoalSlim$Year", "County" = "aggCoalSlim$County", "coal.prod.by.year" = "aggCoalSlim$sum.coal.production", "year.peak.prod" = "aggCoalSlim$Year.Max.Production.x.x", "sum.coal.prod" = "aggCoalSlim$sum.coal.prod")%>%
 
+write.csv(aggCoalSlim, file = "./ProcessedData/aggCoalData.csv")
 
-
+aggCoalSlim2 <- read.csv("ProcessedData/aggCoalData.csv") %>%
+  sort(aggCoalSlim2$sum.coal.production)
 
 ```
 
