@@ -27,6 +27,17 @@ mainfont: Times New Roman
 getwd()
 
 # Load your packages
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(readxl)
+library(imputeTS)
+library(trend)
+library(zoo)
+library(Kendall)
+library(tseries)
+library(latticeExtra)
 library(tidyverse)
 library(lubridate)
 library(knitr) #needed for report compilation 
@@ -113,6 +124,151 @@ Add a table that summarizes your data structure (variables, units, ranges and/or
 \newpage
 
 # Analysis
+
+
+#Time Series Analysis
+Although, the length of the health dataset limits time series analysis to a smaller span of years, this is still an important angle of analysis. While the previous linear regression collapsed the data to one representative temporal point, here we seek to focus in on single counties over the time frame allowed by the health data set (2010 until 2020). This will allow the investigation of a more precise match between increased coal output and decreasing community health over time. It is an imprecise look however, because many of the contamination concerns occur in the years following coal mining (water contamination from acid mine drainage). The first step in this process was the wrangling of the available datasets into a comprehensive table.
+
+##Data Wrangling
+```{r data wrangling}
+
+#First, we read the previously compiled data sets into the program from where they were saved as csv files
+aggCoalData <- read.csv("ProcessedData/aggCoalData.csv")
+health.data <- read.csv("ProcessedData/healthdf.csv")
+
+#Then, we had to rename the year column within the health data frame so that the two datasets can be correctly merged together by that column
+health.data <- health.data %>%
+  rename("Year" = "year")
+
+#Then, we merged the two files together such that the county and year collums match up correctly and we also select for the columns that we will be focusing on for the time series analysis
+full.time.series.data <- merge(health.data, aggCoalData, by = c("County", "Year")) %>%
+  select(Year, County, Health.Outcomes.Z.Score, Health.Factors.Z.Score, sum.coal.production)
+
+```
+
+##Data Analysis
+
+Now that we have a comprehensive data set to work with that has both the health and coal data by year and by county, we can begin our analysis. To do this, we will be looking at different counties individually. When examined all together, the considerable variability across counties causes high error margins to obscure any observable trends. We will examine any relationship between both health factors and health outcomes z score and coal production. The first county we looked at was Schuylkill County. This county holds the most weight as the peak coal production far exceeded that seen in any other county (can be seen as the highest arch in the plot within the coal data set analysis above). 
+```{r Schuylkill County}
+
+schuylkill.data <- filter(full.time.series.data, actual.full.data$County == "Schuylkill")
+
+#comparing health factors z score with coal production in schuylkill county
+x <- data.frame(Year = c(2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))
+Year <- schuylkill.data$year
+var1<- schuylkill.data$Health.Factors.Z.Score
+var2 <- schuylkill.data$sum.coal.production
+data <- data.frame(x,var1,var2)
+
+obj1 <- xyplot(var1 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Factors Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health factors z score and coal production
+
+schuylkill.health.factors.regression <- lm(data = schuylkill.data, Health.Factors.Z.Score ~ sum.coal.production)
+
+summary(schuylkill.health.factors.regression)
+
+#comparing health outcomes z score in schuylkill county
+var3<- schuylkill.data$Health.Outcomes.Z.Score
+data <- data.frame(x,var3,var2)
+
+obj1 <- xyplot(var3 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Outcomes Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health outcomes z score and coal production
+
+schuylkill.health.outcomes.regression <- lm(data = schuylkill.data, Health.Outcomes.Z.Score ~ sum.coal.production)
+
+summary(schuylkill.health.outcomes.regression)
+
+```
+The correlation between the health factors z score and coal production over time in Schuylkill county was the most compelling of the time series analysis. There is a clear correlation visible in the line graph where decreasing coal production is clearly associated with decreasing health factors z score (an indicator of increasing public health). The linear regression completed after this revealed a p-value of 0.000856, far lower than 0.05, indicating a strong correlation. Since we are limited to only 11 data points, this could be coincidental, but considering the extreme output of coal from this region, this may be magnifying any adverse effects of coal production and making this trend more visible. The correlation between health outcomes and coal production was less visible. With a p-value of 0.21, there is likely some correlation, but it is still considerably higher than 0.05. 
+
+We then examined Armstrong county and Clearfield County as two other counties with considerably high coal production to understand how pervasive the correlations previously identified are. 
+```{r Armstrong County}
+
+Armstrong.data <- filter(full.time.series.data, actual.full.data$County == "Armstrong")
+
+#comparing health factors z score with coal production in schuylkill county
+x <- data.frame(Year = c(2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))
+Year <- Armstrong.data$year
+var1<- Armstrong.data$Health.Factors.Z.Score
+var2 <- Armstrong.data$sum.coal.production
+data <- data.frame(x,var1,var2)
+
+obj1 <- xyplot(var1 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Factors Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health factors z score and coal production
+
+armstrong.health.factors.regression <- lm(data = Armstrong.data, Health.Factors.Z.Score ~ sum.coal.production)
+
+summary(armstrong.health.factors.regression)
+
+#comparing health outcomes z score in schuylkill county
+var3<- Armstrong.data$Health.Outcomes.Z.Score
+data <- data.frame(x,var3,var2)
+
+obj1 <- xyplot(var3 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Outcomes Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health outcomes z score and coal production
+
+armstrong.health.outcomes.regression <- lm(data = Armstrong.data, Health.Outcomes.Z.Score ~ sum.coal.production)
+
+summary(armstrong.health.outcomes.regression)
+
+```
+
+
+```{r Clearfield County}
+
+Clearfield.data <- filter(full.time.series.data, actual.full.data$County == "Clearfield")
+
+#comparing health factors z score with coal production in schuylkill county
+x <- data.frame(Year = c(2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))
+Year <- Clearfield.data$year
+var1<- Clearfield.data$Health.Factors.Z.Score
+var2 <- Clearfield.data$sum.coal.production
+data <- data.frame(x,var1,var2)
+
+obj1 <- xyplot(var1 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Factors Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health factors z score and coal production
+
+clearfield.health.factors.regression <- lm(data = Clearfield.data, Health.Factors.Z.Score ~ sum.coal.production)
+
+summary(clearfield.health.factors.regression)
+
+#comparing health outcomes z score in schuylkill county
+var3<- Clearfield.data$Health.Outcomes.Z.Score
+data <- data.frame(x,var3,var2)
+
+obj1 <- xyplot(var3 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Outcomes Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health outcomes z score and coal production
+
+clearfield.health.outcomes.regression <- lm(data = Clearfield.data, Health.Outcomes.Z.Score ~ sum.coal.production)
+
+summary(clearfield.health.outcomes.regression)
+
+```
+The trends for these counties were much more inconsistent. None had p-values below or near 0.05. Much of this issue may be the result of only having 11 datapoints and so an increase in health data in the more distant past would be crucial to understanding how strong this correlation is. Sadly, much of the more robust data only began a more rigorous collection more recently and so this is difficult to find. 
 
 ```{r}
 

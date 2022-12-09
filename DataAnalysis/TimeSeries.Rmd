@@ -160,7 +160,6 @@ clearfield.health.outcomes.regression <- lm(data = Clearfield.data, Health.Outco
 summary(clearfield.health.outcomes.regression)
 
 ```
-0.912, 0.334, 0.248, 0.944
 The trends for these counties were much more inconsistent. None had p-values below or near 0.05. Much of this issue may be the result of only having 11 datapoints and so an increase in health data in the more distant past would be crucial to understanding how strong this correlation is. Sadly, much of the more robust data only began a more rigorous collection more recently and so this is difficult to find. 
 
 
