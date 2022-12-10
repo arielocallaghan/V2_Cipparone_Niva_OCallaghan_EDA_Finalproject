@@ -25,6 +25,7 @@ healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
 
 coal<-read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
 table(coal$County)
+list(coal$County)
 
 ```
 
@@ -60,10 +61,10 @@ rank.slim<-healthdf%>%
   filter(Health.Outcomes.Rank >=20 & Health.Outcomes.Rank<=40)
 
 rankslimplot<-ggplot(rank.slim, aes(x =Health.Outcomes.Rank, y= year))+
-  geom_point(aes(color = "County"))+
+  geom_line(aes(color = "County"))+
   xlab(expression("Rank")) + ylab(expression("Year")) +
   theme(legend.position = "None")
-print(rankslim)
+print(rankslimplot)
 
 #plot entire data set rank
 rank<-
@@ -73,7 +74,7 @@ rank<-
   theme(legend.position = "None")
 print(rank)
 
-
+#entire health data set plots
 rank<-
   ggplot(healthdf, aes(x = year, y= Health.Outcomes.Rank))+
   geom_line(aes(color = County))+
