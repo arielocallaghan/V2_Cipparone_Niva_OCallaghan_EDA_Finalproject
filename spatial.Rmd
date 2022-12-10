@@ -78,12 +78,24 @@ class(healthdf$County)
 #counties_sf<- counties_sf %>% 
  # rename(NAME== County)
   
+
 #join data sets together 
 counties_sf_join <-  merge(x = counties_sf,
                            y = healthdf, 
                            by.x = "NAME", 
                            by.y = "County" )
+
+
+coal<- read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
+
+
+#library(tables)
+#table(Health_Data_2010$NAME, Health_Data_2010$Health.Outcomes.Rank)
 ```
+The community health data utilized in this analysis has two separate indicators. One is health outcomes representing the county’s health at that year by looking at many different indicators, including Length of life and quality of life. It weighs both values at 50%. Length of life indicators includes mortality, life expectancy, and premature death. Quality of life indicators includes physical and mental health and low birth weight. The Heath factor is a composite of indicators of health behaviors, clinical care, social and economic factors, and physical environment. (https://www.countyhealthrankings.org/explore-health-rankings/county-health-rankings-model) For this analysis, we utilized Z scores of Health outcomes and Health Factors and the ranking of these variables by county. The data range spans from 2010-2020. 
+A county with a ranking of 1 is the best health, and the lowest ranking is the poorest health. A higher Z score indicates worse health for health outcomes and factors. 
+
+A spatial analysis was utilized to display health outcomes rank and Z score by county for 2019 and 2010. 
 
 
 ```{r setup, include=FALSE}
@@ -96,13 +108,14 @@ Health_Data_2019<-counties_sf_join%>%
 #plot 2019 data
 #Health.z.2019
 mapview(Health_Data_2019, 
-        zcol = 'Health.Factors.Z.Score', 
+        zcol = 'Health.Outcomes.Z.Score', 
         col.regions = brewer.pal(10,'OrRd'))
 
 #Heath.rank2019
 mapview(Health_Data_2019, 
         zcol = 'Health.Outcomes.Rank', 
         col.regions = brewer.pal(20, 'Blues'))
+       
       
 #plot 2010 Data
 Health_Data_2010<-counties_sf_join%>%
@@ -110,7 +123,7 @@ Health_Data_2010<-counties_sf_join%>%
 
 #Health Z score 2010
 mapview(Health_Data_2010, 
-        zcol = 'Health.Factors.Z.Score', 
+        zcol = 'Health.Outcomes.Z.Score', 
         col.regions = brewer.pal(5, 'OrRd'))
 
 #'OrRd'
@@ -128,3 +141,10 @@ mapview(Health_Data_2010,
 #latticeview(Heath.rank2010,Heath.rank2019)
 
 ```
+The Health outcomes Rank plot for 2010 you can see the spatial distribution of ranks for that year. 2010 was choose because it is the first year of data. Out of the 20 counties that were ranked the highest only two of two of them have been coal producing counties, Indiana and Jefferson.  
+
+The health outcomes rank plot for 2019 you can see the spatial distribution of rank for that year. In 2019 only two of the counties that had had rankings below or equal to 20 which indicates the healthiest counties had a history of coal production. These Counties were Tioga and Bedford. Two different counties then in 2010. 
+
+
+
+

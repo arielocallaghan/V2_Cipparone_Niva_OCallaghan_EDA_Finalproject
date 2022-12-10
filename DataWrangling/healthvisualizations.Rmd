@@ -24,8 +24,8 @@ theme_set(mytheme)
 healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
 
 coal<-read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
-table(coal$County)
-list(coal$County)
+#table(coal$County)
+#list(coal$County)
 
 ```
 
@@ -37,16 +37,14 @@ When you click the **Knit** button a document will be generated that includes bo
 
 ```{r Visualizations}
 #Fix class of date
-class(healthdf$year)
-healthdf$year <- as.character(healthdf$year) 
-class(healthdf$year)
+#class(healthdf$year)
+#healthdf$year <- as.character(healthdf$year) 
+#class(healthdf$year)
 
 #plot rankings below 20 
+
 healthdf.rank20<-healthdf%>%
   filter(Health.Outcomes.Rank<20)
-#table(healthdf.rank20$County)
-
-#summary(healthdf.rank20$County)
 
 #count<-ggplot(healthdf.rank20)+
 #geom_count(healthdf.rank20$County)
