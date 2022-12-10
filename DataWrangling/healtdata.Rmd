@@ -70,6 +70,177 @@ When you click the **Knit** button a document will be generated that includes bo
 Healthdf<-select(health.all,County:year)
 write.csv(Healthdf, row.names = FALSE, file = "./ProcessedData/healthdf.csv") 
 
+
+```
+
+
+```{r}
+
+class(Healthdf$year)
+Healthdf$year <- as.character(Healthdf$year) 
+class(Healthdf$year)
+
+Healthdf.rank20<-Healthdf%>%
+  filter(Health.Outcomes.Rank<20)
+list(Healthdf.rank20$County)
+
+my_data <- as_tibble(Healthdf.rank20)
+my_data
+
+
+
+#aes(color = County)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+```{r}
+#create summary table of data
+
+as.table(Healthdf)
+
+table(Healthdf$County, Healthdf$Health.Outcomes.Rank)
+
+summarise(Healthdf)
+gt(Healthdf)
+```
+
+#ggplots for report 
+colnames
+"County"                  "Health.Outcomes.Z.Score" "Health.Outcomes.Rank"   
+[4] "Health.Factors.Z.Score"  "Health.Factors.Rank"     "year"  
+```{r}
+#na.rm=TRUE skips over any NA values when completing calculation
+#colnames(Healthdf)
+
+#kable(Healthdf)
+
+#read in dataset of all data 
+complete<- read.csv("./ProcessedData/combine.csv",stringsAsFactors = TRUE)
+
+complete.filter<-complete%>%
+  filter(Health.Outcomes.Rank<30, na.rm = TRUE) %>%
+  filter(sum.coal.prod)
+
+complete.filter<-complete%>%
+  filter(sum.coal.prod)
+
+complete.filter<-complete%>%
+  group_by(County,sum.coal.prod,Health.Outcomes.Rank,year)
+
+complete.filter2<-complete%>%
+  group_by(sum.coal.prod)
+
+complete.select<-complete%>%
+  select(County,sum.coal.prod,Health.Outcomes.Rank)
+
+complete.select.na<-na.omit(complete.select)
+
+rank.coal<-
+  ggplot(complete.select.na, aes(x=Health.Outcomes.Rank, y=sum.coal.prod))+
+  geom_dotplot()
+print(rank.coal)
+
+#bad plot
+rank<-
+  ggplot(healthdf, aes(x = year, y= Health.Outcomes.Rank))+
+  geom_line(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Rank")) +
+  theme(legend.position = "None")
+print(rank)
+
+zscore<-
+  ggplot(Healthdf, aes(x = year, y= Health.Outcomes.Z.Score))+
+  geom_line(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z score")) +
+  theme(legend.position = "None")
+print(zscore)
+
+health.outcomes.plot.bin<-
+  ggplot(health.all, aes( x= year, y= Health.Outcomes.Z.Score ))+
+  geom_bin_2d(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z Score")) +
+  theme(legend.position = "None")
+print(health.outcomes.plot.bin)
+
+```
+
+
+
+```{r plot health rankings and county, echo=FALSE}
+
+# Visualizations of data of all combined health outcome data
+
+
+###old plots
+health.outcomes.plot<-
+  ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
+  geom_boxplot(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z Score")) +
+  theme(legend.position = "None")
+print(health.outcomes.plot)
+
+health.outcomes.plot.2<-
+  ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
+  geom_count()
+print(health.outcomes.plot.2)  
+
+
+health.outcomes.plot.3<-
+  ggplot(health.all, aes(y= Health.Outcomes.Z.Score ))+
+  geom_histogram(aes(color = County))+
+  xlab(expression("Year")) + ylab(expression("Z Score")) +
+  theme(legend.position = "Right")
+print(health.outcomes.plot.3)
+
+#x = year,
+#(aes(color = County)
+
+# Visualizations of 2019 data below 
+
+health.2019.plot<-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_point()+
+  xlab(expression("County")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")+
+  theme(axis.text.x = element_text(angle = 90))
+print(health.2019.plot)
+
+#aes(color = County)
+
+health.2019.plot.2<-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_violin()+
+  xlab(expression("County")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")+ 
+print(health.2019.plot.2)
+
+health.2019.plot.3<-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_count()+
+  xlab(expression("County")) + ylab(expression("Z Score")) +
+  theme(legend.position = "bottom")+ 
+print(health.2019.plot.3)
+
+health.2019.plot.4 <-
+  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
+  geom_point()+
+  ylab("Z Score")+
+  xlab("County")+
+  theme(axis.text.x = element_text(angle = 90))
+print(health.2019.plot.4)
+
+
+#other code no longer used in plots
+#facet_wrap(vars(Health.Outcomes.Z.Score), nrow = 5)
+ #facet_wrap(vars(nlcdClass), nrow = 3)
+
+```
+
+```{r}
+#Changing class of data
+
 str(Healthdf)
 
 #cleaning data and reading year as a date
@@ -130,158 +301,6 @@ class(health2019$year)
 class(health2019$Health.Outcomes.Z.Score)
 class(health2019$County)
 
-
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-```{r}
-#create summary table of data
-
-as.table(Healthdf)
-
-table(Healthdf$County, Healthdf$Health.Outcomes.Rank)
-
-summarise(Healthdf)
-gt(Healthdf)
-```
-
-#ggplots for report 
-colnames
-"County"                  "Health.Outcomes.Z.Score" "Health.Outcomes.Rank"   
-[4] "Health.Factors.Z.Score"  "Health.Factors.Rank"     "year"  
-```{r}
-#na.rm=TRUE skips over any NA values when completing calculation
-colnames(Healthdf)
-
-kable(Healthdf)
-
-#read in dataset of all data 
-complete<- read.csv("./ProcessedData/combine.csv",stringsAsFactors = TRUE)
-
-complete.filter<-complete%>%
-  filter(Health.Outcomes.Rank<30, na.rm = TRUE) %>%
-  filter(sum.coal.prod)
-
-complete.filter<-complete%>%
-  filter(sum.coal.prod)
-
-complete.filter<-complete%>%
-  group_by(County,sum.coal.prod,Health.Outcomes.Rank,year)
-
-complete.filter2<-complete%>%
-  group_by(sum.coal.prod)
-
-complete.select<-complete%>%
-  select(County,sum.coal.prod,Health.Outcomes.Rank)
-
-complete.select.na<-na.omit(complete.select)
-
-rank.coal<-
-  ggplot(complete.select.na, aes(x=Health.Outcomes.Rank, y=sum.coal.prod))+
-  geom_line()
-print(rank.coal)
-
-#bad plot
-rank<-
-  ggplot(Healthdf, aes(x = year, y= Health.Outcomes.Rank))+
-  geom_line(aes(color = County))+
-  xlab(expression("Year")) + ylab(expression("Rank")) +
-  theme(legend.position = "None")
-print(rank)
-
-zscore<-
-  ggplot(Healthdf, aes(x = year, y= Health.Outcomes.Z.Score))+
-  geom_line(aes(color = County))+
-  xlab(expression("Year")) + ylab(expression("Z score")) +
-  theme(legend.position = "None")
-print(zscore)
-
-health.outcomes.plot.bin<-
-  ggplot(health.all, aes( x= year, y= Health.Outcomes.Z.Score ))+
-  geom_bin_2d(aes(color = County))+
-  xlab(expression("Year")) + ylab(expression("Z Score")) +
-  theme(legend.position = "None")
-print(health.outcomes.plot.bin)
-
-```
-
-
-
-```{r plot health rankings and county, echo=FALSE}
-
-# Visualizations of data of all combined health outcome data
-
-
-###old plots
-health.outcomes.plot<-
-  ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
-  geom_boxplot(aes(color = County))+
-  xlab(expression("Year")) + ylab(expression("Z Score")) +
-  theme(legend.position = "None")
-print(health.outcomes.plot)
-
-health.outcomes.plot.2<-
-  ggplot(health.all, aes(x = year, y= Health.Outcomes.Z.Score ))+
-  geom_count()
-print(health.outcomes.plot.2)  
-
-
-health.outcomes.plot.3<-
-  ggplot(health.all, aes(y= Health.Outcomes.Z.Score ))+
-  geom_histogram(aes(color = County))+
-  xlab(expression("Year")) + ylab(expression("Z Score")) +
-  theme(legend.position = "bottom")
-print(health.outcomes.plot.3)
-
-#x = year,
-#(aes(color = County)
-
-# Visualizations of 2019 data below 
-
-health.2019.plot<-
-  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
-  geom_point()+
-  xlab(expression("County")) + ylab(expression("Z Score")) +
-  theme(legend.position = "bottom")+
-  theme(axis.text.x = element_text(angle = 90))
-print(health.2019.plot)
-
-#aes(color = County)
-
-health.2019.plot.2<-
-  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
-  geom_violin()+
-  xlab(expression("County")) + ylab(expression("Z Score")) +
-  theme(legend.position = "bottom")+ 
-print(health.2019.plot.2)
-
-health.2019.plot.3<-
-  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
-  geom_count()+
-  xlab(expression("County")) + ylab(expression("Z Score")) +
-  theme(legend.position = "bottom")+ 
-print(health.2019.plot.3)
-
-health.2019.plot.4 <-
-  ggplot(health2019, aes(x = County, y= Health.Outcomes.Z.Score ))+
-  geom_point()+
-  ylab("Z Score")+
-  xlab("County")+
-  theme(axis.text.x = element_text(angle = 90))
-print(health.2019.plot.4)
-
-
-#other code no longer used in plots
-#facet_wrap(vars(Health.Outcomes.Z.Score), nrow = 5)
- #facet_wrap(vars(nlcdClass), nrow = 3)
-
-```
-
-```{r}
-colnames(complete)
-class(complete)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
