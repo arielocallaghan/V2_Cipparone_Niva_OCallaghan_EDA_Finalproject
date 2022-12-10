@@ -51,6 +51,9 @@ coal.sumprod<-Coal_Clean %>%
   summarize(year.peak.prod=mean(year.peak.prod),
             sum.coal.prod=mean(sum.coal.prod))
 
+
+length(unique(coal.sumprod$County))
+
 write.csv(coal.sumprod, "./ProcessedData/HC_Coal_Edit.csv")
 
 
