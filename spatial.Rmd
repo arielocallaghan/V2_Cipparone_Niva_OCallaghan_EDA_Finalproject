@@ -94,12 +94,12 @@ Health_Data_2019<-counties_sf_join%>%
   filter(year==2019)
 
 #plot 2019 data
-Health.z.2019
+#Health.z.2019
 mapview(Health_Data_2019, 
         zcol = 'Health.Factors.Z.Score', 
-        col.regions = brewer.pal(10,'BrBG'))
+        col.regions = brewer.pal(10,'OrRd'))
 
-Heath.rank2019==
+#Heath.rank2019
 mapview(Health_Data_2019, 
         zcol = 'Health.Outcomes.Rank', 
         col.regions = brewer.pal(20, 'Blues'))
@@ -108,18 +108,19 @@ mapview(Health_Data_2019,
 Health_Data_2010<-counties_sf_join%>%
   filter(year==2010)
 
-
+#Health Z score 2010
 mapview(Health_Data_2010, 
         zcol = 'Health.Factors.Z.Score', 
         col.regions = brewer.pal(5, 'OrRd'))
 
 #'OrRd'
-Heath.rank2010 = mapview(Health_Data_2010, 
+#Heath.rank2010 
+mapview(Health_Data_2010, 
         zcol = 'Health.Outcomes.Rank', 
         col.regions = brewer.pal(9, 'Blues'))
 
-library(leafsync)
-library(latt)
+#library(leafsync)
+#library(latt)
 
 #can't figure correct way to name plots to show side by side
 
