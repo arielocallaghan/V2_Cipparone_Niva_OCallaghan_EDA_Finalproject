@@ -41,6 +41,15 @@ library(latticeExtra)
 library(tidyverse)
 library(lubridate)
 library(knitr) #needed for report compilation 
+library(tidyverse)
+#spatial library additions 
+library(sf)
+library(leaflet)
+library(mapview)
+library(leaflet)
+library(RColorBrewer)
+library(leafsync)
+library(lattice)
 
 # Set your ggplot theme
 
@@ -87,10 +96,7 @@ At the end of your rationale, introduce a numbered list of your questions (or an
 
 ```
 
-#health
-```{r echo=FALSE}
 
-```
 
 \newpage
 
@@ -125,6 +131,126 @@ Add a table that summarizes your data structure (variables, units, ranges and/or
 
 # Analysis
 
+#Community Health Indicators
+The community health data utilized in this analysis has two separate indicators. One is health outcomes representing the county’s health at that year by looking at many different indicators, including Length of life and quality of life. It weighs both values at 50%. Length of life indicators includes mortality, life expectancy, and premature death. Quality of life indicators includes physical and mental health and low birth weight. The Heath factor is a composite of indicators of health behaviors, clinical care, social and economic factors, and physical environment. (https://www.countyhealthrankings.org/explore-health-rankings/county-health-rankings-model) For this analysis, we utilized Z scores of Health outcomes and Health Factors and the ranking of these variables by county. The data range spans from 2010-2020. county with a ranking of 1 is the best health, and the lowest ranking is the poorest health. A higher Z score indicates worse health for health outcomes and factors. 
+
+A spatial analysis was utilized to display health outcomes rank and Z score by county for 2019 and 2010. 
+
+##Commyunity health data wrangling
+```{r echo=FALSE, spatial analysis}
+#Disable on-the-fly projections - code from lab sheet 
+sf::sf_use_s2(FALSE)
+
+#read in spatial data frame and filter for Pennsylvania 
+counties_sf <- st_read('./RawData/cb_2018_us_county_20m.shp')%>% 
+  filter(STATEFP == 42) #42|PA|Pennsylvania|01779798
+
+#check data frame information 
+colnames(counties_sf)
+st_crs(counties_sf) 
+nrow(counties_sf)
+
+#Reveal the extent of this dataset via the st_bbox() function
+st_bbox(counties_sf)
+
+#View the data
+head(counties_sf)
+
+#Plot the county data, colored by area of land in each county
+mapView(counties_sf, zcol = "ALAND")
+
+#read in health data frame to join with spatial datframe 
+healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
+
+counties_sf$NAME<- as.character(counties_sf$NAME)
+class(counties_sf$NAME)
+
+healthdf$County<- as.character(healthdf$County)
+class(healthdf$County)
+
+(healthdf)
+
+#counties_sf<- counties_sf %>% 
+ # rename(NAME== County)
+  
+#join data sets together 
+counties_sf_join <-  merge(x = counties_sf,
+                           y = healthdf, 
+                           by.x = "NAME", 
+                           by.y = "County" )
+
+#add in coal to look at counties that overlap
+coal<- read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
+view(coal$County)
+
+class(counties_sf_join$NAME)
+NCOL(counties_sf_join$NAME)
+
+#filter for 2019 Data
+Health_Data_2019<-counties_sf_join%>%
+  filter(year==2019)
+
+#filter for 2010 Data
+Health_Data_2010<-counties_sf_join%>%
+  filter(year==2010)
+
+#subset coal counties to create new spatial data frame
+coal.filter<-counties_sf_join%>% 
+  filter(NAME %in% c("Armstrong","Beaver","Bedford","Carbon","Dauphin","Fayette","Greene","Allegheny","Bedfor","Blair","Cambria","Centre","Clarion","Clearfield","Clinton","Columbia","Elk","Indiana","Jefferson","Lackawanna","Lawrence","Luzerne","Lycoming","Mercer","Monongalia","Northumberland","Schuylkill","Sullivan","Tioga"))
+
+
+```
+
+##Health data visualizations
+```{r}
+#Visualizations 
+
+#2019 Z score
+all.Z.2019<-mapview(Health_Data_2019, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(10,'OrRd'))
+
+#coal counties only 2019
+coal.z.2019<-mapview(coal.filter,
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(10,'OrRd'))
+
+sync(all.Z.2019,coal.z.2019)  
+
+#2019 Rank
+all.rank.2019<-mapview(Health_Data_2019, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))
+
+coal.rank.2019<-mapview(coal.filter, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))       
+
+sync(all.rank.2019, coal.rank.2019)      
+
+#2010 Z score
+all.z.2010<-mapview(Health_Data_2010, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(5, 'OrRd'))
+
+coal.z.2010<-mapview(coal.filter, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(5, 'OrRd'))
+
+#showing maps side by side
+sync(all.z.2010, coal.z.2010)
+
+#2010 Rank
+all.rank.2010<-mapview(Health_Data_2010, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(9, 'Blues'))
+
+coal.rank.2010<-coal.rank.2010<-mapview(coal.filter, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(9, 'Blues'))
+
+sync(all.rank.2010, coal.rank.2010)
+```
 
 #Time Series Analysis
 Although, the length of the health dataset limits time series analysis to a smaller span of years, this is still an important angle of analysis. While the previous linear regression collapsed the data to one representative temporal point, here we seek to focus in on single counties over the time frame allowed by the health data set (2010 until 2020). This will allow the investigation of a more precise match between increased coal output and decreasing community health over time. It is an imprecise look however, because many of the contamination concerns occur in the years following coal mining (water contamination from acid mine drainage). The first step in this process was the wrangling of the available datasets into a comprehensive table.
