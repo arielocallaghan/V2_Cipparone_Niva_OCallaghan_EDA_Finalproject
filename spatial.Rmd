@@ -37,14 +37,18 @@ library(ggplot2)
 
 library(RColorBrewer)
 
+par(mar=c(3,4,2,2))
+display.brewer.all()
+
 #Disable on-the-fly projections - code from lab sheet 
 sf::sf_use_s2(FALSE)
 
-#read in files
+#read in spatial data frame and filter for Pennsylvania 
 
 counties_sf <- st_read('./RawData/cb_2018_us_county_20m.shp')%>% 
   filter(STATEFP == 42) #42|PA|Pennsylvania|01779798
 
+#check data frame information 
 colnames(counties_sf)
 
 st_crs(counties_sf) 
@@ -57,9 +61,10 @@ st_bbox(counties_sf)
 #View the data
 head(counties_sf)
 
-#Plot the data, colored by area of land in each county
+#Plot the county data, colored by area of land in each county
 mapView(counties_sf, zcol = "ALAND")
 
+#read in health data frame to join with spatial datframe 
 healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
 
 counties_sf$NAME<- as.character(counties_sf$NAME)
@@ -71,41 +76,51 @@ class(healthdf$County)
 (healthdf)
 
 #counties_sf<- counties_sf %>% 
-  rename(NAME== County)
+ # rename(NAME== County)
   
-
+#join data sets together 
 counties_sf_join <-  merge(x = counties_sf,
                            y = healthdf, 
                            by.x = "NAME", 
                            by.y = "County" )
+```
 
-counties_sf_join_2019<-counties_sf_join%>%
+
+```{r setup, include=FALSE}
+#Visualizations 
+
+#filter for 2019 only to plot
+Health_Data_2019<-counties_sf_join%>%
   filter(year==2019)
 
-mapview(counties_sf_join_2019, 
-        zcol = 'Health.Factors.Rank', 
-        col.regions = brewer.pal(40, 'RdBu')) + 
-  mapview(counties_sf_join_2019, cex = 'rank')
+#plot 2019 data
+Health.z.2019<-mapview(Health_Data_2019, 
+        zcol = 'Health.Factors.Z.Score', 
+        col.regions = brewer.pal(8,'BrBG'))
 
+Heath.rank2019<-mapview(Health_Data_2019, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(9, 'Blues'))
+      
+#plot 2010 Data
+Health_Data_2010<-counties_sf_join%>%
+  filter(year==2010)
+
+Health.z.2010<-mapview(Health_Data_2010, 
+        zcol = 'Health.Factors.Z.Score', 
+        col.regions = brewer.pal(9, 'BrBG'))
+
+
+Heath.rank2010<-mapview(Health_Data_2010, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(9, 'Blues'))
+
+library(leafsync)
+library(latt)
+#sync(, )
+
+
+latticeview(Health.z.2010, Health.z.2019)
+latticeview(Heath.rank2010,Heath.rank2019)
 
 ```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-    
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
