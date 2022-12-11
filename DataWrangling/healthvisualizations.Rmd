@@ -18,6 +18,12 @@ library(lubridate)
 library(dplyr)
 library(ggplot2)
 
+library(kableExtra)
+install.packages("gt")
+library(gt)
+library(tidyverse)
+library(glue)
+
 mytheme <- theme_classic(base_size = 14) + theme(axis.text = element_text(color = "black"), legend.position = "top")
 theme_set(mytheme)
 
@@ -34,6 +40,67 @@ coal<-read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r create.summary.table, echo=FALSE}
+#summary stats table
+
+healthdf.table <- healthdf %>%
+  group_by(County) %>%
+  summarize(
+    mean_Health_Outcome_rank = mean(Health.Outcomes.Rank),
+    min_health_outcome_rank = min(mean_Health_Outcome_rank),
+    max_Health_Outcome_rank = max(Health.Outcomes.Rank),
+    sd_Health_Outcome_rank = sd(Health.Outcomes.Rank),
+    mean_Health_Outcome_Zscore = mean(Health.Outcomes.Z.Score),
+    min_health_outcome_Zscore = min(mean_Health_Outcome_Zscore),
+    max_Health_Outcome_Zscore = max(Health.Outcomes.Z.Score),
+    sd_Health_Outcome_zscore = sd(Health.Outcomes.Z.Score))
+
+kable(healthdf.table,caption = "Health Indicators Summary Table 2010-2020")   
+
+#####
+
+health.table<-healthdf %>% 
+  gt() %>% 
+  tab_header(title = md("Table X: Community Health Inicators"), subtitle=" 2010-2020") %>%
+  fmt_number(columns = (Health.Outcomes.Z.Score), decimals = 2) %>%
+  fmt_number(columns = (Health.Outcomes.Rank), decimals=0) %>%
+  fmt_number(columns = (Health.Factors.Z.Score), decimals = 2) %>%
+  fmt_number(columns = (Health.Factors.Rank), decimals = 2))
+
+health.table
+
+##----------------------
+health.table2<-healthdf %>%
+  select(Variable=rowname, Observations=n, Median=median, Mean=mean, SD=sd, Range=range, Minimum=min, Maximum=max) %>% 
+gt() %>% tab_header(
+    title = md("Table 1: County-level Summary Statistics of Socioeconomic Variables in Pennsylvania"), subtitle="   ") %>%
+  fmt_number(columns = c(Observations), decimals = 0) %>%
+  fmt_number(columns = c(Mean), decimals=2) %>%
+  fmt_number(columns = c(Median), decimals = 2) %>%
+  fmt_number(columns = c(SD), decimals = 2) %>%
+  fmt_number(columns = c(Range), decimals = 2) %>% 
+  fmt_number(columns = c(Minimum), decimals = 2) %>%
+  fmt_number(columns = c(Maximum), decimals = 2)
+
+
+```
+ 
+
+```
+
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r summary table}
+
+
+
 
 ```{r Visualizations}
 
