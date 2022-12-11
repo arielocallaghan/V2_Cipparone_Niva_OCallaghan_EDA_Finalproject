@@ -41,6 +41,15 @@ library(latticeExtra)
 library(tidyverse)
 library(lubridate)
 library(knitr) #needed for report compilation 
+library(tidyverse)
+#spatial library additions 
+library(sf)
+library(leaflet)
+library(mapview)
+library(leaflet)
+library(RColorBrewer)
+library(leafsync)
+library(lattice)
 
 # Set your ggplot theme
 
@@ -77,20 +86,216 @@ Knitting commands in code chunks:
 Write 1-2 paragraph(s) detailing the rationale for your study. This should include both the context of the topic as well as a rationale for your choice of dataset (reason for location, variables, etc.). You may choose to include citations if you like (optional).
 
 At the end of your rationale, introduce a numbered list of your questions (or an overarching question and sub-questions). 
-#coal
-```{r echo=FALSE}
+#The Coal Mining Dataset
+One of our foundational datasets is the one reporting coal production by county each year. This was collected by the U.S. Energy Information Administration and included a robust annual data set that spanned from 1983 until 2021. This took extensive wrangling to combine and narrow to the desired data points. The data wrangling process is shown here:
+```{r Wrangling Coal Data}
+#inital uploading of all the coal data for each distinct year -- this could not be expedited with data stripping because there were separate links to downloaded spreadsheets instead of links to another website
+coal1983 <- read.csv("RawData/coalpublic1983.csv", stringsAsFactors = TRUE)
+coal1984 <- read.csv("RawData/coalpublic1984.csv", stringsAsFactors = TRUE)
+coal1985 <- read.csv("RawData/coalpublic1985.csv", stringsAsFactors = TRUE)
+coal1986 <- read.csv("RawData/coalpublic1986.csv", stringsAsFactors = TRUE)
+coal1987 <- read.csv("RawData/coalpublic1987.csv", stringsAsFactors = TRUE)
+coal1988 <- read.csv("RawData/coalpublic1988.csv", stringsAsFactors = TRUE)
+coal1989 <- read.csv("RawData/coalpublic1989.csv", stringsAsFactors = TRUE)
+coal1990 <- read.csv("RawData/coalpublic1990.csv", stringsAsFactors = TRUE)
+coal1991 <- read.csv("RawData/coalpublic1991.csv", stringsAsFactors = TRUE)
+coal1992 <- read.csv("RawData/coalpublic1992.csv", stringsAsFactors = TRUE)
+coal1993 <- read.csv("RawData/coalpublic1993.csv", stringsAsFactors = TRUE)
+coal1994 <- read.csv("RawData/coalpublic1994.csv", stringsAsFactors = TRUE)
+coal1995 <- read.csv("RawData/coalpublic1995.csv", stringsAsFactors = TRUE)
+coal1996 <- read.csv("RawData/coalpublic1996.csv", stringsAsFactors = TRUE)
+coal1997 <- read.csv("RawData/coalpublic1997.csv", stringsAsFactors = TRUE)
+coal1998 <- read.csv("RawData/coalpublic1998.csv", stringsAsFactors = TRUE)
+coal1999 <- read.csv("RawData/coalpublic1999.csv", stringsAsFactors = TRUE)
+coal2000 <- read.csv("RawData/coalpublic2000.csv", stringsAsFactors = TRUE)
+coal2001 <- read.csv("RawData/coalpublic2001.csv", stringsAsFactors = TRUE)
+coal2002 <- read.csv("RawData/coalpublic2002.csv", stringsAsFactors = TRUE)
+coal2003 <- read.csv("RawData/coalpublic2003.csv", stringsAsFactors = TRUE)
+coal2004 <- read.csv("RawData/coalpublic2004.csv", stringsAsFactors = TRUE)
+coal2005 <- read.csv("RawData/coalpublic2005.csv", stringsAsFactors = TRUE)
+coal2006 <- read.csv("RawData/coalpublic2006.csv", stringsAsFactors = TRUE)
+coal2007 <- read.csv("RawData/coalpublic2007.csv", stringsAsFactors = TRUE)
+coal2008 <- read.csv("RawData/coalpublic2008.csv", stringsAsFactors = TRUE)
+coal2009 <- read.csv("RawData/coalpublic2009.csv", stringsAsFactors = TRUE)
+coal2010 <- read.csv("RawData/coalpublic2010.csv", stringsAsFactors = TRUE)
+coal2011 <- read.csv("RawData/coalpublic2011.csv", stringsAsFactors = TRUE)
+coal2012 <- read.csv("RawData/coalpublic2012.csv", stringsAsFactors = TRUE)
+coal2013 <- read.csv("RawData/coalpublic2013.csv", stringsAsFactors = TRUE)
+coal2014 <- read.csv("RawData/coalpublic2014.csv", stringsAsFactors = TRUE)
+coal2015 <- read.csv("RawData/coalpublic2015.csv", stringsAsFactors = TRUE)
+coal2016 <- read.csv("RawData/coalpublic2016.csv", stringsAsFactors = TRUE)
+coal2017 <- read.csv("RawData/coalpublic2017.csv", stringsAsFactors = TRUE)
+coal2018 <- read.csv("RawData/coalpublic2018.csv", stringsAsFactors = TRUE)
+coal2019 <- read.csv("RawData/coalpublic2019.csv", stringsAsFactors = TRUE)
+coal2020 <- read.csv("RawData/coalpublic2020.csv", stringsAsFactors = TRUE)
+coal2021 <- read.csv("RawData/coalpublic2021.csv", stringsAsFactors = TRUE)
+
+#inconsistencies in the class of certain columns needed to be resolved in order for the datasets to be properly merged together
+coal1996$MSHA.ID <- as.factor(coal1996$MSHA.ID)
+coal1997$MSHA.ID <- as.factor(coal1997$MSHA.ID)
+coal1998$MSHA.ID <- as.factor(coal1998$MSHA.ID)
+coal1999$MSHA.ID <- as.factor(coal1999$MSHA.ID)
+coal2000$MSHA.ID <- as.factor(coal2000$MSHA.ID)
+coal2001$MSHA.ID <- as.factor(coal2001$MSHA.ID)
+coal2002$MSHA.ID <- as.factor(coal2002$MSHA.ID)
+coal2003$MSHA.ID <- as.factor(coal2003$MSHA.ID)
+coal2004$MSHA.ID <- as.factor(coal2004$MSHA.ID)
+coal2005$MSHA.ID <- as.factor(coal2005$MSHA.ID)
+coal2006$MSHA.ID <- as.factor(coal2006$MSHA.ID)
+coal2007$MSHA.ID <- as.factor(coal2007$MSHA.ID)
+coal2008$MSHA.ID <- as.factor(coal2008$MSHA.ID)
+coal2009$MSHA.ID <- as.factor(coal2009$MSHA.ID)
+coal2010$MSHA.ID <- as.factor(coal2010$MSHA.ID)
+coal2011$MSHA.ID <- as.factor(coal2011$MSHA.ID)
+coal2012$MSHA.ID <- as.factor(coal2012$MSHA.ID)
+coal2013$MSHA.ID <- as.factor(coal2013$MSHA.ID)
+coal2014$MSHA.ID <- as.factor(coal2014$MSHA.ID)
+coal2015$MSHA.ID <- as.factor(coal2015$MSHA.ID)
+coal2016$MSHA.ID <- as.factor(coal2016$MSHA.ID)
+coal2017$MSHA.ID <- as.factor(coal2017$MSHA.ID)
+coal2018$MSHA.ID <- as.factor(coal2018$MSHA.ID)
+coal2019$MSHA.ID <- as.factor(coal2019$MSHA.ID)
+coal2020$MSHA.ID <- as.factor(coal2020$MSHA.ID)
+coal2021$MSHA.ID <- as.factor(coal2021$MSHA.ID)
+coal2002$Average.Employees <- as.factor(coal2002$Average.Employees)
+coal2003$Average.Employees <- as.factor(coal2003$Average.Employees)
+coal2004$Average.Employees <- as.factor(coal2004$Average.Employees)
+coal2005$Average.Employees <- as.factor(coal2005$Average.Employees)
+coal2006$Average.Employees <- as.factor(coal2006$Average.Employees)
+coal2007$Average.Employees <- as.factor(coal2007$Average.Employees)
+coal2008$Average.Employees <- as.factor(coal2008$Average.Employees)
+coal2009$Average.Employees <- as.factor(coal2009$Average.Employees)
+coal2010$Average.Employees <- as.factor(coal2010$Average.Employees)
+coal2011$Average.Employees <- as.factor(coal2011$Average.Employees)
+coal2012$Average.Employees <- as.factor(coal2012$Average.Employees)
+coal2013$Average.Employees <- as.factor(coal2013$Average.Employees)
+coal2014$Average.Employees <- as.factor(coal2014$Average.Employees)
+coal2015$Average.Employees <- as.factor(coal2015$Average.Employees)
+coal2016$Average.Employees <- as.factor(coal2016$Average.Employees)
+coal2017$Average.Employees <- as.factor(coal2017$Average.Employees)
+coal2018$Average.Employees <- as.factor(coal2018$Average.Employees)
+coal2019$Average.Employees <- as.factor(coal2019$Average.Employees)
+coal2020$Average.Employees <- as.factor(coal2020$Average.Employees)
+coal2021$Average.Employees <- as.factor(coal2021$Average.Employees)
+
+#The datasets from each year were then merged together into one combined dataset
+AllCoal <- full_join(coal1983, coal1984)
+AllCoal <- full_join(AllCoal, coal1985)
+AllCoal <- full_join(AllCoal, coal1986)
+AllCoal <- full_join(AllCoal, coal1987)
+AllCoal <- full_join(AllCoal, coal1988)
+AllCoal <- full_join(AllCoal, coal1989)
+AllCoal <- full_join(AllCoal, coal1990)
+AllCoal <- full_join(AllCoal, coal1991)
+AllCoal <- full_join(AllCoal, coal1992)
+AllCoal <- full_join(AllCoal, coal1993)
+AllCoal <- full_join(AllCoal, coal1994)
+AllCoal <- full_join(AllCoal, coal1995)
+AllCoal <- full_join(AllCoal, coal1996)
+AllCoal <- full_join(AllCoal, coal1997)
+AllCoal <- full_join(AllCoal, coal1998)
+AllCoal <- full_join(AllCoal, coal1999)
+AllCoal <- full_join(AllCoal, coal2000)
+AllCoal <- full_join(AllCoal, coal2001)
+AllCoal <- full_join(AllCoal, coal2002)
+AllCoal <- full_join(AllCoal, coal2003)
+AllCoal <- full_join(AllCoal, coal2004)
+AllCoal <- full_join(AllCoal, coal2005)
+AllCoal <- full_join(AllCoal, coal2006)
+AllCoal <- full_join(AllCoal, coal2007)
+AllCoal <- full_join(AllCoal, coal2008)
+AllCoal <- full_join(AllCoal, coal2009)
+AllCoal <- full_join(AllCoal, coal2010)
+AllCoal <- full_join(AllCoal, coal2011)
+AllCoal <- full_join(AllCoal, coal2012)
+AllCoal <- full_join(AllCoal, coal2013)
+AllCoal <- full_join(AllCoal, coal2014)
+AllCoal <- full_join(AllCoal, coal2015)
+AllCoal <- full_join(AllCoal, coal2016)
+AllCoal <- full_join(AllCoal, coal2017)
+AllCoal <- full_join(AllCoal, coal2018)
+AllCoal <- full_join(AllCoal, coal2019)
+AllCoal <- full_join(AllCoal, coal2020)
+AllCoal <- full_join(AllCoal, coal2021)
+
+#This combined dataset was then filtered so that it only included data for the state of Pennsylvania as that is the focus of this inquiry
+AllCoal <- filter(AllCoal, Mine.State %in% c("Pennsylvania (Bituminous)", "Pennsylvania (Anthracite)"))
+
+#This data was then slimmed down to the necessary data and the columns were appropriately titled 
+AllCoalSlim <- data_frame(AllCoal$Year, AllCoal$Mine.County, AllCoal$Mine.Status, AllCoal$Production..short.tons.)%>%
+  rename("Year" = "AllCoal$Year", "County" = "AllCoal$Mine.County", "Status" = "AllCoal$Mine.Status", "Production(tons)" = "AllCoal$Production..short.tons.")
+
+#The coal production was then converted to class integer so that different mines from the same county can be summed together
+AllCoalSlim$`Production(tons)` <- as.integer(AllCoalSlim$`Production(tons)`)
+
+#This summation then occured so that there is one sum coal production value for each county each year
+aggCoalSlim <- AllCoalSlim %>% group_by(County, Year) %>%
+  summarise(sum.coal.production = sum(`Production(tons)`), .groups = 'drop')
+
+#A new column that dictated the weighted average year of production was then calculated in order to have another metric for understanding when the majority of the coal production was happening and what regulations may have been in place at that point
+NewCoalSlim <- aggCoalSlim %>%
+  pivot_wider(names_from = Year, values_from = sum.coal.production)
+
+NewCoalSlim[is.na(NewCoalSlim)] <- 0
+
+NewCoalSlim <- NewCoalSlim %>% mutate("Year.Max.Production" = (((1983*`1983`)+(1984*`1984`)+(1985*`1985`)+(1986*`1986`)+(1987*`1987`)+(1988*`1988`)+(1989*`1989`)+(1990*`1990`)+(1991*`1991`)+(1992*`1992`)+(1993*`1993`)+(1994*`1994`)+(1995*`1995`)+(1996*`1996`)+(1997*`1997`)+(1998*`1998`)+(1999*`1999`)+(2000*`2000`)+(2001*`2001`)+(2002*`2002`)+(2003*`2003`)+(2004*`2004`)+(2005*`2005`)+(2006*`2006`)+(2007*`2007`)+(2008*`2008`)+(2009*`2009`)+(2010*`2010`)+(2011*`2011`)+(2012*`2012`)+(2013*`2013`)+(2014*`2014`)+(2015*`2015`)+(2016*`2016`)+(2017*`2017`)+(2018*`2018`)+(2019*`2019`)+(2020*`2020`)+(2021*`2021`))/(`1983`+`1984`+`1985`+`1986`+`1987`+`1988`+`1989`+`1990`+`1991`+`1992`+`1993`+`1994`+`1995`+`1996`+`1997`+`1998`+`1999`+`2000`+`2001`+`2002`+`2003`+`2004`+`2005`+`2006`+`2007`+`2008`+`2009`+`2010`+`2011`+`2012`+`2013`+`2014`+`2015`+`2016`+`2017`+`2018`+`2019`+`2020`+`2021`)))
+
+#An additional column is then added to know the total coal production across all years in each county
+NewCoalSlim <- NewCoalSlim %>% mutate("sum.coal.prod" = (`1983`+`1984`+`1985`+`1986`+`1987`+`1988`+`1989`+`1990`+`1991`+`1992`+`1993`+`1994`+`1995`+`1996`+`1997`+`1998`+`1999`+`2000`+`2001`+`2002`+`2003`+`2004`+`2005`+`2006`+`2007`+`2008`+`2009`+`2010`+`2011`+`2012`+`2013`+`2014`+`2015`+`2016`+`2017`+`2018`+`2019`+`2020`+`2021`))
+
+#This new metric was then merged with the previous data and then appropriately titled
+aggCoalSlim <- left_join(aggCoalSlim, NewCoalSlim, by = "County") 
+
+aggCoalSlim2 <- data_frame(aggCoalSlim$County, aggCoalSlim$Year, aggCoalSlim$sum.coal.production, aggCoalSlim$Year.Max.Production, aggCoalSlim$sum.coal.prod) %>%
+  rename("Year" = "aggCoalSlim$Year", "County" = "aggCoalSlim$County", "coal.prod.by.year" = "aggCoalSlim$sum.coal.production", "year.peak.prod" = "aggCoalSlim$Year.Max.Production", "sum.coal.prod" = "aggCoalSlim$sum.coal.prod")
+
+#We now have a core dataset that can be uploaded to the processed data folder for use in the analysis portion. This dataset has the coal production per county per year as well as the summed total coal production and the weighted average year of production for each county
+write.csv(aggCoalSlim, file = "./ProcessedData/aggCoalData.csv")
 
 ```
+
+Now that the coal data is effectively processed into a comprehensive dataset, we can take an initial look at what data we have. First, we can make a summary table. This will supply the range, median, and interquantile range for each of the parameters included. We can then do some preliminary visualizations. 
+```{r Summarizing the Coal Data}
+#We can make the summary table of the data within the dataset
+coal.data.summary<-aggCoalSlim2 %>% 
+  summarize(
+    year.range= range(Year),
+    annual.coal.production.range= range(coal.prod.by.year),
+    total.coal.production.range = range(sum.coal.prod),
+    weighted.average.year.range= range(year.peak.prod),
+    annual.coal.production.med = median(coal.prod.by.year),
+    total.coal.production.med = median(sum.coal.prod),
+    weighted.average.year.med = median(year.peak.prod),
+    annual.coal.production.iqr = IQR(coal.prod.by.year),
+    total.coal.production.iqr = IQR(sum.coal.prod),
+    weighted.average.year.iqr = IQR(year.peak.prod),
+  )
+  
+print(coal.data.summary)
+
+#We can also look at the dimensions of the dataset
+dim(aggCoalSlim2)
+
+#And the column names to make sure they were labeled correctly
+colnames(aggCoalSlim2)
+
+#And make an initial graph of coal production over time in each county
+CoalOverTime <- ggplot(aggCoalSlim, aes(`Year`, `sum.coal.production`, group = `County`, color = `County`))+
+  geom_smooth()+
+  ylab("Total Coal Production (Tons)")+
+  ggtitle("Coal Production over Time in each Pennsylvania County")
+
+print(CoalOverTime)
+
+```
+The plot over time shows how the coal production has changed over time from 1983 until today in each county. The more recent petering off of most of the mines makes sense as most of the available coal has been removed and the US energy sources have moved away from coal. There is a pretty strong bell curve in most mines which would align with the location of a good mine, the mass export of the mined coal, and then the decrease in production as the most readily available coal is gone. It is interesting to see how all the counties seem to steeply increase in coal production from 1983 on. This could be a limitation in the dataset (only giving strong coverage of mines beginning operation in 1983) but none of that was explained or visible in the metadata and so it is more likely that there was an uptick in coal production at that point. This could be due to the implementation of longwall mining which first began in the 1960s (https://www.dep.pa.gov/Business/Land/Mining/Pages/PA-Mining-History.aspx). It is also clearly visible here that Schuylkill County has far more coal production than any other county.
 
 #acs
 ```{r echo=FALSE}
 
 ```
 
-#health
-```{r echo=FALSE}
 
-```
 
 \newpage
 
@@ -125,6 +330,126 @@ Add a table that summarizes your data structure (variables, units, ranges and/or
 
 # Analysis
 
+#Community Health Indicators
+The community health data utilized in this analysis has two separate indicators. One is health outcomes representing the county’s health at that year by looking at many different indicators, including Length of life and quality of life. It weighs both values at 50%. Length of life indicators includes mortality, life expectancy, and premature death. Quality of life indicators includes physical and mental health and low birth weight. The Heath factor is a composite of indicators of health behaviors, clinical care, social and economic factors, and physical environment. (https://www.countyhealthrankings.org/explore-health-rankings/county-health-rankings-model) For this analysis, we utilized Z scores of Health outcomes and Health Factors and the ranking of these variables by county. The data range spans from 2010-2020. county with a ranking of 1 is the best health, and the lowest ranking is the poorest health. A higher Z score indicates worse health for health outcomes and factors. 
+
+A spatial analysis was utilized to display health outcomes rank and Z score by county for 2019 and 2010. 
+
+##Commyunity health data wrangling
+```{r echo=FALSE, spatial analysis}
+#Disable on-the-fly projections - code from lab sheet 
+sf::sf_use_s2(FALSE)
+
+#read in spatial data frame and filter for Pennsylvania 
+counties_sf <- st_read('./RawData/cb_2018_us_county_20m.shp')%>% 
+  filter(STATEFP == 42) #42|PA|Pennsylvania|01779798
+
+#check data frame information 
+colnames(counties_sf)
+st_crs(counties_sf) 
+nrow(counties_sf)
+
+#Reveal the extent of this dataset via the st_bbox() function
+st_bbox(counties_sf)
+
+#View the data
+head(counties_sf)
+
+#Plot the county data, colored by area of land in each county
+mapView(counties_sf, zcol = "ALAND")
+
+#read in health data frame to join with spatial datframe 
+healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
+
+counties_sf$NAME<- as.character(counties_sf$NAME)
+class(counties_sf$NAME)
+
+healthdf$County<- as.character(healthdf$County)
+class(healthdf$County)
+
+(healthdf)
+
+#counties_sf<- counties_sf %>% 
+ # rename(NAME== County)
+  
+#join data sets together 
+counties_sf_join <-  merge(x = counties_sf,
+                           y = healthdf, 
+                           by.x = "NAME", 
+                           by.y = "County" )
+
+#add in coal to look at counties that overlap
+coal<- read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
+view(coal$County)
+
+class(counties_sf_join$NAME)
+NCOL(counties_sf_join$NAME)
+
+#filter for 2019 Data
+Health_Data_2019<-counties_sf_join%>%
+  filter(year==2019)
+
+#filter for 2010 Data
+Health_Data_2010<-counties_sf_join%>%
+  filter(year==2010)
+
+#subset coal counties to create new spatial data frame
+coal.filter<-counties_sf_join%>% 
+  filter(NAME %in% c("Armstrong","Beaver","Bedford","Carbon","Dauphin","Fayette","Greene","Allegheny","Bedfor","Blair","Cambria","Centre","Clarion","Clearfield","Clinton","Columbia","Elk","Indiana","Jefferson","Lackawanna","Lawrence","Luzerne","Lycoming","Mercer","Monongalia","Northumberland","Schuylkill","Sullivan","Tioga"))
+
+
+```
+
+##Health data visualizations
+```{r}
+#Visualizations 
+
+#2019 Z score
+all.Z.2019<-mapview(Health_Data_2019, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(10,'OrRd'))
+
+#coal counties only 2019
+coal.z.2019<-mapview(coal.filter,
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(10,'OrRd'))
+
+sync(all.Z.2019,coal.z.2019)  
+
+#2019 Rank
+all.rank.2019<-mapview(Health_Data_2019, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))
+
+coal.rank.2019<-mapview(coal.filter, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))       
+
+sync(all.rank.2019, coal.rank.2019)      
+
+#2010 Z score
+all.z.2010<-mapview(Health_Data_2010, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(5, 'OrRd'))
+
+coal.z.2010<-mapview(coal.filter, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(5, 'OrRd'))
+
+#showing maps side by side
+sync(all.z.2010, coal.z.2010)
+
+#2010 Rank
+all.rank.2010<-mapview(Health_Data_2010, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(9, 'Blues'))
+
+coal.rank.2010<-coal.rank.2010<-mapview(coal.filter, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(9, 'Blues'))
+
+sync(all.rank.2010, coal.rank.2010)
+```
 
 #Time Series Analysis
 Although, the length of the health dataset limits time series analysis to a smaller span of years, this is still an important angle of analysis. While the previous linear regression collapsed the data to one representative temporal point, here we seek to focus in on single counties over the time frame allowed by the health data set (2010 until 2020). This will allow the investigation of a more precise match between increased coal output and decreasing community health over time. It is an imprecise look however, because many of the contamination concerns occur in the years following coal mining (water contamination from acid mine drainage). The first step in this process was the wrangling of the available datasets into a comprehensive table.

@@ -1,11 +1,5 @@
 # V2_Cipparone_Niva_OCallaghan_EDA_Finalproject
 Duke Univeristy EDA 872
-# <V2_Cipparone_Niva_OCallaghan_EDA_Finalproject>
-<Instructions: copy and paste this template into your project README file (found in the parent folder of the repository). Fill in relevant information as requested.>
-
-<General notes: add as much information as is relevant for your repository. Some overarching guidelines are provided, but feel free to expand on these guidelines.>
-<More resources found here: https://www.dataone.org/all-best-practices>
-<Delete the text inside the brackets when formatting your file.>
 
 ## Summary
 
@@ -27,7 +21,9 @@ Duke Univeristy EDA 872
 
 Link:https://www.eia.gov/coal/data.php (Production tab)
 
-ADD in WQ information
+water Quality: Water Quality Portal: This portal integrates water quality data from the United States Geological Survey (USGS) and Environmental Protection Agency (EPA), and over state, federal, and local agencies. Water quality information was downloaded for Pennsylvania, with data spanning from 1991 -2011. This data was accessed on XXX
+Link: https://www.waterqualitydata.us/
+
 
 Census Data: The second primary data set utilized is the American Community Survey (ACS) data set and is part of the U.S. Census. The ACS provides survey information on a yearly basis about our nation and its people. This data was accessed on XXX. 
 
@@ -53,12 +49,12 @@ Data Analysis: This folder contains rmd files used to analyze our complete data 
 
 Report: This folder contains the rmd file of our report that was written and prepared for the class project. Additionally it contains some reference documents on the project requirements and some rmd cheat sheets for quick reference. 
 
-The files were named off of the type of data that that is analyzed.   
-Health files are for the community health indicator  
-acs files are for the census data  
-coal files are for the coal production numbers. This also includes some water quality data.. 
+The files were named off of the type of data that that is analyzed:   
+-Health files are for the community health indicator  
+-acs files are for the census data  
+-coal files are for the coal production numbers. This also includes some water quality data.. 
 
-The analysis rmd file names show the type of analysis that is conducted. 
+The analysis rmd file names show the type of analysis that is conducted. >
 
 
 ## Metadata
@@ -68,24 +64,27 @@ complete.csv This file contains all of the indivudal data sets combined into one
 **Columns Names Below:**
 <The csv file is organized so that all Counties in Pennsylvania are rows and each row contains the following columns. Some datasets have varying date ranges so some columns show NA when there is no data available. 
 
-**County:** All Counties in Pennsylvania   
-**totpop:** Total population    
-**medage:** Median Age  	
-**totpoprace:**
-**totpopwhite:** population of white people	
-**totpopeduc:**   
-**bachdegree:** Number of people with bachelor degrees  	    
-**medincome:** Median Income 	  
-**perc.white:** Percentage of White people	    
-**perc.bachdegree:** Percentage of bachelor degrees   	  
-**year:** Date information for each indicator 	  
-**coal.prod.by.year:** Coal production by year (Tons)	  
-**year.peak.prod:** Year of peak coal Production (Tons)  
-**sum.coal.prod:** Sum of total coal production  	(Tons)  
-**Health.Outcomes.Z.Score:** This is a z score. Health outcomes looks at length of life and quality of life. Length of life looks at premature death and life expectancy and quality of life measures of low birth weight and those who rated their phsical and mental health as poor. This outcomes puts a 50% weight on both Quality of Life and Length of life.  
-**Health.Outcomes.Rank:** The rank of health outcomes  
+**County:** All Counties in Pennsylvania   class: "factor"  
+**Year** Year Class: "Date"
+**totpop:** Total population by County    Class:   
+**medage:** Median Age  	Class:  
+**totpoprace:** XXXX  Class: 
+**totpopwhite:** Population of white people	Class:   
+**totpopeduc:**   XXXX  Class: 
+**bachdegree:** Number of people with bachelor degrees  Class:   	    
+**medincome:** Median Income 	  Class:   
+**perc.white:** Percentage of White people	    Class:   
+**perc.bachdegree:** Percentage of bachelor degrees Class:   
+**year:** Date information for each indicator 	  Class:   
+**coal.prod.by.year:** Coal production by year (Tons)	  Class:   
+**year.peak.prod:** Year of peak coal Production (Tons)  Class:   
+**sum.coal.prod:** Sum of total coal production  	(Tons)  Class:   
+**Health.Outcomes.Z.Score:** This is a z score. Health outcomes looks at length of life and quality of life. Length of life looks at premature death and life expectancy and quality of life measures of low birth weight and those who rated their physical and mental health as poor. This outcomes puts a 50% weight on both Quality of Life and Length of life.  Class: "numeric"
+**Health.Outcomes.Rank:** The rank of health outcomes with 1 being the healthiest    Class: "numeric"
 **Health.Factors.Z.Score:** Z score. Health factors includes health behaviors, clinic care, social and economic factors and physical environment. 
-**Health.Factors.Rank:**  Rank of heath factors>  
+**Health.Factors.Rank:**  Rank of Counties with 1 being the healthiest  Class: "numeric"
+
+>
 
 <For each data file in the repository, describe the data contained in each column. Include the column name, a description of the information, the class of data, and any units associated with the data. Create a list or table for each data file.> 
 
@@ -96,12 +95,3 @@ complete.csv This file contains all of the indivudal data sets combined into one
 ## Quality assurance/quality control
 
 The team has worked together to check each others others data and analysis. The complete data set was verified accurate but all team members. We have QA/QC each others analysis and results. 
-
-<describe any relevant QA/QC procedures taken with your data. Some ideas can be found here:>
-
-
-<https://www.dataone.org/best-practices/develop-quality-assurance-and-quality-control-plan>
-<https://www.dataone.org/best-practices/ensure-basic-quality-control>
-<https://www.dataone.org/best-practices/communicate-data-quality>
-<https://www.dataone.org/best-practices/identify-outliers>
-<https://www.dataone.org/best-practices/identify-values-are-estimated>

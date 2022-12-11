@@ -24,7 +24,8 @@ theme_set(mytheme)
 healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
 
 coal<-read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
-table(coal$County)
+#table(coal$County)
+#list(coal$County)
 
 ```
 
@@ -35,45 +36,50 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r Visualizations}
+
+#plotting theme code:
+#ylab("")+
+ # xlab("")+
+#  theme(axis.text.x = element_text(angle = 90))
+
 #Fix class of date
 class(healthdf$year)
 healthdf$year <- as.character(healthdf$year) 
 class(healthdf$year)
 
+#chage from character to date
+healthdf$year <- as.Date(healthdf$year , format = "%Y")
+class(healthdf$year)
+
+healthdf$Health.Factors.Rank <- as.numeric(healthdf$Health.Factors.Rank) 
+healthdf$Health.Outcomes.Rank <- as.numeric(healthdf$Health.Outcomes.Rank) 
+
 #plot rankings below 20 
+
 healthdf.rank20<-healthdf%>%
   filter(Health.Outcomes.Rank<20)
-#table(healthdf.rank20$County)
-
-#summary(healthdf.rank20$County)
 
 #count<-ggplot(healthdf.rank20)+
 #geom_count(healthdf.rank20$County)
 
-rank20<-ggplot(healthdf.rank20, aes(x =year, y =Health.Outcomes.Rank ))+
-  geom_line(aes(color = "County"))+
+rank20<-ggplot(healthdf.rank20, aes(x =year, y =Health.Outcomes.Rank))+
+  geom_line()+
   xlab(expression("Year")) + ylab(expression("Rank")) +
-  theme(legend.position = "None")
+  theme(legend.position = "top")
 print(rank20)
+#color= "county"
+#group = "County" 
 
 rank.slim<-healthdf%>%
   filter(Health.Outcomes.Rank >=20 & Health.Outcomes.Rank<=40)
 
 rankslimplot<-ggplot(rank.slim, aes(x =Health.Outcomes.Rank, y= year))+
-  geom_point(aes(color = "County"))+
-  xlab(expression("Rank")) + ylab(expression("Year")) +
+  geom_line(aes(color = "County"))+
+  xlab(expression("Rank")) + ylab(expression("Year"))+
   theme(legend.position = "None")
-print(rankslim)
+print(rankslimplot)
 
-#plot entire data set rank
-rank<-
-  ggplot(healthdf, aes(x = year, y= Health.Outcomes.Rank))+
-  geom_line(aes(color = County))+
-  xlab(expression("Year")) + ylab(expression("Rank")) +
-  theme(legend.position = "None")
-print(rank)
-
-
+#plot entire data set rank and Z score
 rank<-
   ggplot(healthdf, aes(x = year, y= Health.Outcomes.Rank))+
   geom_line(aes(color = County))+
@@ -88,6 +94,7 @@ zscore<-
   theme(legend.position = "None")
 print(zscore)
 
+#theme(mytheme)
 ```
 
 ## Including Plots
@@ -106,9 +113,14 @@ Counties with Coal:
 Northumberland     Schuylkill       Somerset       Sullivan          Tioga        Venango 
 
     Washington   Westmoreland 
-```{r pressure, echo=FALSE}
+```{r , echo=FALSE}
 
-
+class(healthdf$County)
+class(healthdf$Health.Outcomes.Z.Score)
+class(healthdf$Health.Factors.Z.Score)
+class(healthdf$Health.Factors.Rank)
+class(healthdf$Health.Outcomes.Rank)
+class(healthdf$year)
             
 ```
 
