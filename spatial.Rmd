@@ -91,10 +91,12 @@ counties_sf_join <-  merge(x = counties_sf,
 
 
 coal<- read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
-view(coal$County)
+#list(coal$County)
 
-#library(tables)
-#table(Health_Data_2010$NAME, Health_Data_2010$Health.Outcomes.Rank)
+#Subset coal counties but not working
+coal.filter<-counties_sf_join%>% 
+  filter(NAME %in% c("Armstrong","Beaver","Bedford","Butler","Carbon","Dauphin","Fayette","Greene","Allegheny","Bedfor","Blair","Cambria","Centre","Clarion","Clearfield","Clinton","Columbia","Elk","Huntingdon","Indiana","Jefferson","Lackawanna","Lawrence","Luzerne","Lycoming","Mercer","Monongalia","Northumberland","Somerset","Schuylkill","Sullivan","Tioga"))
+
 ```
 The community health data utilized in this analysis has two separate indicators. One is health outcomes representing the county’s health at that year by looking at many different indicators, including Length of life and quality of life. It weighs both values at 50%. Length of life indicators includes mortality, life expectancy, and premature death. Quality of life indicators includes physical and mental health and low birth weight. The Heath factor is a composite of indicators of health behaviors, clinical care, social and economic factors, and physical environment. (https://www.countyhealthrankings.org/explore-health-rankings/county-health-rankings-model) For this analysis, we utilized Z scores of Health outcomes and Health Factors and the ranking of these variables by county. The data range spans from 2010-2020. 
 A county with a ranking of 1 is the best health, and the lowest ranking is the poorest health. A higher Z score indicates worse health for health outcomes and factors. 
@@ -110,10 +112,16 @@ NCOL(counties_sf_join$NAME)
 #filter for 2019 only to plot
 Health_Data_2019<-counties_sf_join%>%
   filter(year==2019)
-#
-#trying to subset coal counties but not working
-coal.filter<-counties_sf_join%>% 
-  filter(NAME %in% c("Armstrong","Beaver","Bedford","Carbon","Dauphin","Fayette","Greene","Allegheny","Bedfor","Blair","Cambria","Centre","Clarion","Clearfield","Clinton","Columbia","Elk","Indiana","Jefferson","Lackawanna","Lawrence","Luzerne","Lycoming","Mercer","Monongalia","Northumberland","Schuylkill","Sullivan","Tioga"))
+
+
+coal.2019<-coal.filter%>%
+  filter(year==2019)
+
+
+
+#Somerset
+
+
 
 #plot 2019 data
 
@@ -123,18 +131,19 @@ all.Z.2019<-mapview(Health_Data_2019,
         col.regions = brewer.pal(10,'OrRd'))
 
 #coal counties only 2019
-coal.z.2019<-mapview(coal.filter,
+coal.z.2019<-mapview(coal.2019,
         zcol = 'Health.Outcomes.Z.Score', 
         col.regions = brewer.pal(10,'OrRd'))
 
 sync(all.Z.2019,coal.z.2019)  
+
 
 #2019 Rank
 all.rank.2019<-mapview(Health_Data_2019, 
         zcol = 'Health.Outcomes.Rank', 
         col.regions = brewer.pal(20, 'Blues'))
 
-coal.rank.2019<-mapview(coal.filter, 
+coal.rank.2019<-mapview(coal.2019, 
         zcol = 'Health.Outcomes.Rank', 
         col.regions = brewer.pal(20, 'Blues'))       
 
@@ -144,12 +153,15 @@ sync(all.rank.2019, coal.rank.2019)
 Health_Data_2010<-counties_sf_join%>%
   filter(year==2010)
 
+coal.2010<-coal.filter%>%
+  filter(year==2010)
+
 #2010 Z score
 all.z.2010<-mapview(Health_Data_2010, 
         zcol = 'Health.Outcomes.Z.Score', 
         col.regions = brewer.pal(5, 'OrRd'))
 
-coal.z.2010<-mapview(coal.filter, 
+coal.z.2010<-mapview(coal.2010, 
         zcol = 'Health.Outcomes.Z.Score', 
         col.regions = brewer.pal(5, 'OrRd'))
 
@@ -159,11 +171,11 @@ sync(all.z.2010, coal.z.2010)
 #2010 Rank
 all.rank.2010<-mapview(Health_Data_2010, 
         zcol = 'Health.Outcomes.Rank', 
-        col.regions = brewer.pal(9, 'Blues'))
+        col.regions = brewer.pal(20, 'Blues'))
 
-coal.rank.2010<-coal.rank.2010<-mapview(coal.filter, 
+coal.rank.2010<-coal.rank.2010<-mapview(coal.2010, 
         zcol = 'Health.Outcomes.Rank', 
-        col.regions = brewer.pal(9, 'Blues'))
+        col.regions = brewer.pal(20, 'Blues'))
 
 sync(all.rank.2010, coal.rank.2010)
 
