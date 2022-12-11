@@ -117,14 +117,6 @@ Health_Data_2019<-counties_sf_join%>%
 coal.2019<-coal.filter%>%
   filter(year==2019)
 
-
-
-#Somerset
-
-
-
-#plot 2019 data
-
 #2019 Z score
 all.Z.2019<-mapview(Health_Data_2019, 
         zcol = 'Health.Outcomes.Z.Score', 
@@ -189,9 +181,7 @@ sync(all.rank.2010, coal.rank.2010)
 #latticeview(Heath.rank2010,Heath.rank2019)
 
 ```
-The Health outcomes Rank plot for 2010 you can see the spatial distribution of ranks for that year. 2010 was choose because it is the first year of data. Out of the 20 counties that were ranked the highest only two of two of them have been coal producing counties, Indiana and Jefferson.  
 
-The health outcomes rank plot for 2019 you can see the spatial distribution of rank for that year. In 2019 only two of the counties that had had rankings below or equal to 20 which indicates the healthiest counties had a history of coal production. These Counties were Tioga and Bedford. Two different counties than in 2010. 
 
 
 
