@@ -195,7 +195,7 @@ write.csv(aggCoalSlim, file = "./ProcessedData/aggCoalData.csv")
 
 ```
 
-Now that the coal data is effectively processed into a comprehensive dataset, we can take an initial look at what data we have. First, we can make a summary table. This will supply the range, median, and interquantile range for each of the parameters included. We can then do some preliminary visualizations. 
+Now that the coal data is effectively processed into a comprehensive dataset, we can take an initial look at what data we have. First, we can make a summary table. This will supply the range, median, and interquartile range for each of the parameters included. We can then do some preliminary visualizations. 
 ```{r Summarizing the Coal Data}
 #We can make the summary table of the data within the dataset
 coal.data.summary<-aggCoalSlim2 %>% 
@@ -233,12 +233,7 @@ The plot over time shows how the coal production has changed over time from 1983
 
 
 
-
-
-
-
-
-```{r Installing and loading packages}
+```{r Water Quality Analysis}
 
 #import water quality data sets
 WaterQuality <- read.csv("RawData/water_quality_data.csv", stringsAsFactors = TRUE)
@@ -256,31 +251,28 @@ WaterQualitySlim <- data_frame(WaterQuality$ActivityStartDate, WaterQuality$Moni
 
 WaterQualitySlim$Date <- mdy(WaterQualitySlim$Date)
 
-aggWaterQuality <- WaterQualitySlim %>% group_by(Date, Contaminant)%>%
-  summarise(mean(Measure), .groups = 'drop')
-  
+write_csv(WaterQualitySlim, "ProcessedData/WaterQuality.csv")
 
-ContaminantOverTime <- ggplot(aggWaterQuality, aes(Date, `mean(Measure)`, group = Contaminant, color = Contaminant))+
-  geom_smooth()+
-  ylab("Total Contaminant Concentration (qualitative)")+
-  theme(axis.text.y=element_blank(),
-        axis.ticks.y=element_blank() 
-        )
+Only.Sulfate <- filter(WaterQualitySlim, Contaminant == "Sulfate as SO4")
 
-print(ContaminantOverTime)
-
-WaterQualitySlim2 <- WaterQualitySlim %>%
-  filter(County.Code == 107) %>%
-  filter(WaterQualitySlim$State == "Dissolved")
-
-noFeAndMn <- aggWaterQuality %>% filter(Contaminant == c("Sulfate", `Sulfate as SO4`)) 
-onlySulfate <- filter(aggWaterQuality, Contaminant == "Sulfate as SO4")
-
-ContaminantOverTime2 <- ggplot(onlySulfate, aes(Date, `mean(Measure)`, group = Contaminant))+
+Sulfate.Over.Time <- ggplot(Only.Sulfate, aes(Date, Measure, group = Contaminant))+
   geom_point() +
   ylab("Sulfate as SO4 Concentration (mg/l)")
 
+print(Sulfate.Over.Time)
 
-print(ContaminantOverTime2)
+AllvsSulfate <- pivot_wider(WaterQualitySlim, names_from = Contaminant, values_from = Measure)
+
+ggplot(AllvsSulfate, aes(x = `Sulfate as SO4`, y = Calcium))+
+  geom_point()+
+  geom_smooth()
+
+ggplot(AllvsSulfate, aes(x = `Sulfate as SO4`, y = Chloride))+
+  geom_point()+
+  geom_smooth()
+
+ggplot(AllvsSulfate, aes(x = `Sulfate as SO4`, y = Magnesium))+
+  geom_point()+
+  geom_smooth()
 
 ```
