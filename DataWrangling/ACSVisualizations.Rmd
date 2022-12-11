@@ -12,6 +12,9 @@ library(vtable)
 library(tidyverse)
 library(gt)
 library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(ggpubr)
 ```
 
 
@@ -24,6 +27,8 @@ library(cowplot)
 - - could also do above cowplot over time
 
 
+#NEED TO ADD MEDIAN AGE TO ALL VISUALIZATIONS
+
 
 ```{r}
 
@@ -35,42 +40,65 @@ pa.2019.clean <- pa.2019 %>%
   group_by(NAME) %>% 
   summarise(totpop=sum(totpop, na.rm=TRUE),
             medage=sum(medage, na.rm=TRUE),
-            totpoprace=sum(totpoprace, na.rm=TRUE),
             totpopwhite=sum(totpopwhite, na.rm=TRUE),
-            totpopeduc=sum(totpopeduc, na.rm=TRUE),
             bachdegree=sum(bachdegree, na.rm=TRUE),
             medincome=sum(medincome, na.rm=TRUE)) %>% 
   mutate(perc.white = totpopwhite/totpop*100) %>% 
   mutate(perc.bachdegree = bachdegree/totpop*100) %>% 
   separate(NAME, into = c("County", "post","post1")) %>% 
-  select(!c(post, post1))
+  select(!c(post, post1)) %>% 
+  filter(perc.white!=0)
+
+#create large color-blind friendly color palette
+# Define the number of colors you want
+nb.cols <- 40
+mycolors <- colorRampPalette(brewer.pal(9, "Set3"))(nb.cols)
 
 
 pop<-ggplot(pa.2019.clean, aes(County, totpop, fill=County))+
   geom_bar(stat="identity")+
   ylab("Total Population")+
   xlab("County")+
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90))+
+  scale_fill_manual(values = mycolors)+
+  theme(legend.position="none")
 
 race<-ggplot(pa.2019.clean, aes(County, perc.white, fill=County))+
   geom_bar(stat="identity")+
   ylab("% White")+
   xlab("County")+
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90))+
+  scale_fill_manual(values = mycolors)+
+  theme(legend.position="none")
 
 income<-ggplot(pa.2019.clean, aes(County, medincome, fill=County))+
   geom_bar(stat="identity")+
   ylab("Median Income")+
   xlab("County")+
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90))+
+  scale_fill_manual(values = mycolors)+
+  theme(legend.position="none")
 
 bachdegree<-ggplot(pa.2019.clean, aes(County, perc.bachdegree, fill=County))+
   geom_bar(stat="identity")+
   ylab("% with Bachelor's Degree")+
   xlab("County")+
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90))+
+  scale_fill_manual(values = mycolors)
 
-plot_grid(pop, race, income, bachdegree)
+age<-ggplot(pa.2019.clean, aes(County, medage, fill=County))+
+  geom_bar(stat="identity")+
+  ylab("Median Age")+
+  xlab("County")+
+  theme(axis.text.x = element_text(angle = 90))+
+  scale_fill_manual(values = mycolors)+
+  theme(legend.position="none")
+
+ggarrange(pop, race, income, bachdegree, age,
+align='hv', labels=c('A', 'B','C','D','E'),
+common.legend = T,
+legend="bottom",
+nrows=2)
 
 ```
 
@@ -146,23 +174,29 @@ plot_grid(population, inc, white, bach)
 #summary statistics on county data
 ```{r}
 
-pa.county.summary<-pa.2019.clean %>% 
-  summarize(
-    totpop.range= range(totpop),
-    medincome.range= range(medincome),
-    perc.white.range = range(perc.white),
-    perc.bachdegree.range= range(perc.bachdegree),
-    totpop.med = median(totpop),
-    medincome.med = median(medincome),
-    perc.white.med = median(perc.white),
-    perc.bachdegree.med = median(perc.bachdegree),
-    totpop.iqr = IQR(totpop),
-    medincome.iqr = IQR(medincome),
-    perc.white.iqr = IQR(perc.white),
-    perc.bachdegree.iqr = IQR(perc.bachdegree)
-  )
-  
+pa.county.summary <- pa.2019.clean %>% 
+    rename("Total Population" = totpop, "Median Age" = medage, "Median Income (USD)" = medincome, "% White-Identifying" = perc.white, "% with Bachelor's Degree" = perc.bachdegree) %>% 
+    psych::describe(na.rm=TRUE) %>%
+    as_tibble(rownames="rowname") %>% 
+    filter(rowname!="County*" & rowname!="totpopwhite" & rowname!="bachdegree")
 
+
+pa.table<-pa.county.summary %>%
+  select(Variable=rowname, Observations=n, Median=median, Mean=mean, SD=sd, Range=range, Minimum=min, Maximum=max) %>% 
+gt() %>% 
+  
+  tab_header(
+    title = md("Table 1: County-level Summary Statistics of Socioeconomic Variables in Pennsylvania"), subtitle="   ") %>%
+
+  fmt_number(columns = c(Observations), decimals = 0) %>%
+  fmt_number(columns = c(Mean), decimals=2) %>%
+  fmt_number(columns = c(Median), decimals = 2) %>%
+  fmt_number(columns = c(SD), decimals = 2) %>%
+  fmt_number(columns = c(Range), decimals = 2) %>% 
+  fmt_number(columns = c(Minimum), decimals = 2) %>%
+  fmt_number(columns = c(Maximum), decimals = 2)
+  
+pa.table
 
 ```
 

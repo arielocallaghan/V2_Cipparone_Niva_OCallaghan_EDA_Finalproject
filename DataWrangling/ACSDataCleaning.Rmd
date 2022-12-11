@@ -5,33 +5,6 @@ date: '2022-11-29'
 output: html_document
 ---
 
-
-```{r}
-
-#Clean and Format 2019 PA ACS Data
-
-pa.2019<-read.csv("./RawData/pa.2019.csv")
-
-pa.2019.clean <- pa.2019 %>% 
-  pivot_wider(names_from=variable, values_from=estimate)%>% 
-  select(!c(GEOID,moe)) %>% 
-  group_by(NAME) %>% 
-  summarise(totpop=sum(totpop, na.rm=TRUE),
-            medage=sum(medage, na.rm=TRUE),
-            totpoprace=sum(totpoprace, na.rm=TRUE),
-            totpopwhite=sum(totpopwhite, na.rm=TRUE),
-            totpopeduc=sum(totpopeduc, na.rm=TRUE),
-            bachdegree=sum(bachdegree, na.rm=TRUE),
-            medincome=sum(medincome, na.rm=TRUE)) %>% 
-  mutate(perc.white = totpopwhite/totpop*100) %>% 
-  mutate(perc.bachdegree = bachdegree/totpop*100) %>% 
-  separate(NAME, into = c("County", "post","post1")) %>% 
-  select(!c(post, post1))
-
-write.csv(pa.2019.clean, "./ProcessedData/pa.19.clean.csv")
-
-```
-
 ```{r}
 #clean and write full time series dataframe
 
@@ -47,16 +20,15 @@ assign(paste0("pa.",i,".clean"),
   group_by(NAME) %>% 
   summarise(totpop=sum(totpop, na.rm=TRUE),
             medage=sum(medage, na.rm=TRUE),
-            totpoprace=sum(totpoprace, na.rm=TRUE),
             totpopwhite=sum(totpopwhite, na.rm=TRUE),
-            totpopeduc=sum(totpopeduc, na.rm=TRUE),
             bachdegree=sum(bachdegree, na.rm=TRUE),
             medincome=sum(medincome, na.rm=TRUE)) %>% 
   mutate(perc.white = totpopwhite/totpop*100) %>% 
   mutate(perc.bachdegree = bachdegree/totpop*100) %>% 
   mutate(year=i) %>% 
   separate(NAME, into = c("County", "post","post1")) %>% 
-  select(!c(post, post1)))
+  select(!c(post, post1))) %>% 
+  filter(perc.white!=0)
 
 write.csv(get(paste0('pa.', i,".clean")), paste0("./ProcessedData/pa.clean.", i, '.csv'))
 
