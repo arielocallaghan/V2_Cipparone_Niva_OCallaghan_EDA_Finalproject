@@ -66,5 +66,43 @@ corrplot(acs.health.coal.Corr, method = "circle", type="upper")
 corrplot.mixed(acs.health.coal.Corr, upper = "circle")
 
 
+#Visualize scatterplots of all important variables to check for need for transformations
+
+health.age<-ggplot(data.coal.health.acs, aes(medage,Health.Outcomes.Z.Score))+
+  geom_point()+
+  ylab("Health Outcomes")+
+  xlab("Median Age")+
+  theme(axis.text.x = element_text(angle = 90))+
+  theme(legend.position="none")+
+  theme_classic()
+
+health.race<-ggplot(data.coal.health.acs, aes(perc.white,Health.Outcomes.Z.Score))+
+  geom_point()+
+  ylab("Health Outcomes")+
+  xlab("% White-Identifying")+
+  theme(axis.text.x = element_text(angle = 90))+
+  theme(legend.position="none")+
+  theme_classic()
+
+health.educ<-ggplot(data.coal.health.acs, aes(perc.bachdegree,Health.Outcomes.Z.Score))+
+  geom_point()+
+  ylab("Health Outcomes")+
+  xlab("% with Bachelor's Degree")+
+  theme(axis.text.x = element_text(angle = 90))+
+  theme(legend.position="none")+
+  theme_classic()
+
+health.year.2019<-ggplot(data.coal.health.acs, aes(year.from.peak.2019,Health.Outcomes.Z.Score))+
+  geom_point()+
+  ylab("Health Outcomes")+
+  xlab("Years from Peak Production")+
+  theme(axis.text.x = element_text(angle = 90))+
+  theme(legend.position="none")+
+  theme_classic()
+
+ggarrange(health.age, health.race, health.educ, health.year.2019,
+align='hv', labels=c('A', 'B','C','D'),
+nrows=4)
+
 ```
 
