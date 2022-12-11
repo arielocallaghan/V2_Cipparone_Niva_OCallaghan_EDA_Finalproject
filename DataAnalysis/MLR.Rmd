@@ -24,7 +24,8 @@ data.edit<-data.combine %>%
 
 
 data.coal.clean<-data.coal %>% 
-  select(!1)
+  select(!1) %>% 
+  mutate(year.from.peak.2019=2019-year.peak.prod)
 
 data.coal.health.acs<-full_join(data.edit, data.coal.clean, by="County")
 
@@ -33,8 +34,15 @@ data.coal.health.acs<-full_join(data.edit, data.coal.clean, by="County")
 #run MLR
 ```{r}
 
-acs.coal.health.regression <- lm(data = data.coal.health.acs, Health.Outcomes.Z.Score ~ totpop + medage + medincome + perc.white +  perc.bachdegree + year.peak.prod + sum.coal.prod) #we don't want year of peak production - we want # of years from peak production to 2019
+acs.coal.health.regression <- lm(data = data.coal.health.acs, Health.Outcomes.Z.Score ~ totpop + medage + medincome + perc.white +  perc.bachdegree + year.from.peak.2019 + sum.coal.prod)
 summary(acs.coal.health.regression)
+
+#Choose a model by AIC in a Stepwise Algorithm
+step(acs.coal.health.regression)
+
+acs.coal.health.regression.2<-lm(data = data.coal.health.acs, Health.Outcomes.Z.Score ~ medage + perc.white + 
+    perc.bachdegree + year.from.peak.2019)
+summary(acs.coal.health.regression.2)
 
 ```
 
@@ -42,16 +50,20 @@ summary(acs.coal.health.regression)
 ```{r}
 
 par(mfrow = c(2,2), mar=c(4,4,4,4))
-plot(acs.coal.health.regression)
+plot(acs.coal.health.regression.2)
 par(mfrow = c(1,1))
 
-acs.health.coal.Corr <- cor(data.coal.health.acs)
-corrplot(PeterPaulCorr, method = "ellipse")
-corrplot.mixed(PeterPaulCorr, upper = "ellipse")
+#remove county and other non-informative variables to permit correlation plot
+acs.health.coal.cor.edit <- data.coal.health.acs %>% 
+  select(!c(County,totpop,totpoprace, totpopeduc, totpopwhite, bachdegree,Health.Factors.Z.Score,
+            Health.Factors.Rank, year.peak.prod, year)) %>% 
+  na.omit()
 
-#Choose a model by AIC in a Stepwise Algorithm
-step(acs.coal.health.regression)
 
+
+acs.health.coal.Corr <- cor(acs.health.coal.cor.edit)
+corrplot(acs.health.coal.Corr, method = "circle", type="upper")
+corrplot.mixed(acs.health.coal.Corr, upper = "circle")
 
 
 ```
