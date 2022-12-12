@@ -1,0 +1,74 @@
+---
+title: "healthtable"
+author: "Ariel O'Callaghan"
+date: "2022-12-11"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(kableExtra)
+#install.packages("gt")
+library(gt)
+library(tidyverse)
+library(glue)
+library(knitr)
+healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r summary table}
+
+healthdf.table<- healthdf %>%
+  group_by(year) %>%
+  summarize(
+    mean_Health_Outcome_rank = mean(Health.Outcomes.Rank),
+    min_health_outcome_rank = min(mean_Health_Outcome_rank),
+    max_Health_Outcome_rank = max(Health.Outcomes.Rank),
+    sd_Health_Outcome_rank = sd(Health.Outcomes.Rank))
+
+#kable(healthdf.table,caption = "Health Indicators Outcomes Summary Table") 
+
+healthdf.table.Z<- healthdf %>%
+  group_by(year) %>%
+  summarize(
+    mean_Health_Outcome_Zscore = mean(Health.Outcomes.Z.Score),
+    min_health_outcome_Zscore = min(mean_Health_Outcome_Zscore),
+    max_Health_Outcome_Zscore = max(Health.Outcomes.Z.Score),
+    sd_Health_Outcome_zscore = sd(Health.Outcomes.Z.Score))
+
+
+#kable(healthdf.table.Z, caption = "Health Indicators Z Score Summary Table ")
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r create.summary.table,}
+kable(x = healthdf.table, 
+      format = "html",
+      col.names = c("Year","Mean Rank","Min Rank","Max Rank","SD Rank"),
+      caption = "Health Indicators Outcomes Summary Table")%>%
+  kable_styling()
+
+#%>%kable_classic()
+# echo=FALSE
+kable(x = healthdf.table.Z, 
+      format = "html",
+      col.names = c("Year", "Mean Z", "Min Z", "Max Z", "SD Z"),
+      caption = "Health Indicators Z Score Summary Table")%>%
+    kable_styling()
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
