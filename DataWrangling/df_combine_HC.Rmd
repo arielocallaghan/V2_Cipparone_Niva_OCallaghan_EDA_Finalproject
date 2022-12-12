@@ -10,12 +10,14 @@ output: html_document
 getwd()
 
 library(tidyverse)
+library(tidyr)
 
 
 health<-read.csv("./ProcessedData/healthdf.csv")
 
 coal<-read.csv("./ProcessedData/Coal.Clean.csv")
 acs<-read.csv("./ProcessedData/acs.combined.years.csv")
+
 
 
 acs<-acs %>% 
@@ -25,6 +27,8 @@ coal<-coal %>%
   rename(year=Year)
 
 combine.partial<-full_join(acs,coal, by=c("County","year"))
+
+length(unique(combine.partial$County))
 
 combine.full<-full_join(combine.partial,health, by=c("County","year"))
 
