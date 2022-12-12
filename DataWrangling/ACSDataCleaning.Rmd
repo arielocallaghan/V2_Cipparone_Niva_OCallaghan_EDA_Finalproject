@@ -28,7 +28,7 @@ assign(paste0("pa.",i,".clean"),
   mutate(year=i) %>% 
   separate(NAME, into = c("County", "post","post1")) %>% 
   select(!c(post, post1))) %>% 
-  filter(perc.white!=0)
+  filter(totpopwhite!=0)
 
 write.csv(get(paste0('pa.', i,".clean")), paste0("./ProcessedData/pa.clean.", i, '.csv'))
 

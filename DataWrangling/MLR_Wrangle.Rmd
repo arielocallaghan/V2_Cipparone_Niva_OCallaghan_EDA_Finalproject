@@ -25,6 +25,7 @@ coal.sumprod<-Coal_Clean %>%
 ```
 
 #Then need to integrate that coal with the health data, impute for the missing counties in the coal, and attach the acs data
+#note that imputed zero for total coal production in counties not in the data and 37 (2019 - 1982) for years from peak
 ```{r}
 
 health.data<-health %>% 
@@ -42,5 +43,6 @@ acs.clean<-acs %>%
 
 health.coal.acs.impute<-left_join(health.coal.impute, acs.clean)
 
+write.csv(health.coal.acs.impute, "./ProcessedData/health.coal.acs.impute.csv")
 
 ```

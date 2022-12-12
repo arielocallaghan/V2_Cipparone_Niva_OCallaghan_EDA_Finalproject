@@ -4,42 +4,36 @@
 ```{r}
 library(tidyverse)
 library(corrplot)
+library(ggpubr)
 
 ```
 
 ```{r}
 
-data.combine<-read.csv("./ProcessedData/combine.csv")
-data.coal<-read.csv("./ProcessedData/HC_Coal_Edit.csv")
+data<-read.csv("./ProcessedData/health.coal.acs.impute.csv")
 
 ```
 
 #Select out 2019 data and remove counties with 0s for white population. Join new coal data (no year - just year of max production and total sum production) to acs and health data. 
 ```{r}
-
-data.edit<-data.combine %>% 
-  filter(year==2019) %>% 
+data.edit<-data %>% 
   filter(perc.white!=0) %>% 
-  select(!c(1,coal.prod.by.year, year.peak.prod, sum.coal.prod))
-
-data.coal.clean<-data.coal %>% 
-  select(!1)
-
-data.coal.health.acs<-full_join(data.edit, data.coal.clean, by="County")
-
+  na.omit()
 ```
 
+
+```{r}
 #run MLR
 ```{r}
 
-acs.coal.health.regression <- lm(data = data.coal.health.acs, Health.Outcomes.Z.Score ~ totpop + medage + medincome + perc.white +  perc.bachdegree + year.from.peak.2019 + sum.coal.prod)
+acs.coal.health.regression <- lm(data = data.edit, Health.Outcomes.Z.Score ~ totpop + medage + medincome + perc.white +  perc.bachdegree + year.from.peak.2019 + sum.coal.prod)
 summary(acs.coal.health.regression)
 
 #Choose a model by AIC in a Stepwise Algorithm
 step(acs.coal.health.regression)
 
-acs.coal.health.regression.2<-lm(data = data.coal.health.acs, Health.Outcomes.Z.Score ~ medage + perc.white + 
-    perc.bachdegree + year.from.peak.2019)
+acs.coal.health.regression.2<-lm(data = data.edit, Health.Outcomes.Z.Score ~ medage + perc.white + 
+    medincome)
 summary(acs.coal.health.regression.2)
 
 ```
@@ -67,7 +61,7 @@ corrplot.mixed(acs.health.coal.Corr, upper = "circle")
 
 ```{r}
 
-health.age<-ggplot(data.coal.health.acs, aes(medage,Health.Outcomes.Z.Score))+
+health.age<-ggplot(data.edit, aes(medage,Health.Outcomes.Z.Score))+
   geom_point()+
   ylab("Health Outcomes")+
   xlab("Median Age")+
@@ -75,7 +69,7 @@ health.age<-ggplot(data.coal.health.acs, aes(medage,Health.Outcomes.Z.Score))+
   theme(legend.position="none")+
   theme_classic()
 
-health.race<-ggplot(data.coal.health.acs, aes(perc.white,Health.Outcomes.Z.Score))+
+health.race<-ggplot(data.edit, aes(perc.white,Health.Outcomes.Z.Score))+
   geom_point()+
   ylab("Health Outcomes")+
   xlab("% White-Identifying")+
@@ -83,25 +77,17 @@ health.race<-ggplot(data.coal.health.acs, aes(perc.white,Health.Outcomes.Z.Score
   theme(legend.position="none")+
   theme_classic()
 
-health.educ<-ggplot(data.coal.health.acs, aes(perc.bachdegree,Health.Outcomes.Z.Score))+
+health.inc<-ggplot(data.edit, aes(medincome,Health.Outcomes.Z.Score))+
   geom_point()+
   ylab("Health Outcomes")+
-  xlab("% with Bachelor's Degree")+
+  xlab("Median Income (USD)")+
   theme(axis.text.x = element_text(angle = 90))+
   theme(legend.position="none")+
   theme_classic()
 
-health.year.2019<-ggplot(data.coal.health.acs, aes(year.from.peak.2019,Health.Outcomes.Z.Score))+
-  geom_point()+
-  ylab("Health Outcomes")+
-  xlab("Years from Peak Production")+
-  theme(axis.text.x = element_text(angle = 90))+
-  theme(legend.position="none")+
-  theme_classic()
-
-ggarrange(health.age, health.race, health.educ, health.year.2019,
-align='hv', labels=c('A', 'B','C','D'),
-nrows=4)
+ggarrange(health.age, health.race, health.inc,
+align='hv', labels=c('A', 'B','C'),
+nrows=3)
 
 ```
 
