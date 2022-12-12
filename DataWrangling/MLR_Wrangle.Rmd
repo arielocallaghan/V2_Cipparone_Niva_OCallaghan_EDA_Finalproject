@@ -1,0 +1,46 @@
+
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(readr)
+```
+
+
+```{r}
+data.combine<-read.csv("./ProcessedData/combine.csv")
+Coal_Clean<-read.csv("./ProcessedData/Coal.Clean.csv")
+acs<-read.csv("./ProcessedData/acs.combined.years.csv")
+health<-read.csv("./ProcessedData/healthdf.csv")
+```
+
+#Need to create a dataset with all of the coal counties and then years since peak production
+```{r}
+coal.sumprod<-Coal_Clean %>% 
+  filter(Year==2019) %>% 
+  group_by(County) %>% 
+  summarize(year.peak.prod=mean(year.peak.prod),
+            sum.coal.prod=mean(sum.coal.prod)) %>% 
+  mutate(year.from.peak.2019=2019-year.peak.prod)
+```
+
+#Then need to integrate that coal with the health data, impute for the missing counties in the coal, and attach the acs data
+```{r}
+
+health.data<-health %>% 
+  filter(year==2019)
+
+health.coal<-left_join(health.data, coal.sumprod)
+
+health.coal.impute<-health.coal %>% 
+  select(!year.peak.prod) %>% 
+  mutate_at(vars(sum.coal.prod),  replace_na, '0') %>% 
+  mutate_at(vars(year.from.peak.2019),  replace_na, '37')
+
+acs.clean<-acs %>% 
+  select(!c(1:2))
+
+health.coal.acs.impute<-left_join(health.coal.impute, acs.clean)
+
+
+```

@@ -8,8 +8,57 @@ library(readr)
 
 
 ```{r}
-coal<-read.csv("./ProcessedData/Coal.Clean.csv")
+data.combine<-read.csv("./ProcessedData/combine.csv")
+Coal_Clean<-read.csv("./ProcessedData/Coal.Clean.csv")
 ```
+
+#Need to create a dataset with all of the coal counties and then years since peak production
+```{r}
+coal.sumprod<-Coal_Clean %>% 
+  filter(Year==2019) %>% 
+  group_by(County) %>% 
+  summarize(year.peak.prod=mean(year.peak.prod),
+            sum.coal.prod=mean(sum.coal.prod)) %>% 
+  mutate(year.from.peak.2019=2019-year.peak.prod)
+```
+
+#Then need to integrate that coal with the health data, impute for the missing counties in the coal, and attach the acs data
+```{r}
+data.edit<-data.combine %>% 
+  filter(year==2019) %>% 
+  filter(perc.white!=0) %>% 
+  select(!c(1,coal.prod.by.year, year.peak.prod, sum.coal.prod))
+
+
+data.coal.clean<-data.coal %>% 
+  select(!1)
+
+data.coal.health.acs<-full_join(data.edit, data.coal.clean, by="County")
+
+%>% 
+  mutate_at(vars(sum.coal.prod),  replace_na, '0') %>% 
+  mutate_at(vars(sum.coal.prod),  replace_na, '0')
+
+
+combine.test<-left_join(health, coal, by=c("County","year"="Year")) %>% 
+  filter(year==2019) %>% 
+
+
+length(unique(coal.sumprod$County))
+
+write.csv(coal.sumprod, "./ProcessedData/HC_Coal_Edit.csv")
+
+
+```
+
+
+
+
+
+
+
+
+
 
 #Try finding the maximum year of coal production
 ```{r}
@@ -40,22 +89,3 @@ df$County="Allegheny"
 
 
 ```
-
-
-
-#Need to create a dataset with all of the coal counties and then years since peak production and 
-```{r}
-
-coal.sumprod<-Coal_Clean %>% 
-  group_by(County) %>% 
-  summarize(year.peak.prod=mean(year.peak.prod),
-            sum.coal.prod=mean(sum.coal.prod))
-
-
-length(unique(coal.sumprod$County))
-
-write.csv(coal.sumprod, "./ProcessedData/HC_Coal_Edit.csv")
-
-
-```
-
