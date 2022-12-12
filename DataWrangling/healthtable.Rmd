@@ -60,7 +60,7 @@ kable(x = healthdf.table,
       format = "html",
       col.names = c("Year","Mean Rank","Min Rank","Max Rank","SD Rank"),
       caption = "Health Indicators Outcomes Summary Table")%>%
-  kable_styling()
+  kable_classic(full_width = F, html_font = "Cambria")
 
 #%>%kable_classic()
 # echo=FALSE
@@ -68,7 +68,7 @@ kable(x = healthdf.table.Z,
       format = "html",
       col.names = c("Year", "Mean Z", "Min Z", "Max Z", "SD Z"),
       caption = "Health Indicators Z Score Summary Table")%>%
-    kable_styling()
+  kable_classic(full_width = F, html_font = "Cambria")
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
