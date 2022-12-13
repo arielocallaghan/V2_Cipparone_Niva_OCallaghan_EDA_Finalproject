@@ -359,29 +359,176 @@ A spatial analysis was utilized to display health outcomes rank and Z score by c
 This figure shows that most of the counties with a high Z score, darker orange indicating poor health, are shown on the right pannel indicating coal producing counties.. There are a few exceptions, for example, the County of Philadelphia, which also includes the City of Philadelphia, the largest city in the State of Pennsylvania (source). The other major exception is the County of Centre, the county shown middle, which had relatively low total coal production (2,543,689 tons) compared to neighboring counties.
 
 ###(Figure XX (2019 Rank)
-```{r Figure 2019 Rank, echo=TRUE, fig.align='left', fig.cap="Shows Z scores of health outcome data by County in 2019", fig.height=, message=FALSE, warning=FALSE}
+```{r Figure 2019 Rank Map, echo=TRUE, fig.align='left', fig.cap="Z scores of health outcome data by County in 2019", fig.height=, message=FALSE, warning=FALSE}
 
 #(Caption figure XX: Health outcomes ranking by county for 2019.)
-
 
 ```
 
 
+This figure shows the heather counties in a lighter blue county and decreasing health towards the darker blue. A seven coal-producing counties with relatively low health rankings below 20 are Bulter, Bedford, Clinton, Centre, Clinton, Montogomery and Tiago. These are the exceptions, as most health rankings for coal-producing counties have a poor health ranking visualized by the darker blue colors. Keep in mind this graph represents counties that have had any amount of coal production. 
 
+###2010 z score map
+```{r 2010 Z score map, echo=TRUE, fig.align='left', fig.cap="Z scores of health outcome by County in 2010", fig.height=, message=FALSE, warning=FALSE}
 
-This figure shows the heather counties in a lighter blue county and decreasing health towards the darker blue. A seven coal-producing counties with relatively low health rankings below 20 are Bulter, Bedford, Clinton,Centre, Clinton, Montogomery and Tiago. These are the exceptions, as most health rankings for coal-producing counties have a poor health ranking visualized by the darker blue colors. Keep in mind this graph represents counties that have had any amount of coal production. 
-
-(Figure XX (2010 Z score)
-(Caption figure XX: Shows Z scores of health outcome by County in 2010)
+#(Caption figure XX: Shows Z scores of health outcome by County in 2010)
+```
 
 The same analysis as the maps above  was conducted for the year 2010. Looking at the left pane, there is one county stands out. This county is Philadelphia, which has a Z score in 2010 of 3.43. The next highest Z score for that year is 1.21 in Greene County, a coal-producing county. This county is displayed at the bottom left on the Pennsylvania map. The scale of the right pane is slightly different due to Philadelphia County not being included. A few counties with a history of coal production have a low Z score and, therefore, better health. Centre county has the lowest Z score of -1.53, the county with the lightest orange color in the right pane. Butler county is the next healthiest with a z score of -0.71.  As you can see from the visualization in this figure, most counties in 2010 with the highest z score indicating poor health are counties that have a history of local production.
 
-(Figure XX (2010 Rank)
-(Caption figure XX: Health outcomes ranking by county in 2010.)
+###2010 rank map
+```{r 2010 Rank Map, echo=TRUE, fig.align='left', fig.cap="Health outcomes ranking by county in 2010", fig.height=, message=FALSE, warning=FALSE}
+#(Caption figure XX: Health outcomes ranking by county in 2010.)
+```
+
 
 Similar patterns emerge in the 2010 ranking as they did in the 2019 map. In 2010, eight out of the 37 coal-producing counties had health rankings below 20. These are Centre, Bulter, Columbia, Indiana, Montgomery, Berks, Westmoreland, and Jefferson. Rankings of counties with the poorest health 50-67 are composed mostly of coal-producing counties except Philadelphia ranked 67, Wayne ranked 62, Forest ranked 53 and McKean ranked 50.
 
 These maps provide a clear visualization that counties with a history of coal production counties are typically in poor health when examining these community health indicators. 
 
-# References
-<add references here if relevant, otherwise delete this section> 
+##ACS
+
+###(Graphic of median age, income, pop etc. for all PA counties)
+```{r Graphic of median age, income, pop etc. for all PA counties, echo=TRUE, fig.align='left', fig.cap="Graph depicting median age, median income, total population, percent of population with a bachelor’s degree and percent of population which is white-identifying for Pennsylvania counties in 2019. Data sourced from ACS 1-year estimates.", fig.height=, message=FALSE, warning=FALSE}
+
+#Graphic of median age, income, pop etc. for all PA counties
+
+#Caption: Figure ____: Graph depicting median age, median income, total population, percent of population with a bachelor’s degree and percent of population which is white-identifying for Pennsylvania counties in 2019. Data sourced from ACS 1-year estimates.
+```
+
+We can observe a number of interesting trends in the above graphic. Looking at total population, we can see that most counties have fewer than 500,000 people. The exceptions to this trend are Philadelphia and Allegheny counties - the counties with the large cities of Philadelphia and Pittsburgh, respectively. Considering race, 75% or more of the populations of most counties identify as white - a notable distinction is Philadelphia. Median income shows that most counties have median incomes of 25,000 or more. There are a few high outliers - specifically Chester and Montgomery counties. Turning to education, we can see that income and the percent of population with a bachelor’s tracks reasonably well - the highest income counties (Chester and Montgomery) also have the highest education levels. Looking at age we can see that most counties have median ages around 40, but Philadelphia and Centre have median ages closer to 30. Considered in the context of national statistics, we can see from this graph that most Pennsylvania counties are a little older, a little poorer, and a little less educated than national population averages. We can also guess that much of Pennsylvania is rural, given the drastic difference in population size and median age between the population hub of Philadelphia and all other counties in the state.
+
+##**Analysis**
+
+To further understand the relationship of coal production impact on community health in Pennsylvania we conducted two different in depth analyses. A time series and analysis and a multiple linear regression. Additionally, we did a preliminary look at water quality parameters to look at trends in pennsylvania. An indepth look at each of these analyses are described below.
+
+##Time Series Analysis
+We first examined the relationship between health outcomes and coal production between 2010 and 2020. While this permits us to investigate the relationship between our two variables of greatest interest, it is important to note that many of the contamination concerns associated with mining occur in the years following coal mining (water contamination from acid mine drainage). 
+
+###(code for data wrangling for time series analysis)
+```{r code for data wrangling for time series analysis, echo=TRUE}
+
+```
+
+
+###Time Series Data Analysis
+In our analysis, we look at a few counties individually. When examined all together, the considerable variability across counties causes high error margins to obscure any observable trends. We examined any relationship by plotting both the trends over time in coal production and health outcomes/factors. Building upon this visual evaluation, we then conducted a linear analysis over time with consideration of those two variables. The first county we looked at was Schuylkill County. This county holds the most weight as the peak coal production far exceeded that seen in any other county (can be seen as the highest arch in the plot within the coal data set analysis above). 
+
+####code for looking at schuylkill county with plots of coal production over health factors and coal production over health outcomes and linear regressions
+```{r code for looking at schuylkill county with plots of coal production over health factors and coal production over health outcomes and linear regressions, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health factors z score over time in the Schuylkill county", fig.height=, message=FALSE, warning=FALSE}
+
+#code for looking at schuylkill county with plots of coal production over health factors and coal production over health outcomes and linear regressions
+
+#Figure Caption: Synchronous plot of coal production and health factors z score over time in the Schuylkill county
+```
+
+```{r code for looking at schuylkill county with plots of coal production over health factors and coal production over health outcomes and linear regressions, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health outcomes z score over time in the Schuylkill county", fig.height=, message=FALSE, warning=FALSE}
+
+#Figure Caption: Synchronous plot of coal production and health outcomes z score over time in the Schuylkill county
+```
+
+The correlation between the health factors z score and coal production over time in Schuylkill county was the most compelling of the time series analysis. There is a clear correlation visible in the line graph where decreasing coal production is clearly associated with decreasing health factors z score (an indicator of increasing access to public health resources). The linear regression below revealed a p-value of 0.000856, far lower than 0.05, indicating a significantly non-zero relationship. Since we are limited to only 11 data points, this could be coincidental, but considering the extreme output of coal from this region, this may be magnifying any adverse effects of coal production and making this trend more visible. The correlation between health outcomes and coal production was less visible. With a p-value of 0.21, there is likely some correlation, but it is still considerably higher than 0.05. 
+
+We then examined Armstrong county and Clearfield County as two other counties with considerably high coal production to understand how pervasive the correlations previously identified are. 
+
+###code for looking at armstrong county with plots of coal production over health factors and coal production over health outcomes and linear regressions
+```{r code for looking at armstrong county with plots of coal production over health factors and coal production over health outcomes and linear regressions, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health factors z score over time in the Armstrong county", fig.height=, message=FALSE, warning=FALSE}
+
+#(code for looking at armstrong county with plots of coal production over health factors and coal production over health outcomes and linear regressions)
+
+#Figure Caption: Synchronous plot of coal production and health factors z score over time in the Armstrong county
+```
+
+```{r code for looking at armstrong county with plots of coal production over health factors and coal production over health outcomes and linear regressions, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health outcomes z score over time in the Armstrong county", fig.height=, message=FALSE, warning=FALSE}
+
+#Figure Caption: Synchronous plot of coal production and health outcomes z score over time in the Armstrong county
+```
+
+
+###(code for looking at clearfield county with plots of coal production over health factors and coal production over health outcomes and linear regressions)
+
+```{r Synchronous plot of coal production and health factors z score over time in the Clearfield county, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health factors z score over time in the Clearfield county", fig.height=, message=FALSE, warning=FALSE}
+
+#Figure Caption: Synchronous plot of coal production and health factors z score over time in the Clearfield county
+```
+
+```{r Synchronous plot of coal production and health factors z score over time in the Clearfield county,echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health outcomes z score over time in the Clearfield county", fig.height=, message=FALSE, warning=FALSE}
+
+
+#Figure Caption: Synchronous plot of coal production and health outcomes z score over time in the Clearfield county
+```
+
+The trends for these counties were much more inconsistent. None had p-values below or near 0.05. Much of this issue may be the result of only having 11 data points and so an increase in health data in the more distant past would be crucial to understanding how strong this correlation is. Sadly, much of the more robust data only began a more rigorous collection more recently and so this is difficult to find. 
+
+##acs
+
+
+###(Insert mixed correlation plot here)
+```{r Insert mixed correlation plot here, Echo=TRUE, fig.align='left', fig.cap="Mixed correlation plot for all variables of interest. Blue values are positive and red values are negative. Correlations performed using Pearson’s correlation coefficient.", fig.height=, message=FALSE, warning=FALSE}
+
+#Caption: Figure ______: Mixed correlation plot for all variables of interest. Blue values are positive and red values are negative. Correlations performed using Pearson’s correlation coefficient.
+
+```
+
+An initial plot of correlations between each of the variables of interest - median age, median income, percent white, percent with a bachelor’s degree, health outcomes Z score, health outcomes rank, sum of coal production over time and years from the peak coal production to 2019 - reveal a number of interesting trends. First we see that both median income and percent with bachelor’s degree are strongly negatively associated with health outcomes (coefficient = -0.62, -0.63 for income and rank and income and z-score, coefficient = -0.51 and -0.54 for percent bachelor’s degree and rank and percent bachelor’s degree and z-score). This clearly matches the prior findings that wealth and education have strong impacts on health. Looking specifically at our variables of greatest interest - total coal production and years from peak production - we see a number of interesting relationships. First, we see that health outcomes have positive relationships with total coal production (coefficient = 0.26 and 0.31, z-score and rank). This follows expected behavior, as increasing rank value for health outcome indicates worse health. We can then see that total coal production is strongly negatively associated with years from peak production (coefficient = -0.46). This suggests that increasing total coal production is associated with decreasing period from peak year of production until now. This is likely informed by our imputation of 37 years for all counties outside of the coal dataset, which would skew low coal counties towards larger periods from 2019. Total coal production was positively associated with median age and percent white, but negatively with income and education (coefficients = 0.36, 0.32, -0.35, -0.44 respectively). This fits with our understanding of coal as a product produced in rural, white, older, and now-poor areas. Years from peak production reverse the relationships with total coal - negative relationships with health outcomes, median age and percent white while positive relationships with bachelor’s degree and income (coefficients = -0.29, -0.38, -0.43, -0.30, 0.31, 0.26 respectively). This may be a result of actual data - increasing years from peak increases a given county’s income and education - but may also in part be an artifact of our imputation of 37 years for all counties without coal production.
+
+Collectively, these results suggest that, while income and education increase community health, and age decreases health outcomes, total coal production and years from peak production do not have a particularly strong relationship with health outcomes.
+
+The linear regression below confirm many of the findings from the correlation plot above. For our first model formulation, the adjusted R-squared is relatively high, suggesting strong fit of the model (Adj. R-squared = 0.7228, 29 degrees of freedom).  Median age, median income and percentage white-identifying had significantly non-zero relationships with health outcomes (age: coeff.=0.01566, p<0.001, income: coeff.=-0.0001, p<0.001, race: coeff. = -0.05156, p=0.001). Our variables of interest - total coal production and years from peak production - did not have non-zero relationships (p=0.32 and 0.96 respectively). 
+
+###(Linear regression model 1 results here)
+```{r Linear regression model 1 results here, Echo=TRUE, fig.align='left', fig.cap="Initial regression results including all socioeconomic and coal production variables regressed on health outcomes z-score. Adj. R-squared = 0.5189, 14 degrees of freedom.", fig.height=, message=FALSE, warning=FALSE}
+
+#Caption: Table ______: Initial regression results including all socioeconomic and coal production variables regressed on health outcomes z-score. Adj. R-squared = 0.5189, 14 degrees of freedom.
+```
+
+
+After running the Akaike Information Criteria test to evaluate model overfitting, we reduced the explanatory variables to only include the variables ‘percent white’, ‘median age’, and ‘median income’ (initial AIC = -48.1, final AIC = -52.6. Df = 1). This new model displayed significant results for median age (coeff. = 0.1716, p-value<0.0001), percent white (coeff. = -0.06446, p-value <0.0001), and median income (coeff. = -0.0001206, p-value <0.0001). The adjusted r-squared was 0.7322.
+
+###(AIC results here)
+```{r AIC results here, Echo=TRUE, fig.align='left', fig.cap="Akaike Information Criteria (AIC) stepwise results", fig.height=, message=FALSE, warning=FALSE}
+
+#Caption: Table ____: Akaike Information Criteria (AIC) stepwise results. 
+```
+
+
+###(Linear regression model 2 results here)
+```{r Linear regression model 2 results here, Echo=TRUE, fig.align='left', fig.cap="Second linear regression following AIC value recommendations for reduced overfitting. Adjusted R-squared: 0.7322, 33 degrees of freedom", fig.height=, message=FALSE, warning=FALSE}
+
+#Caption: Table_____: Second linear regression following AIC value recommendations for reduced overfitting. Adjusted R-squared: 0.7322, 33 degrees of freedom.
+```
+
+These results show that, while total population and years from peak coal production have little statistical relationship with a county’s health outcomes, increasing age decreases a county’s health and increasing whiteness and income both increase a county’s health.
+
+Unfortunately the assumptions of a multiple linear regression were not met during this analysis, bringing the above results into question. We can see from the residuals vs. fitted and scale location plots clear evidence of heteroskedasticity (non equal variance in residuals over the range of the model) and in the Normal Q-Q plot some indication of a lack of normality of the joint distribution particularly near extreme values. We can see these outliers more clearly in the Residuals vs. Leverage plot - particularly the outlier value ‘9’ which passes Cook’s Distance limits at both the 0.5 and the 1 levels. We can, however, note that the relationships were broadly linear, looking at the scatterplot below. These issues may have come in part from a low number of observations. Due to the use of three different datasets, each which covered different counties within Pennsylvania, there were only 37 counties which had full datasets and therefore could be analyzed by this regression. This is a relatively small sample size.
+
+
+###(insert residual vs. fitted, scale location, Normal Q-Q, Residuals vs. Leverage plots here)
+```{r insert residual vs. fitted, scale location, Normal Q-Q, Residuals vs. Leverage plots here, Echo=TRUE, fig.align='left', fig.cap="Plots to examine multiple linear regression assumptions (homoscedasticity, normality)", fig.height=, message=FALSE, warning=FALSE}
+
+#Caption: Plots to examine multiple linear regression assumptions (homoscedasticity, normality)
+```
+
+
+###(insert cowplot of explanatory vs response variables here)
+```{r insert cowplot of explanatory vs response variables here, Echo=TRUE, fig.align='Plots to examine linearity assumption of multiple linear regression model.", fig.height=, message=FALSE, warning=FALSE}
+
+#Caption: Plots to examine linearity assumption of multiple linear regression model.
+```
+
+
+#**Summary and Conclusions**
+
+
+# **References**
+Rose M. Mueller, Surface coal mining and public health disparities: Evidence from Appalachia,
+Resources Policy,Volume 76, 2022, 102567. https://doi.org/10.1016/j.resourpol.2022.102567.
+
+Gasparotto, J. and K. Da Boit Martinello (2021). "Coal as an energy source and its impacts on human health." Energy Geoscience 2(2): 113-120.
+
+G. Leon-Mejia, M. Quintana, R.Debastiani, J. Dias, L. Espitia-Perez, A. Hartmann, J. Da Silva“Genetic damage in coal miners evaluated by buccal micronucleus cytome assay” Ecotoxicol.Environ. Saf., 107 (2014), pp. 133-139, 10.1016/j.ecoenv.2014.05.023
+
+Marius Campbell, Coal fields of the United States. Department of the Interior, U.S. Geological Survey, February 24, 1917. https://pubs.usgs.gov/pp/0100a/report.pdf
+
+Pennsylvania Department of Environmental Quality. Coal mining in Pennsylvania. PA Mining history. https://www.dep.pa.gov/Business/Land/Mining/Pages/PA-Mining-History.aspx. Last accessed on November 8, 2022)
+
