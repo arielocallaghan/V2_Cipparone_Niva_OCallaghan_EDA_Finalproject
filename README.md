@@ -6,7 +6,7 @@ https://github.com/arielocallaghan/Cipparone_Niva_OCallaghan_EDA_Finalproject
 
 ## Summary
 
-<This repository was created for an Environmental Data Analytics Class at Duke University Nicholas School of the Environment. This repository contains information on Pennsylvania coal production, Census data, water quality, and community health rankings. This project was started in late November 2022 and will be completed by December 14, 2022. The goal of this project is to understand the impact coal production has on community health indications. This analysis focus only on Pennsylvania as this state is forth largest coal producing state in the Nation. A multivariate regression and time series analysis will be utilized as the primary form of analysis. For this project a time series analysis will also be utilized.>
+<This repository was created for an Environmental Data Analytics Class at Duke University Nicholas School of the Environment. This repository contains information on Pennsylvania coal production, Census data, water quality, and community health rankings. This project was started in late November 2022 and will be completed by December 14, 2022. The goal of this project is to understand the impact coal production has on community health indications. This analysis focus only on Pennsylvania as this state is forth largest coal producing state in the Nation. A multivariate regression and time series analysis will be utilized as the primary form of analysis.The analysis has been completed at the county scale as that was the granularity available for the datasets we wanted to use.>
 
 
 ## Investigators
@@ -20,19 +20,19 @@ https://github.com/arielocallaghan/Cipparone_Niva_OCallaghan_EDA_Finalproject
 
 ## Database Information
 
-<Coal Production data: Raw data was collected from the U.S. Energy Information Administration (EIA) coal production tab. This data was first accessed on November 22, 2022. 
+<Coal Production data: Raw data was collected from the U.S. Energy Information Administration (EIA).The EIA is the statistical and analytical agency within the U.S. Department of Energy. Their purpose is to collect, analyze and disseminate information on energy information. EIA is the governments primary source for energy information and data. The data utilized was from the coal data webpage from their production tab. The entire time frame of data available has been utilized for this report. This data was first accessed on November 22, 2022. 
 
 Link:https://www.eia.gov/coal/data.php (Production tab)
 
-water Quality: Water Quality Portal: This portal integrates water quality data from the United States Geological Survey (USGS) and Environmental Protection Agency (EPA), and over state, federal, and local agencies. Water quality information was downloaded for Pennsylvania, with data spanning from 1991 -2011. This data was accessed on November 27, 2022.
+water Quality: Water Quality Portal: This portal integrates water quality data from the United States Geological Survey (USGS) and Environmental Protection Agency (EPA), and over 400 state, federal, and local agencies. Water quality information was downloaded for Pennsylvania, with data spanning from 1991 -2011. This data was accessed on November 27, 2022.
 
 Link: https://www.waterqualitydata.us/
 
-Census Data: This data set is the American Community Survey (ACS) data set and is part of the U.S. Census. The ACS provides survey information on a yearly basis about our nation and its people. This data was accessed on November 26, 2022. 
+Census Data: This data set is the American Community Survey (ACS) data set and is part of the U.S. Census. The ACS provides survey information on a yearly basis about our nation and its people. It is the pmary data source of the U.S. Census for detailed information on population and housing information. This data was accessed on November 26, 2022. 
 
 link:https://www.census.gov/programs-surveys/acs/data.html
 
-Community Heath data: This data was collected and downloaded from County Health Rankings and Roadmaps. Data was download for Pennsylvania from 2010-2020. This data was accessed on November 28, 2022. 
+Community Heath data: This data was collected and downloaded from County Health Rankings and Roadmaps. This is a program out of the University of Wisconsin Population Health Institute. This program developed a community health ranking model and their indicators were utilzed for this analysis. Data was download for Pennsylvania from 2010-2020. This data was accessed on November 28, 2022. 
 
 Link: https://www.countyhealthrankings.org/explore-health-rankings
 
@@ -54,6 +54,7 @@ The files were named off of the type of data that that is analyzed:
 -Health files are for the community health indicator  
 -acs files are for the census data  
 -coal files are for the coal production numbers. This also includes some water quality data. 
+-water quality data: Water quality data from the portal described above. 
 
 Other naming conventions include:
 visualizations: These rmd files were utilized to create ggplots, graphs and tables utilized in the report.
@@ -63,25 +64,26 @@ df_combine: This is the rmd file utilized to take all of the individual data fra
 The analysis rmd file names show the type of analysis that is conducted. >
 MLR: Multi linear Regression
 Time Series: Time series analysis:
-Spatial: Spatial repersentation of the community health indicators. 
+Spatial: Spatial representation of the community health indicators. The community health data is displayed visualizing. The county cartographic boundary shapfiles developed by the U.S. Census were downloaded here https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
 
 ## Metadata
 
-complete.csv This file contains all of the indivudal data sets combined into one complete data frame. 
+complete.csv This file contains all of the individual data sets combined into one complete data frame. The only information not in this complete.csv is the water quality information described separately below. 
 
 **Columns Names Below:**
 <The csv file is organized so that all Counties in Pennsylvania are rows and each row contains the following columns. Some data sets have varying date ranges so some columns show NA when there is no data available. 
 
+--complete.csv--
 **County:** All Counties in Pennsylvania   class:"factor"    
 **Year** Year Class: "Date"  
 **totpop:** Total population by County  Class:"Numeric"  
 **medage:** Median Age  Class:  "Numeric"  
-**totpoprace:** xxxx Class: "Numeric"
+**totpoprace:** population of non white people Class: "Numeric"
 **totpopwhite:** Population of white people	Class:"Numeric"
-**totpopeduc:**   XXXX  Class: "Numeric"
-**bachdegree:** Number of people with bachelor degrees  Class:"Numeric"	    
+**totpopeduc:** population of educated people  Class: "Numeric"
+**bachdegree:** Population of people with bachelor degrees  Class:"Numeric"	    
 **medincome:** Median Income 	  Class:"Numeric" 
-**perc.white:** Percentage of White people	    Class:"Numeric"    
+**perc.white:** Percentage of White people	 Class:"Numeric"    
 **perc.bachdegree:** Percentage of bachelor degrees Class:"Numeric"     
 **year:** Date information for each indicator 	  Class:"Numeric"     
 **coal.prod.by.year:** Coal production by year (Tons)	  Class:"Numeric"     
@@ -92,7 +94,18 @@ complete.csv This file contains all of the indivudal data sets combined into one
 **Health.Factors.Z.Score:** Z score. Health factors includes health behaviors, clinic care, social and economic factors and physical environment.     
 **Health.Factors.Rank:**  Rank of Counties with 1 being the healthiest  Class:"numeric"  
 
+--Water Quality Data set--
+**Date:** The date the sample was collected Class:"Date"  
+**Location** The location of the sample Class:"Character"  
+**Latitude** The coordinates of the sample Class:"Numeric"  
+**Longitude** The coordinates of the sample "Class:Numeric"	  
+**County.Code**	Number as a reference to the county code class"Character"  
+**Contaminant** The element that is being sampled ie. iron class"Character"  
+**State**	The type analysis run on the sample. i.e. in dissolved form Class:"Character"  
+**Measure** The sample result Class:"Numeric"  
+**Units** The units of that sample ie. mg/L class:"Numeric"  
 >
+
 
 <For each data file in the repository, describe the data contained in each column. Include the column name, a description of the information, the class of data, and any units associated with the data. Create a list or table for each data file.> 
 
