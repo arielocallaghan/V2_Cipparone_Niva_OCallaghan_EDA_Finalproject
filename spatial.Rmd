@@ -91,17 +91,16 @@ counties_sf_join <-  merge(x = counties_sf,
 
 
 coal<- read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
-#list(coal$County)
+list(coal$County)
 
 #Subset coal counties but not working
 coal.filter<-counties_sf_join%>% 
-  filter(NAME %in% c("Armstrong","Beaver","Bedford","Butler","Carbon","Dauphin","Fayette","Greene","Allegheny","Bedfor","Blair","Cambria","Centre","Clarion","Clearfield","Clinton","Columbia","Elk","Huntingdon","Indiana","Jefferson","Lackawanna","Lawrence","Luzerne","Lycoming","Mercer","Monongalia","Northumberland","Somerset","Schuylkill","Sullivan","Tioga"))
+  filter(NAME %in% c("Armstrong","Beaver","Bedford","Blair","Butler","Berks","Carbon","Dauphin","Fayette","Greene","Allegheny","Blair","Cameron","Cambria","Centre","Clarion","Clearfield","Clinton","Columbia","Elk","Huntingdon","Indiana","Jefferson","Lackawanna","Lawrence","Luzerne","Lycoming","Mercer","Monongalia","Montgomery","Northumberland","Somerset","Schuylkill","Sullivan","Tioga", "Westmoreland", "Washington", "Venango", "Fulton"))
 
+#list(coal.filter$NAME)
+
+#Fulton only production data for 2021 so not included
 ```
-The community health data utilized in this analysis has two separate indicators. One is health outcomes representing the county’s health at that year by looking at many different indicators, including Length of life and quality of life. It weighs both values at 50%. Length of life indicators includes mortality, life expectancy, and premature death. Quality of life indicators includes physical and mental health and low birth weight. The Heath factor is a composite of indicators of health behaviors, clinical care, social and economic factors, and physical environment. (https://www.countyhealthrankings.org/explore-health-rankings/county-health-rankings-model) For this analysis, we utilized Z scores of Health outcomes and Health Factors and the ranking of these variables by county. The data range spans from 2010-2020. 
-A county with a ranking of 1 is the best health, and the lowest ranking is the poorest health. A higher Z score indicates worse health for health outcomes and factors. 
-
-A spatial analysis was utilized to display health outcomes rank and Z score by county for 2019 and 2010. 
 
 
 ```{r setup, include=FALSE}
