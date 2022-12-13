@@ -286,7 +286,51 @@ write.csv(aggCoalSlim, file = "./ProcessedData/aggCoalData.csv")
 The summary table below provides the range, median, and interquartile range for each of the parameters included.
 ```{r Coal Summary Table, echo=TRUE}
 
+#We can make the summary table of the data within the dataset
+coal.data.summary<-aggCoalSlim2 %>% 
+  summarize(
+    year.range= range(Year),
+    annual.coal.production.range= range(coal.prod.by.year),
+    total.coal.production.range = range(sum.coal.prod),
+    weighted.average.year.range= range(year.peak.prod),
+    annual.coal.production.med = median(coal.prod.by.year),
+    total.coal.production.med = median(sum.coal.prod),
+    weighted.average.year.med = median(year.peak.prod),
+    annual.coal.production.iqr = IQR(coal.prod.by.year),
+    total.coal.production.iqr = IQR(sum.coal.prod),
+    weighted.average.year.iqr = IQR(year.peak.prod),
+  )
+  
+print(coal.data.summary)
+
 ```
+
+##Water Quality Data
+As a tangential thought to begin understanding the possible linkage between coal mining and community health, we investigated water quality in the surrounding mines. Due to struggles to find a thorough account of water quality in pennsylvania, this was not a core dataset used and so it is not integrated into our main analysis. Still, it is mentioned within the conclusions and so we have included the wrangling process utilized here. The data comes from the Water Quality Portal, a partnership between United States Geological Survey and the Environmental Protection Agency. It is the congolomeration of US waterquality data from multiple databases. The data utilized here primarily came from the STORET warehouse.
+
+The water quality data was uploaded as well as the collection site data. These two datasets were then merged together by the unifying monitoring location identifier. We could then filter for only water quality measurements collected in Pennsylvania, the focus of this study, and condense the data to the components of interest. Finally, we filtered for only sulfate (as SO4) readings as that is the angle we investigate within the conclusions.
+```{r Data Wrangling for Water Quality Data}
+#import water quality data sets
+WaterQuality <- read.csv("RawData/water_quality_data.csv", stringsAsFactors = TRUE)
+WaterQualitySites <- read.csv("RawData/water_quality_location_data.csv", stringsAsFactors = TRUE)
+WaterQuality$ActivityStartDate <- mdy(WaterQuality$ActivityStartDate)
+
+#merge the site data with the sampling results
+WaterQuality <- left_join(WaterQuality, WaterQualitySites, by = "MonitoringLocationIdentifier")
+
+#filter for pennsylvania
+WaterQuality <- filter(WaterQuality, StateCode %in% c(42))
+
+WaterQualitySlim <- data_frame(WaterQuality$ActivityStartDate, WaterQuality$MonitoringLocationName.y, WaterQuality$LatitudeMeasure, WaterQuality$LongitudeMeasure, WaterQuality$CountyCode, WaterQuality$CharacteristicName, WaterQuality$ResultSampleFractionText, WaterQuality$ResultMeasureValue, WaterQuality$ResultMeasure.MeasureUnitCode)%>%
+  rename("Date" = "WaterQuality$ActivityStartDate", "Location" = "WaterQuality$MonitoringLocationName.y", "Latitude" = "WaterQuality$LatitudeMeasure", "Longitude" = "WaterQuality$LongitudeMeasure", "County.Code" = "WaterQuality$CountyCode", "Contaminant" = "WaterQuality$CharacteristicName", "State" = "WaterQuality$ResultSampleFractionText", "Measure" = "WaterQuality$ResultMeasureValue", "Units" = "WaterQuality$ResultMeasure.MeasureUnitCode")
+
+write_csv(WaterQualitySlim, "ProcessedData/WaterQuality.csv")
+
+Only.Sulfate <- filter(WaterQualitySlim, Contaminant == "Sulfate as SO4")
+
+
+```
+
 ##Community Health Indicators 
 
 Community Health data was pulled from Community Health Rankings and Roadmap, a program of the University of Wisconsin Population Health Institute. This health rankings model was developed by the University and aims to represent how healthy a county is. And this dataset contains various indicators that have been composited into a few different summary variables. These composite variables include Health Outcomes, Health factors.
@@ -586,7 +630,33 @@ After collecting each of our individual datasets, we created two combined datase
 
 We created the dataset for the multiple linear regression by creating a coal dataset for all of the coal counties with only the total production over time and the calculation of the number of years from peak production to 2019. This was grouped by county (previous calculations for these values had already occurred during initial wrangling of the coal dataset). This was then left joined to the health dataset which had been filtered to only include health values for 2019. This retained all of the counties included in the health dataset while integrating the production values for the counties which produced coal. We then imputed values of ‘0’ total coal production for the counties with NAs in that field - NAs produced by the fact that they weren’t in the coal dataset and therefore had not seen any coal production over time. We then imputed values of ‘37’ for the years from peak production to 2019, as the coal dataset ran from 1983. Thirty-seven years permitted us to use these counties in the multiple linear regression, placed these non-coal producing counties as counties with long temporal distance from the present - something you would assume would be associated with presumably healthy counties given their low coal production, gave us a value with reason - 37 years is the temporal distance from 2019 to 1982, the year before we have any data - and gave us a value that wouldn’t extensively skew the data. Finally we left joined this dataset to our ACS data, and subtracted any counties with ‘NAs’ and any counties with ‘0’s for total white population, as we assumed that these data were incorrect given the racial composition of the US and the other counties (all of whose percentage of white people were around 70% with the sole exception of Philadelphia). This left us with a sample size of 37 counties. This data set is saved to the processed data folder. 
 
+```{r multiple linear regression wrangling}
+```
+
+
 We created the dataset for the time series analysis by utilizing data from the aggCoalData csv and the health.data csv previously saved and covered above. First, we read the dataframes into r. We then had to rename the year column for the health data frame so that it had the same title as the year column for the aggCoalData. At that point, we were able to merge (using the two datasets) the two data sets by county and year and select the columns necessary for the analysis (Year, county, health outcomes z score, health factors z score, and coal production). Note that this only included the counties that produced coal at some point but as we were looking for a correlation between coal production and health z scores over time, we did not need to factor in the counties with zero coal production. Also note that this dataset only covered the years from 2010 until 2020. These are the only years that the health data was available for and so the only years pertinent to include in this dataset. At this point, we had a dataframe with concurrent measures of coal production and health z scores for each coal producing county in the year span of 2010 to 2020.
+
+```{r time series analysis wrangling}
+
+#First, we read the previously compiled data sets into the program from where they were saved as csv files
+aggCoalData <- read.csv("ProcessedData/aggCoalData.csv")
+health.data <- read.csv("ProcessedData/healthdf.csv")
+
+#Then, we had to rename the year column within the health data frame so that the two datasets can be correctly merged together by that column
+health.data <- health.data %>%
+  rename("Year" = "year")
+
+#Then, we merged the two files together such that the county and year collums match up correctly and we also select for the columns that we will be focusing on for the time series analysis
+full.time.series.data <- merge(health.data, aggCoalData, by = c("County", "Year")) %>%
+  select(Year, County, Health.Outcomes.Z.Score, Health.Factors.Z.Score, sum.coal.production)
+
+#We then created separate datasets filtering for a few counties of interest to be examined individually
+schuylkill.data <- filter(full.time.series.data, actual.full.data$County == "Schuylkill")
+Armstrong.data <- filter(full.time.series.data, actual.full.data$County == "Armstrong")
+Clearfield.data <- filter(full.time.series.data, actual.full.data$County == "Clearfield")
+
+
+```
 
 ##**Exploratory Analysis**
 
@@ -596,12 +666,27 @@ Exploratory analysis was conducted on the individual data to trends for each dif
 
 ##Coal production over time
 ```{r Code for ggplot mapping coal production over time in each county, echo=TRUE, fig.align='left', fig.cap="Coal Production plotted over time at each Pennsylvania County", fig.height=2.5, message=FALSE, warning=FALSE}
-#random action just to test things
-x<-1
+
+CoalOverTime <- ggplot(aggCoalSlim, aes(`Year`, `sum.coal.production`, group = `County`, color = `County`))+
+  geom_smooth()+
+  ylab("Total Coal Production (Tons)")+
+  ggtitle("Coal Production over Time in each Pennsylvania County")
+
+print(CoalOverTime)
 
 ```
 
 The plot over time shows how the coal production has changed over time from 1983 until today in each county. The more recent petering off of most of the mines makes sense as most of the available coal has been removed and the US energy sources have moved away from coal. There is a pretty strong bell curve in most mines which would align with the location of a good mine, the mass export of the mined coal, and then the decrease in production as the most readily available coal is gone. It is interesting to see how all the counties seem to steeply increase in coal production from 1983 on. This could be a limitation in the dataset (only giving strong coverage of mines beginning operation in 1983) but none of that was explained or visible in the metadata and so it is more likely that there was an uptick in coal production at that point. This could be due to the implementation of longwall mining which first began in the 1960s (https://www.dep.pa.gov/Business/Land/Mining/Pages/PA-Mining-History.aspx). It is also clearly visible here that Schuylkill County has far more coal production than any other county.
+
+```{r Coal Data Exploratory Analysis}
+
+#We can also look at the dimensions of the dataset
+dim(aggCoalSlim2)
+
+#And the column names to make sure they were labeled correctly
+colnames(aggCoalSlim2)
+
+```
 
 The dimensions of the coal dataset is also shown. This dataset size does not line up with the datasets for the health data and the census data. This is due to differences in the span of years covered as well as differences in the number of counties. The census and health dataset both have every county in Pennsylvania factored in. In contrast, the coal dataset only includes the counties that produced coal at some point. All of the other counties can be assumed to have zero coal production but this was another consideration that we had to make. 
 
@@ -770,26 +855,80 @@ To further understand the relationship of coal production impact on community he
 ##Time Series Analysis
 We first examined the relationship between health outcomes and coal production between 2010 and 2020. While this permits us to investigate the relationship between our two variables of greatest interest, it is important to note that many of the contamination concerns associated with mining occur in the years following coal mining (water contamination from acid mine drainage). 
 
-###(code for data wrangling for time series analysis)
-```{r code for data wrangling for time series analysis, echo=TRUE}
-
-```
-
 
 ###Time Series Data Analysis
-In our analysis, we look at a few counties individually. When examined all together, the considerable variability across counties causes high error margins to obscure any observable trends. We examined any relationship by plotting both the trends over time in coal production and health outcomes/factors. Building upon this visual evaluation, we then conducted a linear analysis over time with consideration of those two variables. The first county we looked at was Schuylkill County. This county holds the most weight as the peak coal production far exceeded that seen in any other county (can be seen as the highest arch in the plot within the coal data set analysis above). 
+In our analysis, we look at a few counties individually. When examined all together, the considerable variability across counties causes high error margins to obscure any observable trends. 
+```{r code for looking at counties collectively, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of health outcomes and health factors z scores over time across all counties", fig.height=2.5, message=FALSE, warning=FALSE}
+
+ggplot(full.time.series.data)+
+  geom_smooth(aes(x = Year, y = Health.Factors.Z.Score, color = "Health Factors Z Score", ))+
+  geom_smooth(aes(x = Year, y = Health.Outcomes.Z.Score, color = "Health Outcomes Z Score"))+
+  ylab("Health Z Scores")
+
+```
+In this graph, the health outcomes and health factors z scores are presented only from coal producing counties over time. They range from below -1 to above 1, with a somewhat upwards sloping trend over time but with error bars so great this trend is not definite. In contrast, mapping coal production over time shows a decrease over time with a similarly large error range. 
+
+```{r code for looking at counties collectively, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of health outcomes and health factors z scores over time across all counties", fig.height=2.5, message=FALSE, warning=FALSE}
+
+ggplot(full.time.series.data)+
+  geom_smooth(aes(x = Year, y = sum.coal.production ))
+
+```
+We looked at how strong this trend across counties was by completing a linear regression. 
+```{r code for linear regression time series analysis of all counties}
+
+all.counties.health.factors.regression <- lm(data = full.time.series.data, Health.Factors.Z.Score ~ sum.coal.production)
+
+summary(all.counties.health.factors.regression)
+
+
+all.counties.health.outcomes.regression <- lm(data = full.time.series.data, Health.Outcomes.Z.Score ~ sum.coal.production)
+
+summary(all.counties.health.outcomes.regression)
+
+```
+Both p-values are exceedingly small and below 0.05, designating significant trends. The trends do show decreasing public health corresponding with decreasing coal production which is a counterintuitive result. This does make sense when considering how delayed most of the community impacts of coal mining is. Water contamination occurs and continues for years following the closure of a mine and so the health impacts are not immediately felt by the community. There may have also been other factors such as policy and social service changes that decreased health levels in these counties. Still, we did a further analysis of some specific counties with considerably high coal output to see if any trends revealed themselves in a more localized investigation. The first county we looked at was Schuylkill County. This county holds the most weight as the peak coal production far exceeded that seen in any other county (can be seen as the highest arch in the plot within the coal data set analysis above). 
 
 ####code for looking at schuylkill county with plots of coal production over health factors and coal production over health outcomes and linear regressions
 ```{r code for looking at schuylkill county with plots of coal production over health factors and linear regression, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health factors z score over time in the Schuylkill county", fig.height=2.5, message=FALSE, warning=FALSE}
 
-#code for looking at schuylkill county with plots of coal production over health factors and coal production over health outcomes and linear regressions
+#comparing health factors z score with coal production in schuylkill county
+x <- data.frame(Year = c(2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))
+Year <- schuylkill.data$year
+var1<- schuylkill.data$Health.Factors.Z.Score
+var2 <- schuylkill.data$sum.coal.production
+data <- data.frame(x,var1,var2)
 
-#Figure Caption: Synchronous plot of coal production and health factors z score over time in the Schuylkill county
+obj1 <- xyplot(var1 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Factors Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health factors z score and coal production
+
+schuylkill.health.factors.regression <- lm(data = schuylkill.data, Health.Factors.Z.Score ~ sum.coal.production)
+
+summary(schuylkill.health.factors.regression)
+
 ```
 
 ```{r code for looking at schuylkill county with plots of coal production over health outcomes and coal production over health outcomes and linear regression, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health outcomes z score over time in the Schuylkill county", fig.height=2.5, message=FALSE, warning=FALSE}
 
-#Figure Caption: Synchronous plot of coal production and health outcomes z score over time in the Schuylkill county
+#comparing health outcomes z score in schuylkill county
+var3<- schuylkill.data$Health.Outcomes.Z.Score
+data <- data.frame(x,var3,var2)
+
+obj1 <- xyplot(var3 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Outcomes Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health outcomes z score and coal production
+
+schuylkill.health.outcomes.regression <- lm(data = schuylkill.data, Health.Outcomes.Z.Score ~ sum.coal.production)
+
+summary(schuylkill.health.outcomes.regression)
+
 ```
 
 The correlation between the health factors z score and coal production over time in Schuylkill county was the most compelling of the time series analysis. There is a clear correlation visible in the line graph where decreasing coal production is clearly associated with decreasing health factors z score (an indicator of increasing access to public health resources). The linear regression below revealed a p-value of 0.000856, far lower than 0.05, indicating a significantly non-zero relationship. Since we are limited to only 11 data points, this could be coincidental, but considering the extreme output of coal from this region, this may be magnifying any adverse effects of coal production and making this trend more visible. The correlation between health outcomes and coal production was less visible. With a p-value of 0.21, there is likely some correlation, but it is still considerably higher than 0.05. 
@@ -799,14 +938,43 @@ We then examined Armstrong county and Clearfield County as two other counties wi
 ###code for looking at armstrong county with plots of coal production over health factors and coal production over health outcomes and linear regressions
 ```{r code for looking at armstrong county with plots of coal production over health factors and linear regressions, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health factors z score over time in the Armstrong county", fig.height=2.5, message=FALSE, warning=FALSE}
 
-#(code for looking at armstrong county with plots of coal production over health factors and coal production over health outcomes and linear regressions)
+#comparing health factors z score with coal production in armstrong county
+x <- data.frame(Year = c(2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))
+Year <- Armstrong.data$year
+var1<- Armstrong.data$Health.Factors.Z.Score
+var2 <- Armstrong.data$sum.coal.production
+data <- data.frame(x,var1,var2)
 
-#Figure Caption: Synchronous plot of coal production and health factors z score over time in the Armstrong county
+obj1 <- xyplot(var1 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Factors Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health factors z score and coal production
+
+armstrong.health.factors.regression <- lm(data = Armstrong.data, Health.Factors.Z.Score ~ sum.coal.production)
+
+summary(armstrong.health.factors.regression)
+
 ```
 
 ```{r code for looking at armstrong county with plots of coal production over health outcomes and linear regressions, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health outcomes z score over time in the Armstrong county", fig.height=2.5, message=FALSE, warning=FALSE}
 
-#Figure Caption: Synchronous plot of coal production and health outcomes z score over time in the Armstrong county
+#comparing health outcomes z score in armstrong county
+var3<- Armstrong.data$Health.Outcomes.Z.Score
+data <- data.frame(x,var3,var2)
+
+obj1 <- xyplot(var3 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Outcomes Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health outcomes z score and coal production
+
+armstrong.health.outcomes.regression <- lm(data = Armstrong.data, Health.Outcomes.Z.Score ~ sum.coal.production)
+
+summary(armstrong.health.outcomes.regression)
+
 ```
 
 
@@ -814,16 +982,46 @@ We then examined Armstrong county and Clearfield County as two other counties wi
 
 ```{r Synchronous plot of coal production and health factors z score over time in the Clearfield county, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health factors z score over time in the Clearfield county", fig.height=2.5, message=FALSE, warning=FALSE}
 
-#Figure Caption: Synchronous plot of coal production and health factors z score over time in the Clearfield county
+#comparing health factors z score with coal production in clearfield county
+x <- data.frame(Year = c(2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))
+Year <- Clearfield.data$year
+var1<- Clearfield.data$Health.Factors.Z.Score
+var2 <- Clearfield.data$sum.coal.production
+data <- data.frame(x,var1,var2)
+
+obj1 <- xyplot(var1 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Factors Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health factors z score and coal production
+
+clearfield.health.factors.regression <- lm(data = Clearfield.data, Health.Factors.Z.Score ~ sum.coal.production)
+
+summary(clearfield.health.factors.regression)
+
 ```
 
 ```{r Synchronous plot of coal production and health outcomes z score over time in the Clearfield county,echo=TRUE, fig.align='left', fig.cap="Synchronous plot of coal production and health outcomes z score over time in the Clearfield county", fig.height=2.5, message=FALSE, warning=FALSE}
 
+#comparing health outcomes z score in clearfield county
+var3<- Clearfield.data$Health.Outcomes.Z.Score
+data <- data.frame(x,var3,var2)
 
-#Figure Caption: Synchronous plot of coal production and health outcomes z score over time in the Clearfield county
+obj1 <- xyplot(var3 ~ Year, data, type = "l" , lwd=2, col="steelblue", ylab = "Health Outcomes Z Score (Blue)", col.axis = "red")
+obj2 <- xyplot(var2 ~ Year, data, type = "l", lwd=2, col="red", ylab = "Coal Produced in Tons (Red)")
+
+doubleYScale(obj1, obj2, add.ylab2 = TRUE, use.style=FALSE)
+
+#linear regression for health outcomes z score and coal production
+
+clearfield.health.outcomes.regression <- lm(data = Clearfield.data, Health.Outcomes.Z.Score ~ sum.coal.production)
+
+summary(clearfield.health.outcomes.regression)
+
 ```
 
-The trends for these counties were much more inconsistent. None had p-values below or near 0.05. Much of this issue may be the result of only having 11 data points and so an increase in health data in the more distant past would be crucial to understanding how strong this correlation is. Sadly, much of the more robust data only began a more rigorous collection more recently and so this is difficult to find. 
+The trends for these counties were much more inconsistent. None had p-values below or near 0.05. Much of this issue may be the result of only having 11 data points and so an increase in health data in the more distant past would be crucial to understanding how strong this correlation is. Sadly, much of the more robust data only began a more rigorous collection more recently and so this is difficult to find. Overall, the delayed nature of community health impacts from coal mining made conclusive findings through time series analysis difficult. 
 
 ##ACS
 
@@ -982,16 +1180,22 @@ This analysis reveals a number of broad takeaways. The most significant is that,
 
 There are a number of reasons that we may have observed this unexpected result. The first is spatial scale. Coal mining may have strong negative impacts on localized areas - areas the size of a census block, for instance - but not on larger areas. That would mean that our choice of county-level granularity would have smoothed out any influence of coal mining on human health. The second is the long causal chain to health outcomes that we had neither the time nor resources to explore. Countless factors besides the socioeconomic variables we selected and coal production itself likely have impacts on health outcomes. For example, contamination of ground water through acidic main drainage is one probable causal linkage between coal production and declines in community health. When coal is exposed through mining, water permeating the mine runs across exposed coal which includes deposits of pyrite and other heavy metals. The pyrite is able to dissolve as sulfuric acid, increasing the acidity of the water and therein the weathering on the coal surface. This results in highly acidic and toxic mine runoff that, if not successfully treated, can infiltrate into the groundwater. Our own preliminary analysis of mine runoff data from 2010 produced by ___ displayed below - supports this possible causal linkage.
 
-#Water Quality Data Here (should this be a cowplot? Then only need for one caption)
-```{r insert cowplot of explanatory vs response variables here, echo=TRUE, fig.cap="Plots to examine linearity assumption of multiple linear regression model.", fig.height=2.5, message=FALSE, warning=FALSE}
+#Water Quality Data 
 
-#(Code with water quality data wrangling and a graph showing high sulfate concentrations and 3 graphs with the correlation between sulfate levels and other metals)
-#FIgure Caption: Sulfate Concentrations observed in mine runoff within pennsylvania over time
-#Figure Caption: Sulfate Concentrations plotted against Calcium concentrations within Pennsylvania
-#Figure Caption: Sulfate Concentrations plotted against Magnesium concentrations within Pennsylvania
-#Figure Caption: Sulfate Concentrations plotted against Sodium concentrations within Pennsylvania
+One important linkage between coal mining and community health is water quality impacts (as has been previously mentioned). To take a preliminary look at if this concern is merrited in these Pennsylvania counties, we took the water quality data associated with acid mine drainage in pennsylvania that we could find and examined the sulfuric acid levels in this water. This metric is plotted below.
+
+```{r insert cowplot of explanatory vs response variables here, echo=TRUE, fig.cap="SO4 Levels Seen in Acid Mine Drainage in Pennsylvania", fig.height=2.5, message=FALSE, warning=FALSE}
+Only.Sulfate <- filter(WaterQualitySlim, Contaminant == "Sulfate as SO4")
+
+Sulfate.Over.Time <- ggplot(Only.Sulfate, aes(Date, Measure, group = Contaminant))+
+  geom_point() +
+  ylab("Sulfate as SO4 Concentration (mg/l)")
+
+print(Sulfate.Over.Time)
 
 ```
+Average water usually has SO4 levels of 5 to 50 mg/L (History of Sulfate Use). Certain sampling locations did fall within that range, but many are far higher, some reaching levels over 500. This is harmful in and of itself but it also increases the acidity of the water and therein increases the solubility of other more toxic heavy metals (RoyChowhurdy et al., 2015). This can lead to exceptionally high levels of widespread contamination and can impact groundwater. We sadly could not find sufficient data in this area to fully investigate this thread, but this preliminary finding does indicate that water quality is a possible point of connection.
+
 
 The nature of this causal linkage would likely vary by community. Some communities may use groundwater for drinking wells while others may not. In this way, communities which mined coal but not used groundwater wells - and therefore not felt the effects of mine drainage contamination -  may have obfuscated the impact of coal mining on communities which do use groundwater extensively in the course of our current analysis. By not including explanatory variables capturing causal linkages such as this one, we once again potentially paper over the influence of coal production on community health.
 
@@ -1008,3 +1212,6 @@ Marius Campbell, Coal fields of the United States. Department of the Interior, U
 
 Pennsylvania Department of Environmental Quality. Coal mining in Pennsylvania. PA Mining history. https://www.dep.pa.gov/Business/Land/Mining/Pages/PA-Mining-History.aspx. Last accessed on November 8, 2022)
 
+RoyChowdhury, A., Sarkar, D. & Datta, R. Remediation of Acid Mine Drainage-Impacted Water. Curr Pollution Rep 1, 131–141 (2015). https://doi.org/10.1007/s40726-015-0011-3
+
+History of Sulfate Use. Master water conditioning corporation. (n.d.). Retrieved December 13, 2022, from https://www.masterwater.com/ 
