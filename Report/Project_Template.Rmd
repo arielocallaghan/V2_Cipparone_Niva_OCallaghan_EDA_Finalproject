@@ -649,6 +649,8 @@ health.data <- health.data %>%
 #Then, we merged the two files together such that the county and year collums match up correctly and we also select for the columns that we will be focusing on for the time series analysis
 full.time.series.data <- merge(health.data, aggCoalData, by = c("County", "Year")) %>%
   select(Year, County, Health.Outcomes.Z.Score, Health.Factors.Z.Score, sum.coal.production)
+actual.full.data <- merge(health.data, aggCoalSlim, by = c("County", "Year")) %>%
+  select(Year, County, Health.Outcomes.Z.Score, Health.Factors.Z.Score, sum.coal.production)
 
 #We then created separate datasets filtering for a few counties of interest to be examined individually
 schuylkill.data <- filter(full.time.series.data, actual.full.data$County == "Schuylkill")
@@ -858,7 +860,7 @@ We first examined the relationship between health outcomes and coal production b
 
 ###Time Series Data Analysis
 In our analysis, we look at a few counties individually. When examined all together, the considerable variability across counties causes high error margins to obscure any observable trends. 
-```{r code for looking at counties collectively, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of health outcomes and health factors z scores over time across all counties", fig.height=2.5, message=FALSE, warning=FALSE}
+```{r code for looking at health z scores of counties collectively, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of health outcomes and health factors z scores over time across all counties", fig.height=2.5, message=FALSE, warning=FALSE}
 
 ggplot(full.time.series.data)+
   geom_smooth(aes(x = Year, y = Health.Factors.Z.Score, color = "Health Factors Z Score", ))+
@@ -868,7 +870,7 @@ ggplot(full.time.series.data)+
 ```
 In this graph, the health outcomes and health factors z scores are presented only from coal producing counties over time. They range from below -1 to above 1, with a somewhat upwards sloping trend over time but with error bars so great this trend is not definite. In contrast, mapping coal production over time shows a decrease over time with a similarly large error range. 
 
-```{r code for looking at counties collectively, echo=TRUE, fig.align='left', fig.cap="Synchronous plot of health outcomes and health factors z scores over time across all counties", fig.height=2.5, message=FALSE, warning=FALSE}
+```{r code for looking at coal production of counties collectively, echo=TRUE, fig.align='left', fig.cap="Plot of coal production over time across all counties", fig.height=2.5, message=FALSE, warning=FALSE}
 
 ggplot(full.time.series.data)+
   geom_smooth(aes(x = Year, y = sum.coal.production ))
