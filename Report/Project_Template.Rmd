@@ -22,21 +22,6 @@ mainfont: Times New Roman
 \listoffigures 
 \newpage
 
-# Reference for rmd file report
-Knitting commands in code chunks:
-  -  `include = FALSE` - code is run, but neither code nor results appear in knitted file
-  -  `echo = FALSE` - code not included in knitted file, but results are
-  -  `eval = FALSE` - code is not run in the knitted file
-  -  `message = FALSE` - messages do not appear in knitted file
-  -  `warning = FALSE` - warnings do not appear...
-  -  `fig.cap = "..."` - adds a caption to graphical results
-** creates bold text
-# Header 1
-## Header 2
-- End a line with two spaces to start a new paragraph.
-\newpage
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=75), tidy=TRUE)
 
@@ -102,12 +87,12 @@ This study examines the impacts of historical coal mining on community health in
 
 We examine this question through the use of four distinct county-level datasets: coal production data from the U.S. Energy Informational Administration (USIEA), census data from the American Community Survey (ACS), county health rankings data from the University of Wisconsin’s Community Health Rankings and Roadmap program, and Water quality data from the Water Quality Portal, a partnership between United States Geological Survey and the Environmental Protection Agency. These datasets collectively covered a broad enough time series to observe impacts in coal production over time. All focus on the state of Pennsylvania.
 
-# Rationale and Research Questions
+## Rationale and Research Questions
 1. Has coal production impacted local community health in Pennsylvania?
 2. How do the demographics of Pennsylvania counties vary, and how are those demographics associated with community health?
 3. How do coal production and community health vary over time? Are they linked temporally or spatially?
 
-**Dataset Information**
+#**Dataset Information**
 
 A summary of the four datasets and the individual data wrangling process is described below. 
 
@@ -116,7 +101,7 @@ Our coal mining dataset provides data on annual coal production by Pennsylvania 
 
 The wrangling process can be seen step by step below, but a summary is as follows: The coal data for each individual year was uploaded using the read.csv function. Then, the class of different columns were adjusted so that they were consistent across years and could be merged. At this point, they were merged with the full_join command such that one dataframe was formed. This new dataset was then filtered to only include data from Pennsylvania and then slimmed to only include the columns of interest (county, year, status, and production in tons). At this point, we needed to merge the columns where multiple mines were operating within a single county. This was done by converting the production to class integer, grouping by county and year, and summing the coal production within those groups. The weighted average year of coal production for each county was then calculated by summing the product of coal produced and year for each year and dividing by the total sum of coal production within each county. Finally, a column expressing the sum of coal production across all years for each county was added. At this point, this more refined dataset was saved to the processed data folder for future analysis. 
 
-###Coal Wrangling Code
+###Coal Wrangling Code###
 ```{r Coal Wrangling Code, echo=TRUE, message=FALSE, warning=FALSE}
 #inital uploading of all the coal data for each distinct year -- this could not be expedited with data stripping because there were separate links to downloaded spreadsheets instead of links to another website
 coal1983 <- read.csv("./RawData/coalpublic1983.csv", stringsAsFactors = TRUE)
@@ -404,12 +389,10 @@ head(counties_sf)
 healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
 
 counties_sf$NAME<- as.character(counties_sf$NAME)
-class(counties_sf$NAME)
+#class(counties_sf$NAME)
 
 healthdf$County<- as.character(healthdf$County)
-class(healthdf$County)
-
-(healthdf)
+#class(healthdf$County)
 
 #counties_sf<- counties_sf %>% 
  # rename(NAME== County)
@@ -425,7 +408,7 @@ counties_sf_join <-  merge(x = counties_sf,
 coal<- read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
 #list(coal$County)
 
-#Subset coal counties but not working
+#Subset coal counties 
 coal.filter<-counties_sf_join%>% 
   filter(NAME %in% c("Armstrong","Beaver","Bedford","Blair","Butler","Berks","Carbon","Dauphin","Fayette","Greene","Allegheny","Blair","Cameron","Cambria","Centre","Clarion","Clearfield","Clinton","Columbia","Elk","Huntingdon","Indiana","Jefferson","Lackawanna","Lawrence","Luzerne","Lycoming","Mercer","Monongalia","Montgomery","Northumberland","Somerset","Schuylkill","Sullivan","Tioga", "Westmoreland", "Washington", "Venango", "Fulton"))
 
@@ -441,14 +424,12 @@ Health.2019<-counties_sf_join%>%
 coal.2019<-coal.filter%>%
   filter(year==2019)
 
-
 #plot 2010 Data
 Health.2010<-counties_sf_join%>%
   filter(year==2010)
 
 coal.2010<-coal.filter%>%
   filter(year==2010)
-
 
 ```
 
@@ -657,7 +638,6 @@ schuylkill.data <- filter(full.time.series.data, actual.full.data$County == "Sch
 Armstrong.data <- filter(full.time.series.data, actual.full.data$County == "Armstrong")
 Clearfield.data <- filter(full.time.series.data, actual.full.data$County == "Clearfield")
 
-
 ```
 
 ##**Exploratory Analysis**
@@ -666,7 +646,7 @@ Exploratory analysis was conducted on the individual data to trends for each dif
 
 ##Coal Production
 
-##Coal production over time
+###Coal production over time
 ```{r Code for ggplot mapping coal production over time in each county, echo=TRUE, fig.align='left', fig.cap="Coal Production plotted over time at each Pennsylvania County", fig.height=2.5, message=FALSE, warning=FALSE}
 
 CoalOverTime <- ggplot(aggCoalSlim, aes(`Year`, `sum.coal.production`, group = `County`, color = `County`))+
@@ -692,12 +672,10 @@ colnames(aggCoalSlim2)
 
 The dimensions of the coal dataset is also shown. This dataset size does not line up with the datasets for the health data and the census data. This is due to differences in the span of years covered as well as differences in the number of counties. The census and health dataset both have every county in Pennsylvania factored in. In contrast, the coal dataset only includes the counties that produced coal at some point. All of the other counties can be assumed to have zero coal production but this was another consideration that we had to make. 
 
-
 ##Community Health Indicators
 A spatial analysis was utilized to display health outcomes rank and Z score by county for 2019 and 2010. 2010 was chosen because it is the first year of available data, and 2019 was chosen because it is the year utilized for the multilinear regression. A side-by-side map view is shown for all the health visualizations to compare all counties on the left pane with only coal-producing counties on the right pane. Rankings range from 1-67 because there are 67 counties in Pennsylvania. The dataset from EIA indicated that 37 of these 67 counties have, at some point, produced coal. These 37 counties were subset for the the comparison.  Additionally, counties on the map can be hovered over to see the indicator value mapped and the specific county information.
 (MAY NOT WORK IN KNITTED DOCUMENT- NOT SURE)
 
-###Figure (2019 Z score)
 ```{r Health 2019 Z score, echo=TRUE, fig.align='left', fig.cap="Shows Z scores of health outcome data by County in 2019", fig.height=2.5, message=FALSE, warning=FALSE}
 
 #(Caption figure XX: Shows Z scores of health outcome data by County in 2019)
@@ -720,7 +698,6 @@ sync(all.Z.2019,coal.z.2019)
 
 This figure shows that most of the counties with a high Z score, darker orange indicating poor health, are shown on the right pannel indicating coal producing counties.. There are a few exceptions, for example, the County of Philadelphia, which also includes the City of Philadelphia, the largest city in the State of Pennsylvania (source). The other major exception is the County of Centre, the county shown middle, which had relatively low total coal production (2,543,689 tons) compared to neighboring counties.
 
-###(Figure XX (2019 Rank)
 ```{r Figure 2019 Rank Map, echo=TRUE, fig.align='left', fig.cap="Z scores of health outcome data by County in 2019", fig.height=2.5, message=FALSE, warning=FALSE}
 
 #(Caption figure XX: Health outcomes ranking by county for 2019.)
@@ -737,10 +714,8 @@ coal.rank.2019<-mapview(coal.2019,
 sync(all.rank.2019, coal.rank.2019)      
 ```
 
-
 This figure shows the heather counties in a lighter blue county and decreasing health towards the darker blue. A seven coal-producing counties with relatively low health rankings below 20 are Bulter, Bedford, Clinton, Centre, Clinton, Montogomery and Tiago. These are the exceptions, as most health rankings for coal-producing counties have a poor health ranking visualized by the darker blue colors. Keep in mind this graph represents counties that have had any amount of coal production. 
 
-###2010 z score map
 ```{r 2010 Z score map, echo=TRUE, fig.align='left', fig.cap="Z scores of health outcome by County in 2010", fig.height=2.5, message=FALSE, warning=FALSE}
 
 #(Caption figure XX: Shows Z scores of health outcome by County in 2010)
@@ -757,12 +732,10 @@ coal.z.2010<-mapview(coal.2010,
 #showing maps side by side
 sync(all.z.2010, coal.z.2010)
 
-
 ```
 
 The same analysis as the maps above  was conducted for the year 2010. Looking at the left pane, there is one county stands out. This county is Philadelphia, which has a Z score in 2010 of 3.43. The next highest Z score for that year is 1.21 in Greene County, a coal-producing county. This county is displayed at the bottom left on the Pennsylvania map. The scale of the right pane is slightly different due to Philadelphia County not being included. A few counties with a history of coal production have a low Z score and, therefore, better health. Centre county has the lowest Z score of -1.53, the county with the lightest orange color in the right pane. Butler county is the next healthiest with a z score of -0.71.  As you can see from the visualization in this figure, most counties in 2010 with the highest z score indicating poor health are counties that have a history of local production.
 
-###2010 rank map
 ```{r 2010 Rank Map, echo=TRUE, fig.align='left', fig.cap="Health outcomes ranking by county in 2010", fig.height=2.5, message=FALSE, warning=FALSE}
 #(Caption figure XX: Health outcomes ranking by county in 2010.)
 
@@ -777,7 +750,6 @@ coal.rank.2010<-mapview(coal.2010,
 
 sync(all.rank.2010, coal.rank.2010)
 ```
-
 
 Similar patterns emerge in the 2010 ranking as they did in the 2019 map. In 2010, eight out of the 37 coal-producing counties had health rankings below 20. These are Centre, Bulter, Columbia, Indiana, Montgomery, Berks, Westmoreland, and Jefferson. Rankings of counties with the poorest health 50-67 are composed mostly of coal-producing counties except Philadelphia ranked 67, Wayne ranked 62, Forest ranked 53 and McKean ranked 50.
 
@@ -842,7 +814,6 @@ common.legend = T,
 legend="bottom",
 nrows=2)
 
-
 #Graphic of median age, income, pop etc. for all PA counties
 
 #Caption: Figure ____: Graph depicting median age, median income, total population, percent of population with a bachelor’s degree and percent of population which is white-identifying for Pennsylvania counties in 2019. Data sourced from ACS 1-year estimates.
@@ -868,6 +839,7 @@ ggplot(full.time.series.data)+
   ylab("Health Z Scores")
 
 ```
+
 In this graph, the health outcomes and health factors z scores are presented only from coal producing counties over time. They range from below -1 to above 1, with a somewhat upwards sloping trend over time but with error bars so great this trend is not definite. In contrast, mapping coal production over time shows a decrease over time with a similarly large error range. 
 
 ```{r code for looking at coal production of counties collectively, echo=TRUE, fig.align='left', fig.cap="Plot of coal production over time across all counties", fig.height=2.5, message=FALSE, warning=FALSE}
@@ -876,7 +848,9 @@ ggplot(full.time.series.data)+
   geom_smooth(aes(x = Year, y = sum.coal.production ))
 
 ```
+
 We looked at how strong this trend across counties was by completing a linear regression. 
+
 ```{r code for linear regression time series analysis of all counties}
 
 all.counties.health.factors.regression <- lm(data = full.time.series.data, Health.Factors.Z.Score ~ sum.coal.production)
@@ -1101,7 +1075,6 @@ summary(acs.coal.health.regression)
 
 #Caption: Table ______: Initial regression results including all socioeconomic and coal production variables regressed on health outcomes z-score. Adj. R-squared = 0.5189, 14 degrees of freedom.
 ```
-
 
 After running the Akaike Information Criteria test to evaluate model overfitting, we reduced the explanatory variables to only include the variables ‘percent white’, ‘median age’, and ‘median income’ (initial AIC = -48.1, final AIC = -52.6. Df = 1). This new model displayed significant results for median age (coeff. = 0.1716, p-value<0.0001), percent white (coeff. = -0.06446, p-value <0.0001), and median income (coeff. = -0.0001206, p-value <0.0001). The adjusted r-squared was 0.7322.
 
