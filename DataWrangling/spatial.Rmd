@@ -1,0 +1,188 @@
+---
+title: "Spatial_health"
+author: "Ariel O'Callaghan"
+date: "2022-12-09"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#get packages 
+
+getwd()
+#install.packages("tidyverse")
+library(tidyverse)
+
+#install.packages("sf")
+library(sf)
+
+#install.packages("leaflet")
+library(leaflet)
+
+#install.packages("mapview")
+library(mapview)
+
+#install.packages("leaflet")
+library(leaflet)
+
+#install.packages("lubridate")
+library(lubridate)
+
+#install.packages(dplyr)
+library(dplyr)
+
+#install.packages("ggplot2")
+library(ggplot2)
+
+library(RColorBrewer)
+library(leafsync)
+library(lattice)
+
+
+
+#par(mar=c(3,4,2,2))
+#display.brewer.all()
+
+#Disable on-the-fly projections - code from lab sheet 
+sf::sf_use_s2(FALSE)
+
+#read in spatial data frame and filter for Pennsylvania 
+
+counties_sf <- st_read('./RawData/cb_2018_us_county_20m.shp')%>% 
+  filter(STATEFP == 42) #42|PA|Pennsylvania|01779798
+
+#check data frame information 
+colnames(counties_sf)
+
+st_crs(counties_sf) 
+
+nrow(counties_sf)
+
+#Reveal the extent of this dataset via the st_bbox() function
+st_bbox(counties_sf)
+
+#View the data
+head(counties_sf)
+
+#Plot the county data, colored by area of land in each county
+#mapView(counties_sf, zcol = "ALAND") #check plot with land but not needed for report
+
+#read in health data frame to join with spatial datframe 
+healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
+
+counties_sf$NAME<- as.character(counties_sf$NAME)
+class(counties_sf$NAME)
+
+healthdf$County<- as.character(healthdf$County)
+class(healthdf$County)
+
+(healthdf)
+
+#counties_sf<- counties_sf %>% 
+ # rename(NAME== County)
+  
+
+#join data sets together 
+counties_sf_join <-  merge(x = counties_sf,
+                           y = healthdf, 
+                           by.x = "NAME", 
+                           by.y = "County" )
+
+
+coal<- read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
+list(coal$County)
+
+#Subset coal counties but not working
+coal.filter<-counties_sf_join%>% 
+  filter(NAME %in% c("Armstrong","Beaver","Bedford","Blair","Butler","Berks","Carbon","Dauphin","Fayette","Greene","Allegheny","Blair","Cameron","Cambria","Centre","Clarion","Clearfield","Clinton","Columbia","Elk","Huntingdon","Indiana","Jefferson","Lackawanna","Lawrence","Luzerne","Lycoming","Mercer","Monongalia","Montgomery","Northumberland","Somerset","Schuylkill","Sullivan","Tioga", "Westmoreland", "Washington", "Venango", "Fulton"))
+
+#list(coal.filter$NAME)
+
+
+```
+
+
+```{r setup, include=FALSE}
+#Visualizations 
+class(counties_sf_join$NAME)
+NCOL(counties_sf_join$NAME)
+
+#filter for 2019 only to plot
+Health.2019<-counties_sf_join%>%
+  filter(year==2019)
+
+
+coal.2019<-coal.filter%>%
+  filter(year==2019)
+
+# 2019 Z score
+all.Z.2019<-mapview(Health.2019, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(10,'OrRd'))
+
+
+coal.z.2019<-mapview(coal.2019,
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(10,'OrRd'))
+
+sync(all.Z.2019,coal.z.2019)  
+
+
+#2019 Rank
+all.rank.2019<-mapview(Health.2019, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))
+
+coal.rank.2019<-mapview(coal.2019, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))       
+
+sync(all.rank.2019, coal.rank.2019)      
+
+#plot 2010 Data
+Health.2010<-counties_sf_join%>%
+  filter(year==2010)
+
+coal.2010<-coal.filter%>%
+  filter(year==2010)
+
+#2010 Z score
+all.z.2010<-mapview(Health.2010, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(5, 'OrRd'))
+
+coal.z.2010<-mapview(coal.2010, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(5, 'OrRd'))
+
+#showing maps side by side
+sync(all.z.2010, coal.z.2010)
+
+#2010 Rank
+all.rank.2010<-mapview(Health.2010, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))
+
+coal.rank.2010<-mapview(coal.2010, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))
+
+sync(all.rank.2010, coal.rank.2010)
+
+#'OrRd'
+#Heath.rank2010 
+#library(latt)
+
+
+
+#latticeview(Health.z.2010, Health.z.2019)
+#latticeview(Heath.rank2010,Heath.rank2019)
+
+```
+
+
+
+
