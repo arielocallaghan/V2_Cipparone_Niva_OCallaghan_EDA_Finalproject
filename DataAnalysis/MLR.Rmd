@@ -41,7 +41,7 @@ summary(acs.coal.health.regression.2)
 
 #Check MLR assumptions
 ```{r}
-par(mfrow = c(2,2), mar=c(4,4,4,4))
+par(mfrow = c(2,2), mar=c(1,1,1,1))
 plot(acs.coal.health.regression.2)
 par(mfrow = c(1,1))
 
