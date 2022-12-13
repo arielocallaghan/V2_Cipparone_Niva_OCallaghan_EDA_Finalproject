@@ -55,10 +55,8 @@ library(zoo)
 library(Kendall)
 library(tseries)
 library(latticeExtra)
-library(tidyverse)
-library(lubridate)
 library(knitr) #needed for report compilation 
-library(tidyverse)
+
 #spatial library additions 
 library(sf)
 library(leaflet)
@@ -67,6 +65,11 @@ library(leaflet)
 library(RColorBrewer)
 library(leafsync)
 library(lattice)
+
+#Knable library additions for health outcomes
+library(kableExtra)
+library(glue)
+library(knitr)
 
 # Set your ggplot theme
 
@@ -396,11 +399,6 @@ Summary tables describing the dimensions of the health data set are below. It sh
 
 ###Community Health Outcome Summary Table
 ```{r Health Outcomes Table, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Summary table of health OutcomeRanks in Pennsylvania from 2010-2020.", fig.align='left', fig.height= 2.5}
-#librarys for health outcomes
-library(kableExtra)
-library(tidyverse)
-library(glue)
-library(knitr)
 
 healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
 
