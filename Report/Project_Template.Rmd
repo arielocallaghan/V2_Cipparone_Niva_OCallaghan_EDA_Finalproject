@@ -699,7 +699,7 @@ These maps provide a clear visualization that counties with a history of coal pr
 ##ACS
 
 ###(Graphic of median age, income, pop etc. for all PA counties)
-```{r Graphic of median age, income, pop etc. for all PA counties, echo=TRUE, fig.align='left', fig.cap="Graph depicting median age, median income, total population, percent of population with a bachelor’s degree and percent of population which is white-identifying for Pennsylvania counties in 2019. Data sourced from ACS 1-year estimates.", fig.height=2.5, message=FALSE, warning=FALSE}
+```{r Graphic of median age, income, pop etc. for all PA counties, echo=TRUE, fig.align='left', fig.cap="Graph depicting median age, median income, total population, percent of population with a bachelor’s degree and percent of population which is white-identifying for Pennsylvania counties in 2019. Data sourced from ACS 1-year estimates.", fig.height=10, fig.width=20,message=FALSE, warning=FALSE}
 
 #create large color-blind friendly color palette
 # Define the number of colors you want
@@ -829,7 +829,7 @@ The trends for these counties were much more inconsistent. None had p-values bel
 
 
 ###(Insert mixed correlation plot here)
-```{r Mixed correlation plot here, echo=TRUE, fig.align='left', fig.cap="Mixed correlation plot for all variables of interest. Blue values are positive and red values are negative. Correlations performed using Pearson’s correlation coefficient.", fig.height=2.5, message=FALSE, warning=FALSE}
+```{r Mixed correlation plot here, echo=TRUE, fig.align='left', fig.cap="Mixed correlation plot for all variables of interest. Blue values are positive and red values are negative. Correlations performed using Pearson’s correlation coefficient.", fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
 
 #Create combined dataset with all variables linked appropriately to 2019. Create 'year from peak to 2019' variable
 
@@ -931,7 +931,7 @@ Unfortunately the assumptions of a multiple linear regression were not met durin
 
 
 ###(insert residual vs. fitted, scale location, Normal Q-Q, Residuals vs. Leverage plots here)
-```{r insert residual vs. fitted, scale location, Normal Q-Q, Residuals vs. Leverage plots here, Echo=TRUE, fig.align='left', fig.cap="Plots to examine multiple linear regression assumptions (homoscedasticity, normality)", fig.height=2.5, message=FALSE, warning=FALSE}
+```{r insert residual vs. fitted, scale location, Normal Q-Q, Residuals vs. Leverage plots here, Echo=TRUE, fig.align='left', fig.cap="Plots to examine multiple linear regression assumptions (homoscedasticity, normality)", fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
 
 par(mfrow = c(2,2), mar=c(1,1,1,1))
 plot(acs.coal.health.regression.2)
@@ -942,7 +942,7 @@ par(mfrow = c(1,1))
 
 
 ###(insert cowplot of explanatory vs response variables here)
-```{r cowplot of explanatory vs response variables here, echo=TRUE, fig.align='left', fig.cap="Plots to examine linearity assumption of multiple linear regression model.", fig.height=2.5, message=FALSE, warning=FALSE}
+```{r cowplot of explanatory vs response variables here, echo=TRUE, fig.align='left', fig.cap="Plots to examine linearity assumption of multiple linear regression model.", fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
 
 health.age<-ggplot(data.edit, aes(medage,Health.Outcomes.Z.Score))+
   geom_point()+
