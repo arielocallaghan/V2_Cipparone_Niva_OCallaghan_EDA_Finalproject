@@ -37,6 +37,8 @@ Knitting commands in code chunks:
 
 
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=75), tidy=TRUE)
+
 # Set your working directory
 
 getwd()
@@ -73,7 +75,6 @@ mytheme <- theme_classic(base_size = 14) + theme(axis.text = element_text(color 
 theme_set(mytheme)
 
 # Load your datasets
-
 
 ```
 #**Introduction**
@@ -281,12 +282,113 @@ The datasets for Pennsylvania were downloaded from the community Health Rankings
 ###Community Health Data Wrangling Code
 ```{r Health Wrangling Code, echo=TRUE}
 
+#raw data import individual csv files https://www.countyhealthrankings.org/
+
+
+health2010<- read.csv("./RawData/2010health.csv",stringsAsFactors = TRUE)
+health2011<- read.csv("./RawData/2011health.csv",stringsAsFactors = TRUE)
+health2012<- read.csv("./RawData/2012health.csv",stringsAsFactors = TRUE)
+health2013<- read.csv("./RawData/2013health.csv",stringsAsFactors = TRUE)
+health2014<- read.csv("./RawData/2014health.csv",stringsAsFactors = TRUE)
+health2015<- read.csv("./RawData/2015health.csv",stringsAsFactors = TRUE)
+health2016<- read.csv("./RawData/2016health.csv",stringsAsFactors = TRUE)
+health2017<- read.csv("./RawData/2017health.csv",stringsAsFactors = TRUE)
+health2018<- read.csv("./RawData/2018health.csv",stringsAsFactors = TRUE)
+health2019<- read.csv("./RawData/2019health.csv",stringsAsFactors = TRUE)
+health2020<- read.csv("./RawData/2020health.csv",stringsAsFactors = TRUE)
+
+#combine individual csv 2010-2020 into one file
+health.all<- rbind(health2010,health2011,health2012, health2013, health2014, health2015, health2016, health2017, health2018, health2019, health2020)
+
+# create new csv file with all years 2010-2020 combined
+write.csv(health.all, row.names = FALSE, file = "./RawData/healthdata.combine.csv") 
+
+#Creating data frame to merge with out data. Filtering out only needed columns
+#Create csv file in processed data folder
+Healthdf<-select(health.all,County:year)
+write.csv(Healthdf, row.names = FALSE, file = "./ProcessedData/healthdf.csv") 
+
 ```
 
 A spatial shapefile by county was also utilized to display this information. This shapefile developed by the U.S. Census  is their cartographic boundary shapefile from 2020. This dataset includes the entire United States, so the state of Pennsylvania was filtered out to be combined with the health data frame. This allows community health indicators to be visualized spatially. To compare coal and non coal poducing counties, an additonal dataframe was created that filtered out only coal producing counites. Below is a summary tables capturing important variables in the health data frame.
 
 ###Spatial Wrangling Code
 ```{r Spatial Data Code Wrangling, echo=TRUE}
+#check colors for graphs
+#par(mar=c(3,4,2,2))
+#display.brewer.all()
+
+#Disable on-the-fly projections - code from lab sheet 
+sf::sf_use_s2(FALSE)
+
+#read in spatial data frame and filter for Pennsylvania 
+
+counties_sf <- st_read('./RawData/cb_2018_us_county_20m.shp')%>% 
+  filter(STATEFP == 42) #42|PA|Pennsylvania|01779798
+
+#check data frame information 
+#colnames(counties_sf)
+#st_crs(counties_sf) 
+#nrow(counties_sf)
+
+#Reveal the extent of this dataset via the st_bbox() function
+st_bbox(counties_sf)
+
+#View the data
+head(counties_sf)
+
+#Plot the county data, colored by area of land in each county
+#mapView(counties_sf, zcol = "ALAND") #check plot with land but not needed for report
+
+#read in health data frame to join with spatial datframe 
+healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
+
+counties_sf$NAME<- as.character(counties_sf$NAME)
+class(counties_sf$NAME)
+
+healthdf$County<- as.character(healthdf$County)
+class(healthdf$County)
+
+(healthdf)
+
+#counties_sf<- counties_sf %>% 
+ # rename(NAME== County)
+  
+
+#join data sets together 
+counties_sf_join <-  merge(x = counties_sf,
+                           y = healthdf, 
+                           by.x = "NAME", 
+                           by.y = "County" )
+
+
+coal<- read.csv("./ProcessedData/Coal.Clean.csv",stringsAsFactors = TRUE)
+#list(coal$County)
+
+#Subset coal counties but not working
+coal.filter<-counties_sf_join%>% 
+  filter(NAME %in% c("Armstrong","Beaver","Bedford","Blair","Butler","Berks","Carbon","Dauphin","Fayette","Greene","Allegheny","Blair","Cameron","Cambria","Centre","Clarion","Clearfield","Clinton","Columbia","Elk","Huntingdon","Indiana","Jefferson","Lackawanna","Lawrence","Luzerne","Lycoming","Mercer","Monongalia","Montgomery","Northumberland","Somerset","Schuylkill","Sullivan","Tioga", "Westmoreland", "Washington", "Venango", "Fulton"))
+
+#Visualizations 
+class(counties_sf_join$NAME)
+NCOL(counties_sf_join$NAME)
+
+#filter for 2019 only to plot
+Health.2019<-counties_sf_join%>%
+  filter(year==2019)
+
+
+coal.2019<-coal.filter%>%
+  filter(year==2019)
+
+
+#plot 2010 Data
+Health.2010<-counties_sf_join%>%
+  filter(year==2010)
+
+coal.2010<-coal.filter%>%
+  filter(year==2010)
+
 
 ```
 
@@ -294,12 +396,49 @@ Summary tables describing the dimensions of the health data set are below. It sh
 
 ###Community Health Outcome Summary Table
 ```{r Health Outcomes Table, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Summary table of health OutcomeRanks in Pennsylvania from 2010-2020.", fig.align='left', fig.height= 2.5}
- 
+#librarys for health outcomes
+library(kableExtra)
+library(tidyverse)
+library(glue)
+library(knitr)
+
+healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
+
+healthdf.table<- healthdf %>%
+  group_by(year) %>%
+  summarize(
+    mean_Health_Outcome_rank = mean(Health.Outcomes.Rank),
+    min_health_outcome_rank = min(mean_Health_Outcome_rank),
+    max_Health_Outcome_rank = max(Health.Outcomes.Rank),
+    sd_Health_Outcome_rank = sd(Health.Outcomes.Rank))
+
+kable(x = healthdf.table, 
+      format = "html",
+      col.names = c("Year","Mean Rank","Min Rank","Max Rank","SD Rank"),
+      caption = "Health Indicators Outcomes Summary Table")%>%
+  kable_classic(full_width = F, html_font = "Cambria")
+
+#kable(healthdf.table,caption = "Health Indicators Outcomes Summary Table") 
 ```
 
 ###Community Health Z Sore Summary Table
 ```{r Health Z Score Summary Table, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Summary table of Heath Outcome Z score indicators in Pennsylvania from 2010-2020.", fig.align='left', fig.height= 2.5}
 
+healthdf.table.Z<- healthdf %>%
+  group_by(year) %>%
+  summarize(
+    mean_Health_Outcome_Zscore = mean(Health.Outcomes.Z.Score),
+    min_health_outcome_Zscore = min(mean_Health_Outcome_Zscore),
+    max_Health_Outcome_Zscore = max(Health.Outcomes.Z.Score),
+    sd_Health_Outcome_zscore = sd(Health.Outcomes.Z.Score))
+
+kable(x = healthdf.table.Z, 
+      format = "html",
+      col.names = c("Year", "Mean Z", "Min Z", "Max Z", "SD Z"),
+      caption = "Health Indicators Z Score Summary Table")%>%
+  kable_classic(full_width = F, html_font = "Cambria")
+
+#kable(healthdf.table.Z, caption = "Health Indicators Z Score Summary Table ")
 ```
 
 
@@ -337,7 +476,6 @@ Exploratory analysis was conducted on the individual data to trends for each dif
 ##Coal production over time
 ```{r Code for ggplot mapping coal production over time in each county, echo=TRUE, fig.align='left', fig.cap="Coal Production plotted over time at each Pennsylvania County", fig.height=, message=FALSE, warning=FALSE}
 
-##Figure Caption: Coal Production plotted over time at each Pennsylvania county
 
 ```
 
@@ -354,6 +492,21 @@ A spatial analysis was utilized to display health outcomes rank and Z score by c
 ```{r Health 2019 Z score, echo=TRUE, fig.align='left', fig.cap="Shows Z scores of health outcome data by County in 2019", fig.height=, message=FALSE, warning=FALSE}
 
 #(Caption figure XX: Shows Z scores of health outcome data by County in 2019)
+
+##Figure Caption: Coal Production plotted over time at each Pennsylvania county
+
+# 2019 Z score
+all.Z.2019<-mapview(Health.2019, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(10,'OrRd'))
+
+
+coal.z.2019<-mapview(coal.2019,
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(10,'OrRd'))
+
+sync(all.Z.2019,coal.z.2019)  
+
 ```
 
 This figure shows that most of the counties with a high Z score, darker orange indicating poor health, are shown on the right pannel indicating coal producing counties.. There are a few exceptions, for example, the County of Philadelphia, which also includes the City of Philadelphia, the largest city in the State of Pennsylvania (source). The other major exception is the County of Centre, the county shown middle, which had relatively low total coal production (2,543,689 tons) compared to neighboring counties.
@@ -363,6 +516,16 @@ This figure shows that most of the counties with a high Z score, darker orange i
 
 #(Caption figure XX: Health outcomes ranking by county for 2019.)
 
+#2019 Rank
+all.rank.2019<-mapview(Health.2019, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))
+
+coal.rank.2019<-mapview(coal.2019, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))       
+
+sync(all.rank.2019, coal.rank.2019)      
 ```
 
 
@@ -372,6 +535,20 @@ This figure shows the heather counties in a lighter blue county and decreasing h
 ```{r 2010 Z score map, echo=TRUE, fig.align='left', fig.cap="Z scores of health outcome by County in 2010", fig.height=, message=FALSE, warning=FALSE}
 
 #(Caption figure XX: Shows Z scores of health outcome by County in 2010)
+
+#2010 Z score
+all.z.2010<-mapview(Health.2010, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(5, 'OrRd'))
+
+coal.z.2010<-mapview(coal.2010, 
+        zcol = 'Health.Outcomes.Z.Score', 
+        col.regions = brewer.pal(5, 'OrRd'))
+
+#showing maps side by side
+sync(all.z.2010, coal.z.2010)
+
+
 ```
 
 The same analysis as the maps above  was conducted for the year 2010. Looking at the left pane, there is one county stands out. This county is Philadelphia, which has a Z score in 2010 of 3.43. The next highest Z score for that year is 1.21 in Greene County, a coal-producing county. This county is displayed at the bottom left on the Pennsylvania map. The scale of the right pane is slightly different due to Philadelphia County not being included. A few counties with a history of coal production have a low Z score and, therefore, better health. Centre county has the lowest Z score of -1.53, the county with the lightest orange color in the right pane. Butler county is the next healthiest with a z score of -0.71.  As you can see from the visualization in this figure, most counties in 2010 with the highest z score indicating poor health are counties that have a history of local production.
@@ -379,6 +556,17 @@ The same analysis as the maps above  was conducted for the year 2010. Looking at
 ###2010 rank map
 ```{r 2010 Rank Map, echo=TRUE, fig.align='left', fig.cap="Health outcomes ranking by county in 2010", fig.height=, message=FALSE, warning=FALSE}
 #(Caption figure XX: Health outcomes ranking by county in 2010.)
+
+#2010 Rank
+all.rank.2010<-mapview(Health.2010, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))
+
+coal.rank.2010<-mapview(coal.2010, 
+        zcol = 'Health.Outcomes.Rank', 
+        col.regions = brewer.pal(20, 'Blues'))
+
+sync(all.rank.2010, coal.rank.2010)
 ```
 
 
