@@ -41,8 +41,10 @@ library(RColorBrewer)
 library(leafsync)
 library(lattice)
 
-par(mar=c(3,4,2,2))
-display.brewer.all()
+
+
+#par(mar=c(3,4,2,2))
+#display.brewer.all()
 
 #Disable on-the-fly projections - code from lab sheet 
 sf::sf_use_s2(FALSE)
@@ -66,7 +68,7 @@ st_bbox(counties_sf)
 head(counties_sf)
 
 #Plot the county data, colored by area of land in each county
-mapView(counties_sf, zcol = "ALAND")
+#mapView(counties_sf, zcol = "ALAND") #check plot with land but not needed for report
 
 #read in health data frame to join with spatial datframe 
 healthdf<- read.csv("./ProcessedData/healthdf.csv",stringsAsFactors = TRUE)
@@ -99,7 +101,7 @@ coal.filter<-counties_sf_join%>%
 
 #list(coal.filter$NAME)
 
-#Fulton only production data for 2021 so not included
+
 ```
 
 
@@ -109,19 +111,19 @@ class(counties_sf_join$NAME)
 NCOL(counties_sf_join$NAME)
 
 #filter for 2019 only to plot
-Health_Data_2019<-counties_sf_join%>%
+Health.2019<-counties_sf_join%>%
   filter(year==2019)
 
 
 coal.2019<-coal.filter%>%
   filter(year==2019)
 
-#2019 Z score
-all.Z.2019<-mapview(Health_Data_2019, 
+# 2019 Z score
+all.Z.2019<-mapview(Health.2019, 
         zcol = 'Health.Outcomes.Z.Score', 
         col.regions = brewer.pal(10,'OrRd'))
 
-#coal counties only 2019
+
 coal.z.2019<-mapview(coal.2019,
         zcol = 'Health.Outcomes.Z.Score', 
         col.regions = brewer.pal(10,'OrRd'))
@@ -130,7 +132,7 @@ sync(all.Z.2019,coal.z.2019)
 
 
 #2019 Rank
-all.rank.2019<-mapview(Health_Data_2019, 
+all.rank.2019<-mapview(Health.2019, 
         zcol = 'Health.Outcomes.Rank', 
         col.regions = brewer.pal(20, 'Blues'))
 
@@ -141,14 +143,14 @@ coal.rank.2019<-mapview(coal.2019,
 sync(all.rank.2019, coal.rank.2019)      
 
 #plot 2010 Data
-Health_Data_2010<-counties_sf_join%>%
+Health.2010<-counties_sf_join%>%
   filter(year==2010)
 
 coal.2010<-coal.filter%>%
   filter(year==2010)
 
 #2010 Z score
-all.z.2010<-mapview(Health_Data_2010, 
+all.z.2010<-mapview(Health.2010, 
         zcol = 'Health.Outcomes.Z.Score', 
         col.regions = brewer.pal(5, 'OrRd'))
 
@@ -160,11 +162,11 @@ coal.z.2010<-mapview(coal.2010,
 sync(all.z.2010, coal.z.2010)
 
 #2010 Rank
-all.rank.2010<-mapview(Health_Data_2010, 
+all.rank.2010<-mapview(Health.2010, 
         zcol = 'Health.Outcomes.Rank', 
         col.regions = brewer.pal(20, 'Blues'))
 
-coal.rank.2010<-coal.rank.2010<-mapview(coal.2010, 
+coal.rank.2010<-mapview(coal.2010, 
         zcol = 'Health.Outcomes.Rank', 
         col.regions = brewer.pal(20, 'Blues'))
 
@@ -174,7 +176,7 @@ sync(all.rank.2010, coal.rank.2010)
 #Heath.rank2010 
 #library(latt)
 
-#can't figure correct way to name plots to show side by side
+
 
 #latticeview(Health.z.2010, Health.z.2019)
 #latticeview(Heath.rank2010,Heath.rank2019)
