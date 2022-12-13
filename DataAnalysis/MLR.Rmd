@@ -18,7 +18,8 @@ data<-read.csv("./ProcessedData/health.coal.acs.impute.csv")
 ```{r}
 data.edit<-data %>% 
   filter(perc.white!=0) %>% 
-  na.omit()
+  na.omit() %>% 
+  select(!X)
 ```
 
 
@@ -45,11 +46,10 @@ plot(acs.coal.health.regression.2)
 par(mfrow = c(1,1))
 
 #remove county and other non-informative variables to permit correlation plot
-acs.health.coal.cor.edit <- data.coal.health.acs %>% 
-  select(!c(County,totpop,totpoprace, totpopeduc, totpopwhite, bachdegree,Health.Factors.Z.Score,
-            Health.Factors.Rank, year.peak.prod, year)) %>% 
+acs.health.coal.cor.edit <- data.edit %>% 
+  select(!c(County,totpop, totpopwhite, bachdegree,Health.Factors.Z.Score,
+            Health.Factors.Rank, year)) %>% 
   na.omit()
-
 
 
 acs.health.coal.Corr <- cor(acs.health.coal.cor.edit)
