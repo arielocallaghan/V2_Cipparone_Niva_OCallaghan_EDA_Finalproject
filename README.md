@@ -95,7 +95,7 @@ complete.csv This file contains all of the individual data sets combined into on
 **Health.Factors.Z.Score:** Z score. Health factors includes health behaviors, clinic care, social and economic factors and physical environment.       
 **Health.Factors.Rank:**  Rank of Counties with 1 being the healthiest  Class:"numeric"    
 
---Water Quality Data set--
+--Water Quality Data set--    
 **Date:** The date the sample was collected Class:"Date"  
 **Location** The location of the sample Class:"Character"  
 **Latitude** The coordinates of the sample Class:"Numeric"  
