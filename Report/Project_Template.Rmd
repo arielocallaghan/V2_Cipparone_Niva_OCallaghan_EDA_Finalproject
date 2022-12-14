@@ -1,7 +1,7 @@
 ---
 title: "The True Cost of Coal: Impacts of coal production on community health in Pennsylvania"
 author: "Hugh Cipparone, Katryna Niva and Ariel O'Callaghan"
-output:
+output:      
   html_document:
     df_print: paged
     toc: true
@@ -78,7 +78,7 @@ library(zoo)
 library(Kendall)
 library(tseries)
 library(latticeExtra)
-library(knitr) #needed for report compilation 
+library(knitr)
 library(psych)
 library(stargazer)
 library(vtable)
@@ -137,7 +137,7 @@ Our coal mining dataset provides data on annual coal production by Pennsylvania 
 The wrangling process can be seen step by step below, but a summary is as follows: The coal data for each individual year was uploaded using the read.csv function. Then, the class of different columns were adjusted so that they were consistent across years and could be merged. At this point, they were merged with the full_join command such that one dataframe was formed. This new dataset was then filtered to only include data from Pennsylvania and then slimmed to only include the columns of interest (county, year, status, and production in tons). At this point, we needed to merge the columns where multiple mines were operating within a single county. This was done by converting the production to class integer, grouping by county and year, and summing the coal production within those groups. The weighted average year of coal production for each county was then calculated by summing the product of coal produced and year for each year and dividing by the total sum of coal production within each county. Finally, a column expressing the sum of coal production across all years for each county was added. At this point, this more refined dataset was saved to the processed data folder for future analysis. 
 
 **Coal Wrangling Code**
-```{r Coal Wrangling Code, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Coal Wrangling Code, echo=FALSE, message=FALSE, warning=FALSE}
 #inital uploading of all the coal data for each distinct year -- this could not be expedited with data stripping because there were separate links to downloaded spreadsheets instead of links to another website
 coal1983 <- read.csv("./RawData/coalpublic1983.csv", stringsAsFactors = TRUE)
 coal1984 <- read.csv("./RawData/coalpublic1984.csv", stringsAsFactors = TRUE)
@@ -304,24 +304,32 @@ write.csv(aggCoalSlim, file = "./ProcessedData/aggCoalData.csv")
 
 **Coal Summary Table**
 The summary table below provides the range, median, and interquartile range for each of the parameters included.
-```{r Coal-Summary-Table, echo=TRUE}
+```{r Coal-Summary-Table, fig.cap = "Summary Statistics of coal production in Pennsylvania", echo=FALSE}
 
 #We can make the summary table of the data within the dataset
-coal.data.summary<-aggCoalSlim2 %>% 
-  summarize(
-    year.range= range(Year),
-    annual.coal.production.range= range(coal.prod.by.year),
-    total.coal.production.range = range(sum.coal.prod),
-    weighted.average.year.range= range(year.peak.prod),
-    annual.coal.production.med = median(coal.prod.by.year),
-    total.coal.production.med = median(sum.coal.prod),
-    weighted.average.year.med = median(year.peak.prod),
-    annual.coal.production.iqr = IQR(coal.prod.by.year),
-    total.coal.production.iqr = IQR(sum.coal.prod),
-    weighted.average.year.iqr = IQR(year.peak.prod),
-  )
+
+coal.data.summary <- aggCoalSlim2 %>% 
+    rename("Coal Production per Year" = coal.prod.by.year, "Weighted Year of Peak Production" = year.peak.prod, "Total Coal Produced" = sum.coal.prod) %>% 
+    psych::describe(na.rm=TRUE) %>%
+    as_tibble(rownames="rowname") %>% 
+  filter(rowname!="County*" & rowname!="Year")
+
+coal.table<-coal.data.summary %>%
+  select(Variable=rowname, Observations=n, Median=median, Mean=mean, SD=sd, Range=range, Minimum=min, Maximum=max) %>% 
+gt() %>% 
   
-kable(coal.data.summary)
+  tab_header(
+    title = md("Summary Statistics of County-Level Coal Production Variables in Pennsylvania"), subtitle="   ") %>%
+
+  fmt_number(columns = c(Observations), decimals = 0) %>%
+  fmt_number(columns = c(Mean), decimals=2) %>%
+  fmt_number(columns = c(Median), decimals = 2) %>%
+  fmt_number(columns = c(SD), decimals = 2) %>%
+  fmt_number(columns = c(Range), decimals = 2) %>% 
+  fmt_number(columns = c(Minimum), decimals = 2) %>%
+  fmt_number(columns = c(Maximum), decimals = 2)
+  
+coal.table
 
 ```
 
@@ -618,7 +626,7 @@ pa.county.summary <- pa.2019.clean %>%
 **American Community Summary Table**
 The summary statistics table below captures a number of important characteristics of the collected variables from the year 2019:
 
-```{r ACS Summary Table,echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Summary table of county-level explanatory socioeconomic variables in Pennsylvania. Data from ACS 1-year estimates.", fig.align='left', fig.height= 2.5}
+```{r ACS Summary Table , echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Summary table of county-level explanatory socioeconomic variables in Pennsylvania. Data from ACS 1-year estimates.", fig.align='left', fig.height= 2.5}
 
 pa.table<-pa.county.summary %>%
   select(Variable=rowname, Observations=n, Median=median, Mean=mean, SD=sd, Range=range, Minimum=min, Maximum=max) %>% 
@@ -636,6 +644,7 @@ gt() %>%
   fmt_number(columns = c(Maximum), decimals = 2)
   
 pa.table
+
 ```
 
 ### Combined Datasets
