@@ -141,4 +141,4 @@ The spatial.rmd utilized the community health indicators to represent them by co
 
 ## Quality assurance/quality control
 
-The team has worked together to check each others others data and analysis. The complete data and other wrangling procedures have been discussed and QA/QC'ed by one other team member. Additionally, we have looked at each others analysis and outputs and helped each other with results interpretation. 
+The team has worked together to check each others work. The complete data frames and other wrangling procedures have been discussed and QA/QC'ed by one other team member. Additionally, we have looked at each others analysis and outputs and helped each other with results interpretation. 
