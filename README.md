@@ -44,7 +44,7 @@ Raw Data: This is the data imported as a .csv with out any wrangling or manipula
 
 Processed Data: This folder contains data that has been wrangled to include the information needed for further analysis. Additionally it contains combined data sets of individual years of each database download combined into once csv file. The combine.csv file is a combination of all the individual data sets after they have been wrangled into one complete file. This file contains all the information needed for analysis conducted during this project. Some additional dataframes were made with subsets of data contained in the combined.csv to simply further analysis.  
 
-Data Wrangled: This folder contains the rmd files utilized to wrangle and manipulate the individual data sets. Additionally it contains code for creating visualizations, summary statistics and plots.
+Data Wrangled: This folder contains the rmd files utilized to wrangle and manipulate the individual data sets. Additionally, it contains code for creating visualizations, summary statistics and plots.
 
 Data Analysis: This folder contains rmd files used to analyze our complete data set.
 
@@ -74,6 +74,7 @@ complete.csv This file contains all of the individual data sets combined into on
 <The csv file is organized so that all Counties in Pennsylvania are rows and each row contains the following columns. Some data sets have varying date ranges so some columns show NA when there is no data available. 
 
 --complete.csv--
+
 **County:** All Counties in Pennsylvania   class:"factor"    
 **Year** Year Class: "Date"  
 **totpop:** Total population by County  Class:"Numeric"  
