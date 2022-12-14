@@ -57,9 +57,9 @@ The files were named off of the type of data that that is analyzed:
 -water quality data: Water quality data from the portal described above. 
 
 Other naming conventions include:
-visualizations: These rmd files were utilized to create ggplots, graphs and tables utilized in the report.
-cleaning: Refers to rmd files utilized to do additional wrangling for analysis 
-df_combine: This is the rmd file utilized to take all of the individual data frames and create one df for future analysis. The output of this rmd file is the combined.csv. 
+visualizations: These rmd files were utilized to create ggplots, graphs and tables utilized in the report.    
+cleaning: Refers to rmd files utilized to do additional wrangling for analysis   
+df_combine: This is the rmd file utilized to take all of the individual data frames and create one df for future analysis. The output of this rmd file is the combined.csv.   
 
 The analysis rmd file names show the type of analysis that is conducted. >
 MLR: Multi linear Regression
@@ -111,7 +111,12 @@ complete.csv This file contains all of the individual data sets combined into on
 
 ## Scripts and code
 
-<list any software scripts/code contained in the repository and a description of their purpose.>
+<The MLR.rmd is a code to conduct the multi liner regression analysis. This code also contains correlation plots between each variable of interest. This code look a a few specific counties of coal production and health indicators.  
+
+The Timeseries.rmd code is to examine the relationship between health outcomes and coal production for 2010-2010. 
+
+
+list any software scripts/code contained in the repository and a description of their purpose.>
 
 ## Quality assurance/quality control
 
