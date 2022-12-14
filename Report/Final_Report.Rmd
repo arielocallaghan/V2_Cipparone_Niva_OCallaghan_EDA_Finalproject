@@ -698,7 +698,6 @@ CoalOverTime <- ggplot(aggCoalSlim, aes(`Year`, `sum.coal.production`, group = `
   ggtitle("Coal Production over Time in each Pennsylvania County")
 
 print(CoalOverTime)
-
 ```
 
 The plot over time shows how the coal production has changed over time from 1983 until today in each county. The more recent petering off of most of the mines makes sense as most of the available coal has been removed and the US energy sources have moved away from coal. There is a pretty strong bell curve in most mines which would align with the location of a good mine, the mass export of the mined coal, and then the decrease in production as the most readily available coal is gone. It is interesting to see how all the counties seem to steeply increase in coal production from 1983 on. This could be a limitation in the dataset (only giving strong coverage of mines beginning operation in 1983) but none of that was explained or visible in the metadata and so it is more likely that there was an uptick in coal production at that point. This could be due to the implementation of longwall mining which first began in the 1960s (https://www.dep.pa.gov/Business/Land/Mining/Pages/PA-Mining-History.aspx). It is also clearly visible here that Schuylkill County has far more coal production than any other county.
