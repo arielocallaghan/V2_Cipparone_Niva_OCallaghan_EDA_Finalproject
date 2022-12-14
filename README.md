@@ -56,13 +56,13 @@ The files were named off of the type of data that that is analyzed:
 -coal files are for the coal production numbers. This also includes some water quality data. 
 -water quality data: Water quality data from the portal described above. 
 
-Other naming conventions include:
+Other naming conventions include:  
 visualizations: These rmd files were utilized to create ggplots, graphs and tables utilized in the report.    
 cleaning: Refers to rmd files utilized to do additional wrangling for analysis   
 df_combine: This is the rmd file utilized to take all of the individual data frames and create one df for future analysis. The output of this rmd file is the combined.csv.   
 
 The analysis rmd file names show the type of analysis that is conducted. >
-MLR: Multi linear Regression
+MLR: Multiple linear Regression
 Time Series: Time series analysis:
 Spatial: Spatial representation of the community health indicators. The community health data is displayed visualizing. The county cartographic boundary shapfiles developed by the U.S. Census were downloaded here https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html
 
@@ -107,17 +107,37 @@ complete.csv This file contains all of the individual data sets combined into on
 >
 
 
-<For each data file in the repository, describe the data contained in each column. Include the column name, a description of the information, the class of data, and any units associated with the data. Create a list or table for each data file.> 
-
 ## Scripts and code
 
-<The MLR.rmd is a code to conduct the multi liner regression analysis. This code also contains correlation plots between each variable of interest. This code look a a few specific counties of coal production and health indicators.  
+**Data Analysis Folder**
+<The MLR.rmd is a code to conduct the multiple liner regression analysis. This code also contains correlation plots between each variable of interest. This code look a a few specific counties of coal production and health indicators.  
 
 The Timeseries.rmd code is to examine the relationship between health outcomes and coal production for 2010-2010. 
 
+**Data Wrangling**
+The ACSDataCleaning.rmd is the file utilized to clean the ACS data to get only the parameters of interest. 
 
-list any software scripts/code contained in the repository and a description of their purpose.>
+The ACSImportraw.rmd is the import file each of the individual raw datasets utilized from the census.
+
+TheACSVisualization.rmd this file is utilized to prepare visualizations and ggplots.
+
+The df_combine_HC.rmd is the file utilized to create the master dataframe called complete.csv This takes all of the individual datframes ie. health, coal and puts them together. 
+
+The HC_CoalWrangle.rmd is file utilized to calculate total production by county.
+
+The healthdata.rmd is the file utilized to import and wrange the community health indicators.
+
+The healthtable.rmd is the file utilized for the knable function to make the summary statistics table.
+
+The healthvisualizations.rmd is the file utilized to explore the health data set and prepare visualizations utilizing ggplot. 
+
+The KN.Coal.rmd is hte file utilized to import, wrangle and prepare visualizations for the coal production data and water quality parameters.
+
+The MLR_Wrange.rmd is the file utilized to wrangle the data to prepare it for the multiple linear regression. 
+
+The spatial.rmd utilized the community health indicators to represent them by county on a map.>
+
 
 ## Quality assurance/quality control
 
-The team has worked together to check each others others data and analysis. The complete data set was verified accurate but all team members. We have QA/QC each others analysis and results. 
+The team has worked together to check each others others data and analysis. The complete data and other wrangling procedures have been discussed and QA/QC'ed by one other team member. Additionally, we have looked at each others analysis and outputs and helped each other with results interpretation. 
