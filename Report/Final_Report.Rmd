@@ -383,7 +383,7 @@ write.csv(Healthdf, row.names = FALSE, file = "./ProcessedData/healthdf.csv")
 
 A spatial shapefile by county was also utilized to display this information. This shapefile developed by the U.S. Census  is their cartographic boundary shapefile from 2020. This dataset includes the entire United States, so the state of Pennsylvania was filtered out to be combined with the health data frame. This allows community health indicators to be visualized spatially. To compare coal and non coal producing counties, an additional dataframe was created that filtered out only coal producing counties. Below is a summary tables capturing important variables in the health data frame.
 
-```{r Spatial Data Code Wrangling, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Spatial Data Code Wrangling, echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
 #check colors for graphs
 #par(mar=c(3,4,2,2))
 #display.brewer.all()
@@ -607,7 +607,7 @@ pa.county.summary <- pa.2019.clean %>%
 **American Community Summary Table**
 The summary statistics table below captures a number of important characteristics of the collected variables from the year 2019:
 
-```{r ACS-Summary-Table, echo=TRUE, fig.align='left', fig.cap="Summary table of county-level explanatory socioeconomic variables in Pennsylvania. Data from ACS 1-year estimates.", fig.height=, message=FALSE, warning=FALSE}
+```{r ACS-Summary-Table, echo=TRUE, fig.align='left', fig.cap="Summary table of county-level explanatory socioeconomic variables in Pennsylvania. Data from ACS 1-year estimates.", message=FALSE, warning=FALSE}
 
 pa.table<-pa.county.summary %>%
   select(Variable=rowname, Observations=n, Median=median, Mean=mean, SD=sd, Range=range, Minimum=min, Maximum=max) 
@@ -786,7 +786,7 @@ These maps provide a clear visualization that counties with a history of coal pr
 ### American Community Survey
 
 **Plot of socioeconomic variables for all PA counties**
-```{r dem-counties-graph, echo=TRUE, fig.align='left', fig.cap="Graph depicting median age, fig.width=20, message=FALSE, warning=FALSE, median income, total population, percent of population with a bachelor’s degree and percent of population which is white-identifying for Pennsylvania counties in 2019. Data sourced from ACS 1-year estimates.", fig.height=10}
+```{r dem-counties-graph, echo=TRUE, fig.align='left', fig.cap="Graph depicting median age, median income, total population, percent of population with a bachelor’s degree and percent of population which is white-identifying for Pennsylvania counties in 2019. Data sourced from ACS 1-year estimates.", fig.height=10, fig.width=20}
 
 #create large color-blind friendly color palette
 # Define the number of colors you want
