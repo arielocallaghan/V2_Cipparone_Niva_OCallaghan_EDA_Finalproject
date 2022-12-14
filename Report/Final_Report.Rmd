@@ -469,7 +469,7 @@ healthdf.table<- healthdf %>%
   group_by(year) %>%
   summarize(
     mean_Health_Outcome_rank = mean(Health.Outcomes.Rank),
-    min_health_outcome_rank = min(mean_Health_Outcome_rank),
+    min_health_outcome_rank = min_rank(mean_Health_Outcome_rank),
     max_Health_Outcome_rank = max(Health.Outcomes.Rank),
     sd_Health_Outcome_rank = sd(Health.Outcomes.Rank))
 
