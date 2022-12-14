@@ -110,12 +110,12 @@ complete.csv This file contains all of the individual data sets combined into on
 
 ## Scripts and code
 
-**Data Analysis Folder**
+**Data Analysis Folder**    
 <The MLR.rmd is a code to conduct the multiple liner regression analysis. This code also contains correlation plots between each variable of interest. This code look a a few specific counties of coal production and health indicators.  
 
 The Timeseries.rmd code is to examine the relationship between health outcomes and coal production for 2010-2010. 
 
-**Data Wrangling**
+**Data Wrangling**   
 The ACSDataCleaning.rmd is the file utilized to clean the ACS data to get only the parameters of interest. 
 
 The ACSImportraw.rmd is the import file each of the individual raw datasets utilized from the census.
